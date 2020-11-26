@@ -11,7 +11,6 @@ public class AsyncWorker implements Runnable
   public AsyncWorker()
   {
     THREAD = new Thread(this);
-    THREAD.start();
   }
   
   @Override
@@ -50,7 +49,12 @@ public class AsyncWorker implements Runnable
     QUEUE.addLast(run);
   }
   
-  public void kill()
+  public synchronized void start()
+  {
+    THREAD.start();
+  }
+  
+  public synchronized void kill()
   {
     working = false;
     

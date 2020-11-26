@@ -11,7 +11,6 @@ public class Worker implements Runnable
   {
     this.RUNNABLE = runnable;
     this.THREAD = new Thread(this);
-    this.THREAD.start();
   }
   
   @Override
@@ -33,6 +32,11 @@ public class Worker implements Runnable
         System.out.println("Erro: " + t.getMessage());
       }
     }
+  }
+  
+  public synchronized void start()
+  {
+    THREAD.start();
   }
   
   public synchronized void kill()
