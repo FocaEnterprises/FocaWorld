@@ -1,6 +1,7 @@
 package com.focasoft.beterraba.net;
 
 import java.util.HashMap;
+import org.json.JSONObject;
 
 public abstract class Packet
 {
@@ -22,8 +23,19 @@ public abstract class Packet
     DATA.remove(index);
   }
   
-  public String serialize()
+  public JSONObject serialize()
   {
-    return "";
+    JSONObject json = new JSONObject();
+    JSONObject data = new JSONObject();
+    
+    for(String key : DATA.keySet())
+    {
+      data.put(key, DATA.get(key));
+    }
+    
+    json.put("type", TYPE.getDescName());
+    json.put("data", data);
+    
+    return json;
   }
 }
