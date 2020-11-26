@@ -1,6 +1,6 @@
 package com.focasoft.beterraba.client;
 
-import com.focasoft.beterraba.Worker;
+import com.focasoft.beterraba.task.Worker;
 
 public class Client implements Runnable
 {
@@ -16,6 +16,4 @@ public class Client implements Runnable
   {
   
   }
-  
-  
 }

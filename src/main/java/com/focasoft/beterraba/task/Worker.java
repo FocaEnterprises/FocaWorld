@@ -1,4 +1,4 @@
-package com.focasoft.beterraba;
+package com.focasoft.beterraba.task;
 
 public class Worker implements Runnable
 {
