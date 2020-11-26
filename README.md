@@ -1,2 +1,3 @@
-# ProgramaDeLeitura
-Programa de leiturazim
+## :memo: Beterraba
+
+Brincando um pouco com Sockets.
