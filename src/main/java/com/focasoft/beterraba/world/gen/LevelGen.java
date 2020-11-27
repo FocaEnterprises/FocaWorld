@@ -1,17 +1,16 @@
-package com.focasoft.beterraba.world;
+package com.focasoft.beterraba.world.gen;
 
-import java.awt.Color;
+import com.focasoft.beterraba.world.Material;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.Random;
-
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 // https://github.com/skeeto/Minicraft/blob/master/src/com/mojang/ld22/level/levelgen/LevelGen.java
 public class LevelGen
 {
-  private static final Random random = new Random();
+  private static Random random = new Random();
   
   private final int w;
   private final int h;
@@ -85,11 +84,16 @@ public class LevelGen
     values[(x & (w - 1)) + (y & (h - 1)) * w] = value;
   }
   
-  public static byte[][] createAndValIDateTopMap(int w, int h)
+  public static void resetAndSetSeed(long seed)
+  {
+    random = new Random(seed);
+  }
+  
+  public static byte[][] createAndValidateMap(int w, int h)
   {
     do
     {
-      byte[][] result = createTopMap(w, h);
+      byte[][] result = createMap(w, h);
       
       int[] count = new int[256];
       
@@ -107,7 +111,7 @@ public class LevelGen
     } while(true);
   }
   
-  private static byte[][] createTopMap(int w, int h)
+  private static byte[][] createMap(int w, int h)
   {
     LevelGen mnoise1 = new LevelGen(w, h, 16);
     LevelGen mnoise2 = new LevelGen(w, h, 16);
@@ -247,14 +251,12 @@ public class LevelGen
   
   public static void main(String[] args)
   {
-    Color c = new Color(0xFFFB00);
-    
     while(true)
     {
       int w = 128;
       int h = 128;
       
-      byte[] map = LevelGen.createAndValIDateTopMap(w, h)[0];
+      byte[] map = LevelGen.createAndValidateMap(w, h)[0];
       
       BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
       int[] pixels = new int[w * h];
@@ -274,6 +276,7 @@ public class LevelGen
           if(map[i] == Material.FLOWER.ID) pixels[i] = 0xFFFB00;
         }
       }
+      
       img.setRGB(0, 0, w, h, pixels, 0, w);
       JOptionPane.showMessageDialog(null, null, "Another", JOptionPane.YES_NO_OPTION, new ImageIcon(img.getScaledInstance(w * 4, h * 4, Image.SCALE_AREA_AVERAGING)));
     }
