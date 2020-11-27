@@ -1,8 +1,8 @@
 package com.focasoft.beterraba.entity.entities;
 
 import com.focasoft.beterraba.entity.EntityLiving;
-import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 
 public class EntityPlayer extends EntityLiving
 {
@@ -35,8 +35,7 @@ public class EntityPlayer extends EntityLiving
   @Override
   public void render(Graphics g)
   {
-    g.setColor(Color.WHITE);
-    g.fillRect(x, y, 10, 10);
+    g.fillRect(x, y, 20, 20);
   }
   
   public boolean isMovingRight()

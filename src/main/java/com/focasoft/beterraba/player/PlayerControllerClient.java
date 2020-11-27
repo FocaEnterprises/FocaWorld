@@ -3,7 +3,6 @@ package com.focasoft.beterraba.player;
 import static java.awt.event.KeyEvent.*;
 
 import com.focasoft.beterraba.entity.entities.EntityPlayer;
-import java.awt.Graphics;
 
 public class PlayerControllerClient
 {
