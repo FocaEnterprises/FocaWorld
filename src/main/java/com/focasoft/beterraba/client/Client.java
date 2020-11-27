@@ -84,6 +84,11 @@ public class Client extends Canvas implements Runnable
     WORKER.kill();
   }
   
+  public PlayerControllerClient getPlayerController()
+  {
+    return this.CONTROLLER;
+  }
+  
   public World getWorld()
   {
     return this.WORLD;
