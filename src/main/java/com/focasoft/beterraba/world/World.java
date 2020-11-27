@@ -1,5 +1,6 @@
 package com.focasoft.beterraba.world;
 
+import com.focasoft.beterraba.entity.Entity;
 import java.awt.Graphics;
 import org.json.JSONObject;
 
@@ -26,6 +27,11 @@ public class World
   }
   
   public void load(JSONObject json)
+  {
+  
+  }
+  
+  public void addEntity(Entity entity)
   {
   
   }

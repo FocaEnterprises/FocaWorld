@@ -1,5 +1,8 @@
 package com.focasoft.beterraba.client;
 
+import com.focasoft.beterraba.entity.Player;
+import com.focasoft.beterraba.player.PlayerControllerClient;
+import com.focasoft.beterraba.player.PlayerInput;
 import com.focasoft.beterraba.task.Worker;
 import com.focasoft.beterraba.world.World;
 import java.awt.Canvas;
@@ -17,6 +20,9 @@ public class Client extends Canvas implements Runnable
   
   private final Worker WORKER;
   private final World WORLD;
+  private final PlayerInput INPUT;
+  private final PlayerControllerClient CONTROLLER;
+  
   private final JFrame FRAME;
   private final BufferedImage LAYER;
   private final Graphics GRAPHICS;
@@ -36,7 +42,14 @@ public class Client extends Canvas implements Runnable
     LAYER = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
     
     WORLD = new World("World");
+    
+    Player player = new Player();
+    CONTROLLER = new PlayerControllerClient(player);
+    WORLD.addEntity(player);
     WORKER = new Worker(this);
+    INPUT = new PlayerInput(this);
+    
+    WORKER.start();
   }
   
   @Override
