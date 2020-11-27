@@ -2,9 +2,7 @@ package com.focasoft.beterraba.net;
 
 public enum PacketType
 {
-  // Server bound
-  IN_HANDSHAKE("HANDSHAKE"),
-  IN_LOGIN("LOGIN")
+  HANDSHAKE("HANDSHAKE"),
   ;
   
   private final String DESC;

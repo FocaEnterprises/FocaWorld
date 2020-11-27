@@ -10,7 +10,7 @@ public class Worker implements Runnable
   public Worker(Runnable runnable)
   {
     this.RUNNABLE = runnable;
-    this.THREAD = new Thread(this);
+    this.THREAD = new Thread(this, "Worker");
   }
   
   @Override

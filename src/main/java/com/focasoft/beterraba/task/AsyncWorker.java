@@ -10,7 +10,7 @@ public class AsyncWorker implements Runnable
   
   public AsyncWorker()
   {
-    THREAD = new Thread(this);
+    THREAD = new Thread(this, "Async Worker");
   }
   
   @Override

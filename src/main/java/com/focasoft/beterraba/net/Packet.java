@@ -5,7 +5,7 @@ import org.json.JSONObject;
 
 public abstract class Packet
 {
-  protected final HashMap<String, Object> DATA = new HashMap<>();
+  protected final JSONObject DATA = new JSONObject();
   protected final PacketType TYPE;
   
   public Packet(PacketType type)
@@ -26,15 +26,9 @@ public abstract class Packet
   public JSONObject serialize()
   {
     JSONObject json = new JSONObject();
-    JSONObject data = new JSONObject();
     
-    for(String key : DATA.keySet())
-    {
-      data.put(key, DATA.get(key));
-    }
-    
-    json.put("type", TYPE.getDescName());
-    json.put("data", data);
+    json.put("Type", TYPE.getDescName());
+    json.put("Data", DATA);
     
     return json;
   }

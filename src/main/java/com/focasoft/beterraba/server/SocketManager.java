@@ -1,6 +1,5 @@
 package com.focasoft.beterraba.server;
 
-import com.focasoft.beterraba.net.BadPacketException;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -17,7 +16,7 @@ public class SocketManager implements Runnable
   public SocketManager(Server server)
   {
     this.SERVER = server;
-    this.THREAD = new Thread(this);
+    this.THREAD = new Thread(this, "Socket Manager");
     
     try
     {
@@ -47,27 +46,13 @@ public class SocketManager implements Runnable
         continue;
       }
       
-      try
-      {
-        SERVER.getPacketManager().checkEntry(sock);
-      }
-      catch(BadPacketException e)
-      {
-        try
-        {
-          sock.close();
-        }
-        catch(IOException ioException)
-        {
-          ioException.printStackTrace();
-        }
-      }
+      handleConnection(sock);
     }
   }
   
-  public void processPackets()
+  private void handleConnection(Socket socket)
   {
-  
+    new UnknowClient(socket, SERVER.getPacketManager());
   }
   
   public synchronized void start()
