@@ -1,14 +1,16 @@
 package com.focasoft.beterraba.player;
 
-import com.focasoft.beterraba.entity.Player;
+import com.focasoft.beterraba.entity.entities.EntityPlayer;
 
 public class PlayerControllerClient
 {
-  private final Player player;
+  private final EntityPlayer PLAYER;
+  private final PlayerInput INPUT;
   
-  public PlayerControllerClient(Player player)
+  public PlayerControllerClient(EntityPlayer player, PlayerInput input)
   {
-    this.player = player;
+    this.PLAYER = player;
+    this.INPUT = input;
   }
   
   public void update()

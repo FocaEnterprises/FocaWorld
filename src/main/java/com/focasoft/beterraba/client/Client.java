@@ -1,6 +1,6 @@
 package com.focasoft.beterraba.client;
 
-import com.focasoft.beterraba.entity.Player;
+import com.focasoft.beterraba.entity.entities.EntityPlayer;
 import com.focasoft.beterraba.player.PlayerControllerClient;
 import com.focasoft.beterraba.player.PlayerInput;
 import com.focasoft.beterraba.task.Worker;
@@ -43,12 +43,13 @@ public class Client extends Canvas implements Runnable
     
     WORLD = new World("World");
     
-    Player player = new Player();
-    CONTROLLER = new PlayerControllerClient(player);
-    WORLD.addEntity(player);
+    EntityPlayer player = new EntityPlayer("Giver", 20, 30);
+    
     WORKER = new Worker(this);
     INPUT = new PlayerInput(this);
+    CONTROLLER = new PlayerControllerClient(player, INPUT);
     
+    WORLD.addEntity(player);
     WORKER.start();
   }
   
@@ -61,6 +62,7 @@ public class Client extends Canvas implements Runnable
   
   private void tick()
   {
+    CONTROLLER.update();
     WORLD.update();
   }
   
@@ -78,6 +80,16 @@ public class Client extends Canvas implements Runnable
   public void stop()
   {
     WORKER.kill();
+  }
+  
+  public World getWorld()
+  {
+    return this.WORLD;
+  }
+  
+  public PlayerInput getInput()
+  {
+    return this.INPUT;
   }
   
   public static int scaledWidth()
