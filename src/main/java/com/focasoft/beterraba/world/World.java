@@ -1,20 +1,31 @@
 package com.focasoft.beterraba.world;
 
+import java.awt.Graphics;
+import org.json.JSONObject;
+
 public class World
 {
-  public final int WIDTH;
-  public final int HEIGHT;
+  public int width;
+  public int height;
   
   private String name;
   
-  public World(String name, int width, int height)
+  public World(String name)
   {
     this.name = name;
-    this.WIDTH = width;
-    this.HEIGHT = height;
   }
   
   public void update()
+  {
+  
+  }
+  
+  public void render(Graphics g)
+  {
+  
+  }
+  
+  public void load(JSONObject json)
   {
   
   }
@@ -31,11 +42,11 @@ public class World
   
   public int getWidth()
   {
-    return WIDTH;
+    return width;
   }
   
   public int getHeight()
   {
-    return HEIGHT;
+    return height;
   }
 }

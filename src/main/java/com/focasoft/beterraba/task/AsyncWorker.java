@@ -20,14 +20,10 @@ public class AsyncWorker implements Runnable
     {
       if(QUEUE.size() == 0)
       {
-        try
-        {
+        try {
           Thread.sleep(5);
         }
-        catch(InterruptedException e)
-        {
-          e.printStackTrace();
-        }
+        catch(InterruptedException ignore) { }
       }
       
       try
