@@ -29,9 +29,10 @@ public class Client extends Canvas implements Runnable
   
   public Client()
   {
-    FRAME = new JFrame();
-    FRAME.setPreferredSize(new Dimension(scaledWidth(), scaledHeight()));
+    this.setPreferredSize(new Dimension(scaledWidth(), scaledHeight()));
+    FRAME = new JFrame("Gamezinho");
     FRAME.setResizable(false);
+    FRAME.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     FRAME.add(this);
     FRAME.pack();
     FRAME.setLocationRelativeTo(null);
@@ -54,7 +55,7 @@ public class Client extends Canvas implements Runnable
   }
   
   @Override
-  public void run()
+  public synchronized void run()
   {
     tick();
     render();
@@ -73,8 +74,9 @@ public class Client extends Canvas implements Runnable
     g.fillRect(0, 0, WIDTH, HEIGHT);
     
     WORLD.render(g);
-    
     GRAPHICS.drawImage(LAYER, 0, 0, scaledWidth(), scaledHeight(), null);
+    
+    getBufferStrategy().show();
   }
   
   public void stop()

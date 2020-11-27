@@ -1,5 +1,7 @@
 package com.focasoft.beterraba.player;
 
+import static java.awt.event.KeyEvent.*;
+
 import com.focasoft.beterraba.entity.entities.EntityPlayer;
 
 public class PlayerControllerClient
@@ -15,6 +17,9 @@ public class PlayerControllerClient
   
   public void update()
   {
-  
+    PLAYER.setMovingRight(INPUT.isPressed(VK_D));
+    PLAYER.setMovingLeft(INPUT.isPressed(VK_A));
+    PLAYER.setMovingUp(INPUT.isPressed(VK_W));
+    PLAYER.setMovingDown(INPUT.isPressed(VK_S));
   }
 }
