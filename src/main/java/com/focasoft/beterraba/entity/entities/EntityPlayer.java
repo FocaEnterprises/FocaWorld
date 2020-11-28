@@ -11,6 +11,8 @@ public class EntityPlayer extends EntityLiving
   protected boolean up;
   protected boolean down;
   
+  protected int speed = 2;
+  
   public EntityPlayer(String name, int x, int y)
   {
     super(name, x, y, 10);
@@ -20,16 +22,16 @@ public class EntityPlayer extends EntityLiving
   public void tick()
   {
     if(right)
-      moveX(1);
+      moveX(speed);
     
     if(left)
-      moveX(-1);
+      moveX(-speed);
     
     if(down)
-      moveY(1);
+      moveY(speed);
     
     if(up)
-      moveY(-1);
+      moveY(-speed);
   }
   
   @Override
