@@ -1,18 +1,20 @@
 package com.focasoft.beterraba.world;
 
+import static com.focasoft.beterraba.client.Sprites.*;
+
 import java.awt.image.BufferedImage;
 
 public enum Material
 {
-  ROCK((byte) 0, "Rock", true, null),
-  DIRT((byte) 1, "Dirt", true, null),
-  GRASS((byte) 2, "Grass", true, null),
-  SAND((byte) 3, "Sand", true, null),
-  LAVA((byte) 4, "Lava", false, null),
-  WATER((byte) 5, "Water", false, null),
-  TREE((byte) 6, "Tree", true, null),
-  CACTUS((byte) 7, "Cactus", false, null),
-  FLOWER((byte) 8, "Flower", false, null),
+  ROCK((byte) 0, "Rock", true, rock),
+  DIRT((byte) 1, "Dirt", true, dirt),
+  GRASS((byte) 2, "Grass", true, grass),
+  SAND((byte) 3, "Sand", true, sand),
+  LAVA((byte) 4, "Lava", false, lava),
+  WATER((byte) 5, "Water", false, water),
+  TREE((byte) 6, "Tree", true, tree),
+  CACTUS((byte) 7, "Cactus", false, cactus),
+  FLOWER((byte) 8, "Flower", false, flower),
   ;
   
   public final BufferedImage SPRITE;
