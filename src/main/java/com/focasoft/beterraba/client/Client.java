@@ -18,6 +18,7 @@ public class Client extends Canvas implements Runnable
   public static final int WIDTH = 320;
   public static final int HEIGHT = 240;
   public static final int SCALE = 2;
+  public static final int TILE_SIZE = 16;
   
   private final Worker WORKER;
   private final World WORLD;

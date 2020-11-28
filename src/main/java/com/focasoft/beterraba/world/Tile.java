@@ -1,36 +1,40 @@
 package com.focasoft.beterraba.world;
 
+import static com.focasoft.beterraba.client.Client.TILE_SIZE;
+
+import java.awt.Graphics;
+
+// https://github.com/skeeto/Minicraft/blob/master/src/com/mojang/ld22/level/tile/Tile.java
 public class Tile
 {
-  private final int X;
-  private final int Y;
+  public static final Tile[] TILES = new Tile[128];
   
-  private Material type;
+  public static final Tile ROCK = new Tile(Material.ROCK.ID);
   
-  public Tile(Material type, int x, int y)
+  private final byte ID;
+  
+  public Tile(byte id)
   {
-    this.type = type;
-    this.X = x;
-    this.Y = y;
+    this.ID = id;
+    
+    if(TILES[id] != null)
+      throw new IllegalArgumentException("Duplicated ID: " + id);
+    
+    TILES[id] = this;
   }
   
-  public int getX()
+  public void render(Graphics g, int x, int y)
   {
-    return X;
-  }
-  
-  public int getY()
-  {
-    return Y;
+    g.drawImage(getType().SPRITE, x, y, TILE_SIZE, TILE_SIZE, null);
   }
   
   public Material getType()
   {
-    return type;
+    return Material.getByID(ID);
   }
   
-  public void setType(Material type)
+  public byte getID()
   {
-    this.type = type;
+    return ID;
   }
 }

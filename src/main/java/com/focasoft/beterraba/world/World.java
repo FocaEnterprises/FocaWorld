@@ -7,10 +7,12 @@ import org.json.JSONObject;
 
 public class World
 {
+  private final Object lock = new Object();
+  
   private final LinkedList<Entity> ENTITIES = new LinkedList<>();
   
   private String name;
-  private Tile[] tiles;
+  private byte[] tiles;
   
   private int width;
   private int height;
@@ -29,6 +31,14 @@ public class World
   
   public void render(Graphics g)
   {
+    for(int x = 0; x < width; x++)
+    {
+      for(int y = 0; y < height; y++)
+      {
+        getTile(x, y).render(g, x, y);
+      }
+    }
+    
     getEntities().forEach(e -> e.render(g));
   }
   
@@ -39,16 +49,14 @@ public class World
       name = json.getString("name");
       width = json.getInt("width");
       height = json.getInt("height");
-      width = json.getInt("width");
       
-      this.tiles = new Tile[width * height];
+      this.tiles = new byte[width * height];
       
       JSONObject tiles = json.getJSONObject("tiles");
       
       for(String key : tiles.keySet())
       {
-        // TODO
-        //this.tiles[Integer.parseInt(key)] = new Tile(Material.getByID((byte) tiles.getInt(key)));
+        this.tiles[Integer.parseInt(key)] = (byte) tiles.getInt(key);
       }
     }
     catch(Exception e)
@@ -61,9 +69,31 @@ public class World
     loaded = true;
   }
   
+  public Tile getTile(int x, int y)
+  {
+    synchronized(this.lock)
+    {
+      if(x < 0 || y < 0 || x >= width || y >= height)
+        return Tile.ROCK;
+  
+      return Tile.TILES[tiles[x + y * width]];
+    }
+  }
+  
+  public void setTile(int x, int y, Tile tile)
+  {
+    synchronized(this.lock)
+    {
+      if(x < 0 || y < 0 || x >= width || y >= height)
+        return;
+  
+      tiles[x + y * width] = tile.getID();
+    }
+  }
+  
   public void removeEntity(Entity entity)
   {
-    synchronized(ENTITIES)
+    synchronized(lock)
     {
       ENTITIES.remove(entity);
     }
@@ -71,7 +101,7 @@ public class World
   
   public void addEntity(Entity entity)
   {
-    synchronized(this.ENTITIES)
+    synchronized(this.lock)
     {
       ENTITIES.add(entity);
     }
@@ -79,7 +109,7 @@ public class World
   
   public LinkedList<Entity> getEntities()
   {
-    synchronized(this.ENTITIES)
+    synchronized(this.lock)
     {
       return new LinkedList<>(this.ENTITIES);
     }
