@@ -1,5 +1,7 @@
 package com.focasoft.beterraba.world;
 
+import static com.focasoft.beterraba.client.Client.TILE_SIZE;
+
 import com.focasoft.beterraba.entity.Entity;
 import java.awt.Graphics;
 import java.util.LinkedList;
@@ -35,7 +37,7 @@ public class World
     {
       for(int y = 0; y < height; y++)
       {
-        getTile(x, y).render(g, x, y);
+        getTile(x, y).render(g, x * TILE_SIZE, y * TILE_SIZE);
       }
     }
     

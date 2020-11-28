@@ -16,12 +16,23 @@ public class Worker implements Runnable
   @Override
   public void run()
   {
+    long timer = System.currentTimeMillis();
+    int fps = 0;
+    
     while(working)
     {
       try
       {
         RUNNABLE.run();
         Thread.sleep(1000 / 60);
+        ++fps;
+        
+        if(System.currentTimeMillis() - timer >= 1000)
+        {
+          System.out.println(fps);
+          timer = System.currentTimeMillis();
+          fps = 0;
+        }
       }
       catch(InterruptedException e)
       {
