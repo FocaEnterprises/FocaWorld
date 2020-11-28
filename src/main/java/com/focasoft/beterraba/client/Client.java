@@ -5,6 +5,7 @@ import com.focasoft.beterraba.player.PlayerControllerClient;
 import com.focasoft.beterraba.player.PlayerInput;
 import com.focasoft.beterraba.task.Worker;
 import com.focasoft.beterraba.world.World;
+import com.focasoft.beterraba.world.gen.WorldGenerator;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -27,9 +28,13 @@ public class Client extends Canvas implements Runnable
   private final BufferedImage LAYER;
   private final Graphics GRAPHICS;
   
-  public Client()
+  private final boolean MULTIPLAYER;
+  
+  public Client(boolean multiplayer)
   {
+    this.MULTIPLAYER = multiplayer;
     this.setPreferredSize(new Dimension(scaledWidth(), scaledHeight()));
+    
     FRAME = new JFrame("Gamezinho");
     FRAME.setResizable(false);
     FRAME.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -42,13 +47,19 @@ public class Client extends Canvas implements Runnable
     GRAPHICS = getBufferStrategy().getDrawGraphics();
     LAYER = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
     
-    WORLD = new World("World");
+    WORLD = new World();
     
     EntityPlayer player = new EntityPlayer("Giver", 20, 30);
     
     WORKER = new Worker(this);
     INPUT = new PlayerInput(this);
     CONTROLLER = new PlayerControllerClient(player, INPUT);
+  
+    if(!multiplayer)
+    {
+      WorldGenerator gen = new WorldGenerator(14522311232876L);
+      WORLD.load(gen.generate("World", 240, 240));
+    }
     
     WORLD.addEntity(player);
     WORKER.start();
@@ -63,6 +74,9 @@ public class Client extends Canvas implements Runnable
   
   private void tick()
   {
+    if(!WORLD.isLoaded())
+      return;
+    
     CONTROLLER.update();
     WORLD.update();
   }
@@ -87,6 +101,11 @@ public class Client extends Canvas implements Runnable
   public PlayerControllerClient getPlayerController()
   {
     return this.CONTROLLER;
+  }
+  
+  public boolean isMultiplayer()
+  {
+    return this.MULTIPLAYER;
   }
   
   public World getWorld()

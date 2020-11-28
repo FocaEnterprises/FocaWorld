@@ -11,7 +11,7 @@ public class Main
     {
       if(args[0].equals("--clientMode"))
       {
-        new Client();
+        new Client(false);
         return;
       }
       

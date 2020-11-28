@@ -7,16 +7,19 @@ import org.json.JSONObject;
 
 public class World
 {
+  private final LinkedList<Entity> ENTITIES = new LinkedList<>();
+  
   private String name;
-  private final LinkedList<Entity> entities = new LinkedList<>();
+  private Tile[] tiles;
   
   private int width;
   private int height;
   
-  public World(String name)
+  private boolean loaded;
+  
+  public World()
   {
-    this.name = name;
-    load(null); // TODO
+    // TODO: Pensar numa logica mais interessante
   }
   
   public void update()
@@ -31,33 +34,60 @@ public class World
   
   public void load(JSONObject json)
   {
-    // TODO
-    width = 240;
-    height = 240;
+    try
+    {
+      name = json.getString("name");
+      width = json.getInt("width");
+      height = json.getInt("height");
+      width = json.getInt("width");
+      
+      this.tiles = new Tile[width * height];
+      
+      JSONObject tiles = json.getJSONObject("tiles");
+      
+      for(String key : tiles.keySet())
+      {
+        // TODO
+        //this.tiles[Integer.parseInt(key)] = new Tile(Material.getByID((byte) tiles.getInt(key)));
+      }
+    }
+    catch(Exception e)
+    {
+      System.out.println("Falha ao carregar o mundo.");
+      e.printStackTrace();
+      return;
+    }
+    
+    loaded = true;
   }
   
   public void removeEntity(Entity entity)
   {
-    synchronized(entities)
+    synchronized(ENTITIES)
     {
-      entities.remove(entity);
+      ENTITIES.remove(entity);
     }
   }
   
   public void addEntity(Entity entity)
   {
-    synchronized(this.entities)
+    synchronized(this.ENTITIES)
     {
-      entities.add(entity);
+      ENTITIES.add(entity);
     }
   }
   
   public LinkedList<Entity> getEntities()
   {
-    synchronized(this.entities)
+    synchronized(this.ENTITIES)
     {
-      return new LinkedList<>(this.entities);
+      return new LinkedList<>(this.ENTITIES);
     }
+  }
+  
+  public boolean isLoaded()
+  {
+    return loaded;
   }
   
   public String getName()

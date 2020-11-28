@@ -2,13 +2,18 @@ package com.focasoft.beterraba.world.gen;
 
 import org.json.JSONObject;
 
-public class Generator
+public class WorldGenerator
 {
   private final long SEED;
   
-  public Generator(long seed)
+  public WorldGenerator(long seed)
   {
     this.SEED = seed;
+  }
+  
+  public WorldGenerator(String seed)
+  {
+    this(seed.hashCode());
   }
   
   public JSONObject generate(String name, int w, int h)

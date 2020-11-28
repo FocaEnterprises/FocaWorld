@@ -3,6 +3,7 @@ package com.focasoft.beterraba.server;
 import com.focasoft.beterraba.task.AsyncWorker;
 import com.focasoft.beterraba.task.Worker;
 import com.focasoft.beterraba.world.World;
+import com.focasoft.beterraba.world.gen.WorldGenerator;
 
 public class Server implements Runnable
 {
@@ -18,7 +19,10 @@ public class Server implements Runnable
     SOCKET_MANAGER = new SocketManager(this);
     ASYNC = new AsyncWorker();
     WORKER = new Worker(this);
-    WORLD = new World("Spawn");
+    WORLD = new World();
+  
+    WorldGenerator gen = new WorldGenerator(1287398127937L);
+    WORLD.load(gen.generate("Spawn", 240, 240));
     
     WORKER.start();
     ASYNC.start();

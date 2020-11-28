@@ -27,4 +27,17 @@ public enum Material
     this.SOLID = solid;
     this.SPRITE = sprite;
   }
+  
+  public static Material getByID(byte id)
+  {
+    for(Material material : values())
+    {
+      if(material.ID == id)
+      {
+        return material;
+      }
+    }
+    
+    return ROCK;
+  }
 }
