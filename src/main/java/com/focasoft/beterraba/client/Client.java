@@ -33,6 +33,12 @@ public class Client extends Canvas implements Runnable
   
   public Client(boolean multiplayer)
   {
+    if(!Sprites.init())
+    {
+      System.out.println("Falha ao carregar sprites! Saindo.");
+      System.exit(0);
+    }
+    
     this.MULTIPLAYER = multiplayer;
     this.setPreferredSize(new Dimension(scaledWidth(), scaledHeight()));
     
