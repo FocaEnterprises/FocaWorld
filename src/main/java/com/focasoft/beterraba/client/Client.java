@@ -50,7 +50,7 @@ public class Client extends Canvas implements Runnable
     
     WORLD = new World();
     
-    EntityPlayer player = new EntityPlayer("Giver", 20, 30);
+    EntityPlayer player = new EntityPlayer(WORLD, "Giver", 20, 30);
     
     WORKER = new Worker(this);
     INPUT = new PlayerInput(this);

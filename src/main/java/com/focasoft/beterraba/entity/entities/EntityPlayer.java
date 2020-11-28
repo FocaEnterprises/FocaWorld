@@ -2,8 +2,8 @@ package com.focasoft.beterraba.entity.entities;
 
 import com.focasoft.beterraba.client.Client;
 import com.focasoft.beterraba.entity.EntityLiving;
+import com.focasoft.beterraba.world.World;
 import java.awt.Graphics;
-import java.awt.image.BufferedImage;
 
 public class EntityPlayer extends EntityLiving
 {
@@ -14,9 +14,9 @@ public class EntityPlayer extends EntityLiving
   
   protected int speed = 2;
   
-  public EntityPlayer(String name, int x, int y)
+  public EntityPlayer(World world, String name, int x, int y)
   {
-    super(name, x, y, 10);
+    super(world, name, x, y, 10);
   }
   
   @Override

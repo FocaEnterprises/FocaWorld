@@ -1,21 +1,23 @@
 package com.focasoft.beterraba.entity;
 
+import com.focasoft.beterraba.world.World;
+
 public abstract class EntityLiving extends Entity
 {
   protected int life;
   protected int maxLife;
   
-  public EntityLiving(String name, int x, int y, int life, int maxLife)
+  public EntityLiving(World world, String name, int x, int y, int life, int maxLife)
   {
-    super(name, x, y);
+    super(world, name, x, y);
     
     this.life = life;
     this.maxLife = maxLife;
   }
   
-  public EntityLiving(String name, int x, int y, int maxLife)
+  public EntityLiving(World world, String name, int x, int y, int maxLife)
   {
-    this(name, x, y, maxLife, maxLife);
+    this(world, name, x, y, maxLife, maxLife);
   }
   
   public int getLife()

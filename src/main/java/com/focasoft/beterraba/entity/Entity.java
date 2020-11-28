@@ -1,16 +1,19 @@
 package com.focasoft.beterraba.entity;
 
+import com.focasoft.beterraba.world.World;
 import java.awt.Graphics;
 
 public abstract class Entity
 {
+  protected World world;
   protected String name;
   protected int x;
   protected int y;
   
-  public Entity(String name, int x, int y)
+  public Entity(World world, String name, int x, int y)
   {
     this.name = name;
+    this.world = world;
     this.x = x;
     this.y = y;
   }
