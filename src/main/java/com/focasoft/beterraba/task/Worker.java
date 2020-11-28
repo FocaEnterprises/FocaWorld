@@ -16,31 +16,42 @@ public class Worker implements Runnable
   @Override
   public void run()
   {
+    long lastTime = System.nanoTime();
     long timer = System.currentTimeMillis();
+    long now;
+    
+    double unprocessed = 0.0D;
+    double nsTick = 1_000_000_000 / 60D;
+    
     int fps = 0;
     
     while(working)
     {
-      try
+      now = System.nanoTime();
+      unprocessed += (now - lastTime) / nsTick;
+      lastTime = now;
+      
+      while(unprocessed >= 1)
       {
         RUNNABLE.run();
-        Thread.sleep(1000 / 60);
         ++fps;
-        
-        if(System.currentTimeMillis() - timer >= 1000)
-        {
-          System.out.println(fps);
-          timer = System.currentTimeMillis();
-          fps = 0;
-        }
+        --unprocessed;
+      }
+      
+      if(System.currentTimeMillis() - timer >= 1000)
+      {
+        System.out.println(fps);
+        fps = 0;
+        timer += 1000;
+      }
+      
+      try
+      {
+        Thread.sleep(5);
       }
       catch(InterruptedException e)
       {
         e.printStackTrace();
-      }
-      catch(Throwable t)
-      {
-        System.out.println("Erro: " + t.getMessage());
       }
     }
   }

@@ -66,8 +66,8 @@ public class Client extends Canvas implements Runnable
     
     if(!multiplayer)
     {
-      WorldGenerator gen = new WorldGenerator(234L);
-      WORLD.load(gen.generate("World", 240, 240));
+      WorldGenerator gen = new WorldGenerator(223124453L);
+      WORLD.load(gen.generate("World", 128, 128));
     }
     
     WORLD.addEntity(player);

@@ -1,6 +1,8 @@
 package com.focasoft.beterraba.world;
 
 import static com.focasoft.beterraba.client.Client.TILE_SIZE;
+import static com.focasoft.beterraba.client.Client.WIDTH;
+import static com.focasoft.beterraba.client.Client.HEIGHT;
 
 import com.focasoft.beterraba.client.Camera;
 import com.focasoft.beterraba.entity.Entity;
@@ -29,14 +31,20 @@ public class World
   
   public void update()
   {
+    for(Entity e : ENTITIES) e.tick();
     getEntities().forEach(Entity::tick);
   }
   
   public void render(Graphics g, Camera camera)
   {
-    for(int x = 0; x < width; x++)
+    int xs = camera.getX() >> 4;
+    int ys = camera.getY() >> 4;
+    int xf = (camera.getX() + WIDTH) >> 4;
+    int yf = (camera.getY() + HEIGHT) >> 4;
+    
+    for(int x = xs; x <= xf; x++)
     {
-      for(int y = 0; y < height; y++)
+      for(int y = ys; y <= yf; y++)
       {
         getTile(x, y).render(g, x * TILE_SIZE - camera.getX(), y * TILE_SIZE - camera.getY());
       }

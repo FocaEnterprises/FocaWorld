@@ -256,6 +256,7 @@ public class LevelGen
       int w = 128;
       int h = 128;
       
+      resetAndSetSeed(223124453L);
       byte[] map = LevelGen.createAndValidateMap(w, h)[0];
       
       BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
