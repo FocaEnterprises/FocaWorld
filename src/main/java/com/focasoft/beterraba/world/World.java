@@ -31,7 +31,6 @@ public class World
   
   public void update()
   {
-    for(Entity e : ENTITIES) e.tick();
     getEntities().forEach(Entity::tick);
   }
   

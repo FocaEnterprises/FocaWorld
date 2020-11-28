@@ -15,8 +15,8 @@ import javax.swing.JFrame;
 
 public class Client extends Canvas implements Runnable
 {
-  public static final int WIDTH = 320;
-  public static final int HEIGHT = 240;
+  public static final int WIDTH = 480;
+  public static final int HEIGHT = 320;
   public static final int SCALE = 2;
   public static final int TILE_SIZE = 16;
   

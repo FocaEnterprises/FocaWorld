@@ -15,7 +15,7 @@ public class EntityPlayer extends EntityLiving
   protected boolean up;
   protected boolean down;
   
-  protected int speed = 2;
+  protected int speed = 1;
   
   public EntityPlayer(World world, String name, int x, int y)
   {
