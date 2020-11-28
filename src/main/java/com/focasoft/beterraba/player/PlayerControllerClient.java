@@ -1,18 +1,25 @@
 package com.focasoft.beterraba.player;
 
+import static com.focasoft.beterraba.client.Client.TILE_SIZE;
+import static com.focasoft.beterraba.client.Client.WIDTH;
+import static com.focasoft.beterraba.client.Client.HEIGHT;
 import static java.awt.event.KeyEvent.*;
 
+import com.focasoft.beterraba.client.Camera;
 import com.focasoft.beterraba.entity.entities.EntityPlayer;
+import com.focasoft.beterraba.world.World;
 
 public class PlayerControllerClient
 {
   private final EntityPlayer PLAYER;
   private final PlayerInput INPUT;
+  private final Camera CAMERA;
   
-  public PlayerControllerClient(EntityPlayer player, PlayerInput input)
+  public PlayerControllerClient(EntityPlayer player, PlayerInput input, Camera camera)
   {
     this.PLAYER = player;
     this.INPUT = input;
+    this.CAMERA = camera;
   }
   
   public void update()
@@ -21,6 +28,12 @@ public class PlayerControllerClient
     setMovingLeft(INPUT.isPressed(VK_A));
     setMovingUp(INPUT.isPressed(VK_W));
     setMovingDown(INPUT.isPressed(VK_S));
+  }
+  
+  public void updateCamera()
+  {
+    CAMERA.setX(Camera.clamp(getX() - WIDTH / 2, 0, getWorld().getWidth() * TILE_SIZE - WIDTH));
+    CAMERA.setY(Camera.clamp(getY() - HEIGHT / 2, 0, getWorld().getHeight() * TILE_SIZE - HEIGHT));
   }
   
   public boolean isMovingRight()
@@ -121,5 +134,10 @@ public class PlayerControllerClient
   public void moveY(int move)
   {
     PLAYER.moveY(move);
+  }
+  
+  public World getWorld()
+  {
+    return PLAYER.getWorld();
   }
 }

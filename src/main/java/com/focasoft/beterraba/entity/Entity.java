@@ -1,5 +1,6 @@
 package com.focasoft.beterraba.entity;
 
+import com.focasoft.beterraba.client.Camera;
 import com.focasoft.beterraba.world.World;
 import java.awt.Graphics;
 
@@ -20,7 +21,7 @@ public abstract class Entity
   
   public abstract void tick();
   
-  public abstract void render(Graphics g);
+  public abstract void render(Graphics g, Camera camera);
   
   public String getName()
   {
@@ -60,5 +61,10 @@ public abstract class Entity
   public void moveY(int move)
   {
     this.y += move;
+  }
+  
+  public World getWorld()
+  {
+    return world;
   }
 }

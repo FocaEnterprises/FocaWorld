@@ -2,6 +2,7 @@ package com.focasoft.beterraba.world;
 
 import static com.focasoft.beterraba.client.Client.TILE_SIZE;
 
+import com.focasoft.beterraba.client.Camera;
 import com.focasoft.beterraba.entity.Entity;
 import java.awt.Graphics;
 import java.util.LinkedList;
@@ -31,17 +32,17 @@ public class World
     getEntities().forEach(Entity::tick);
   }
   
-  public void render(Graphics g)
+  public void render(Graphics g, Camera camera)
   {
     for(int x = 0; x < width; x++)
     {
       for(int y = 0; y < height; y++)
       {
-        getTile(x, y).render(g, x * TILE_SIZE, y * TILE_SIZE);
+        getTile(x, y).render(g, x * TILE_SIZE - camera.getX(), y * TILE_SIZE - camera.getY());
       }
     }
     
-    getEntities().forEach(e -> e.render(g));
+    getEntities().forEach(e -> e.render(g, camera));
   }
   
   public void load(JSONObject json)

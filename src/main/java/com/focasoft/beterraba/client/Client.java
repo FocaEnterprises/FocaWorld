@@ -22,6 +22,7 @@ public class Client extends Canvas implements Runnable
   
   private final Worker WORKER;
   private final World WORLD;
+  private final Camera CAMERA;
   private final PlayerInput INPUT;
   private final PlayerControllerClient CONTROLLER;
   
@@ -60,11 +61,12 @@ public class Client extends Canvas implements Runnable
     
     WORKER = new Worker(this);
     INPUT = new PlayerInput(this);
-    CONTROLLER = new PlayerControllerClient(player, INPUT);
-  
+    CAMERA = new Camera();
+    CONTROLLER = new PlayerControllerClient(player, INPUT, CAMERA);
+    
     if(!multiplayer)
     {
-      WorldGenerator gen = new WorldGenerator(14522311232876L);
+      WorldGenerator gen = new WorldGenerator(234L);
       WORLD.load(gen.generate("World", 240, 240));
     }
     
@@ -96,7 +98,8 @@ public class Client extends Canvas implements Runnable
     
     if(WORLD.isLoaded())
     {
-      WORLD.render(g);
+      CONTROLLER.updateCamera();
+      WORLD.render(g, CAMERA);
     }
     
     GRAPHICS.drawImage(LAYER, 0, 0, scaledWidth(), scaledHeight(), null);

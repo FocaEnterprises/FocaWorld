@@ -2,6 +2,7 @@ package com.focasoft.beterraba.entity.entities;
 
 import static com.focasoft.beterraba.client.Client.TILE_SIZE;
 
+import com.focasoft.beterraba.client.Camera;
 import com.focasoft.beterraba.client.Sprites;
 import com.focasoft.beterraba.entity.EntityLiving;
 import com.focasoft.beterraba.world.World;
@@ -38,9 +39,9 @@ public class EntityPlayer extends EntityLiving
   }
   
   @Override
-  public void render(Graphics g)
+  public void render(Graphics g, Camera camera)
   {
-    g.drawImage(Sprites.player, x, y, TILE_SIZE, TILE_SIZE, null);
+    g.drawImage(Sprites.player, x - camera.getX(), y - camera.getY(), TILE_SIZE, TILE_SIZE, null);
   }
   
   public boolean isMovingRight()
