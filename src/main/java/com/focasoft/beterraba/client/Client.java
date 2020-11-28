@@ -94,7 +94,11 @@ public class Client extends Canvas implements Runnable
     g.setColor(Color.BLACK);
     g.fillRect(0, 0, WIDTH, HEIGHT);
     
-    WORLD.render(g);
+    if(WORLD.isLoaded())
+    {
+      WORLD.render(g);
+    }
+    
     GRAPHICS.drawImage(LAYER, 0, 0, scaledWidth(), scaledHeight(), null);
     
     getBufferStrategy().show();

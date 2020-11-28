@@ -10,6 +10,14 @@ public class Tile
   public static final Tile[] TILES = new Tile[128];
   
   public static final Tile ROCK = new Tile(Material.ROCK.ID);
+  public static final Tile DIRT = new Tile(Material.DIRT.ID);
+  public static final Tile GRASS = new Tile(Material.GRASS.ID);
+  public static final Tile SAND = new Tile(Material.SAND.ID);
+  public static final Tile CACTUS = new Tile(Material.CACTUS.ID);
+  public static final Tile WATER = new Tile(Material.WATER.ID);
+  public static final Tile LAVA = new Tile(Material.LAVA.ID);
+  public static final Tile FLOWER = new Tile(Material.FLOWER.ID);
+  public static final Tile TREE = new Tile(Material.TREE.ID);
   
   private final byte ID;
   
