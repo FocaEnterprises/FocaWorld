@@ -1,5 +1,6 @@
 package com.focasoft.beterraba.client;
 
+import com.focasoft.beterraba.net.Packet;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -7,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.LinkedList;
+import org.json.JSONObject;
 
 public class NetworkManager implements Runnable
 {
@@ -62,6 +64,16 @@ public class NetworkManager implements Runnable
     {
       OUT_MESSAGES.add(msg);
     }
+  }
+  
+  public void sendMessage(JSONObject json)
+  {
+    sendMessage(json.toString());
+  }
+  
+  public void sendPacket(Packet packet)
+  {
+    sendMessage(packet.serialize());
   }
   
   private LinkedList<String> getOut()

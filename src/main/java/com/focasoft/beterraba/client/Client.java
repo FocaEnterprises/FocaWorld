@@ -11,6 +11,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import javax.swing.JFrame;
 
 public class Client extends Canvas implements Runnable
@@ -25,6 +26,7 @@ public class Client extends Canvas implements Runnable
   private final Camera CAMERA;
   private final PlayerInput INPUT;
   private final PlayerControllerClient CONTROLLER;
+  private final NetworkManager NETWORK_MANAGER;
   
   private final JFrame FRAME;
   private final BufferedImage LAYER;
@@ -63,14 +65,26 @@ public class Client extends Canvas implements Runnable
     INPUT = new PlayerInput(this);
     CAMERA = new Camera();
     CONTROLLER = new PlayerControllerClient(player, INPUT, CAMERA);
+    WORLD.addEntity(player);
+  
+    if(multiplayer) {
+      NETWORK_MANAGER = new NetworkManager("br-3.enxadahost.com", 10215);
     
-    if(!multiplayer)
-    {
+      try {
+        NETWORK_MANAGER.connect();
+      } catch(IOException e) {
+        System.out.println("Falha ao abrir conexão com o servidor");
+        e.printStackTrace();
+        System.exit(0);
+        return;
+      }
+    
+    } else {
       WorldGenerator gen = new WorldGenerator(223124453L);
       WORLD.load(gen.generate("World", 128, 128));
+      NETWORK_MANAGER = null;
     }
     
-    WORLD.addEntity(player);
     WORKER.start();
   }
   
@@ -115,6 +129,11 @@ public class Client extends Canvas implements Runnable
   public PlayerControllerClient getPlayerController()
   {
     return this.CONTROLLER;
+  }
+  
+  public NetworkManager getNetworkManager()
+  {
+    return this.NETWORK_MANAGER;
   }
   
   public boolean isMultiplayer()

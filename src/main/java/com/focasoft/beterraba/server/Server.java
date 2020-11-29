@@ -21,8 +21,8 @@ public class Server implements Runnable
     WORKER = new Worker(this);
     WORLD = new World();
   
-    WorldGenerator gen = new WorldGenerator(1287398127937L);
-    WORLD.load(gen.generate("Spawn", 240, 240));
+    WorldGenerator gen = new WorldGenerator(223124453L);
+    WORLD.load(gen.generate("Spawn", 128, 128));
     
     WORKER.start();
     ASYNC.start();
