@@ -49,7 +49,7 @@ public class UnknowClient implements Runnable
           if(!(packet instanceof PacketHandshake))
           {
             SOCKET.close();
-            return;
+            continue;
           }
           
           MANAGER.checkLogin(packet, SOCKET);
