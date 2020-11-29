@@ -8,7 +8,7 @@ import static com.focasoft.beterraba.net.PacketType.*;
 
 public class PacketParser
 {
-  public static Packet parsePacket(String line)
+  public static Packet parsePacket(String line) throws BadPacketException
   {
     JSONObject json;
     String type;

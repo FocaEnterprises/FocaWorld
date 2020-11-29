@@ -1,6 +1,8 @@
 package com.focasoft.beterraba.client;
 
+import com.focasoft.beterraba.net.BadPacketException;
 import com.focasoft.beterraba.net.Packet;
+import com.focasoft.beterraba.net.PacketParser;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -58,9 +60,21 @@ public class NetworkManager implements Runnable
     output = null;
   }
   
-  private void processInput(String line)
+  private void parseInput(String line)
   {
-  
+    Packet packet;
+
+    try {
+      packet = PacketParser.parsePacket(line);
+    } catch(BadPacketException e) {
+      e.printStackTrace();
+      return;
+    }
+    
+    synchronized(IN_MESSAGES)
+    {
+      IN_MESSAGES.add(packet);
+    }
   }
   
   public void sendMessage(String msg)
@@ -79,6 +93,19 @@ public class NetworkManager implements Runnable
   public void sendPacket(Packet packet)
   {
     sendMessage(packet.serialize());
+  }
+  
+  public LinkedList<Packet> drainInput()
+  {
+    LinkedList<Packet> in;
+    
+    synchronized(IN_MESSAGES)
+    {
+      in = new LinkedList<>(IN_MESSAGES);
+      IN_MESSAGES.clear();
+    }
+    
+    return in;
   }
   
   private LinkedList<String> getOut()
@@ -122,7 +149,7 @@ public class NetworkManager implements Runnable
   
       if(line != null)
       {
-        processInput(line);
+        parseInput(line);
         ++mod;
       }
       
