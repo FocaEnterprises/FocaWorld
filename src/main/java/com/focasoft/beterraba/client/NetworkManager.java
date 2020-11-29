@@ -65,7 +65,7 @@ public class NetworkManager implements Runnable
   
   private LinkedList<String> getOut()
   {
-    return new LinkedList<>();
+    return new LinkedList<>(OUT_MESSAGES);
   }
   
   @Override
