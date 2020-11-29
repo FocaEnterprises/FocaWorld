@@ -21,6 +21,7 @@ public class NetworkManager implements Runnable
   private Thread thread;
   
   private boolean running;
+  private long mod;
   
   public NetworkManager(String hostname, int port)
   {
@@ -65,27 +66,20 @@ public class NetworkManager implements Runnable
   
   private LinkedList<String> getOut()
   {
-    return new LinkedList<>(OUT_MESSAGES);
+    synchronized(OUT_MESSAGES)
+    {
+      return new LinkedList<>(OUT_MESSAGES);
+    }
   }
   
   @Override
   public void run()
   {
+    long cMod = mod;
+    
     while(running)
     {
       LinkedList<String> out = getOut();
-      
-      if(out.isEmpty())
-      {
-        try{
-          Thread.sleep(100);
-        } catch(InterruptedException e)
-        {
-          e.printStackTrace();
-        }
-        
-        continue;
-      }
       
       out.forEach(e -> {
         
@@ -97,8 +91,31 @@ public class NetworkManager implements Runnable
         }
         
         OUT_MESSAGES.remove(e);
-        
+        ++mod;
       });
+      
+      String line = null;
+      
+      try {
+        line = input.readLine();
+      } catch(IOException e) {
+        e.printStackTrace();
+      }
+  
+      if(line != null)
+      {
+        IN_MESSAGES.add(line);
+        ++mod;
+      }
+      
+      if(mod == cMod)
+      {
+        try {
+          Thread.sleep(100);
+        } catch(InterruptedException e) {
+          e.printStackTrace();
+        }
+      }
     }
   }
 }
