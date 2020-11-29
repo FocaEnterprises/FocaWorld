@@ -2,6 +2,7 @@ package com.focasoft.beterraba.server;
 
 import com.focasoft.beterraba.net.BadPacketException;
 import com.focasoft.beterraba.net.Packet;
+import com.focasoft.beterraba.net.PacketParser;
 import com.focasoft.beterraba.net.packets.PacketHandshake;
 import java.io.IOException;
 import java.net.Socket;
@@ -44,7 +45,7 @@ public class UnknowClient implements Runnable
         
         try
         {
-          Packet packet = MANAGER.parsePacket(line);
+          Packet packet = PacketParser.parsePacket(line);
           
           if(!(packet instanceof PacketHandshake))
           {

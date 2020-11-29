@@ -13,7 +13,7 @@ import org.json.JSONObject;
 public class NetworkManager implements Runnable
 {
   private final LinkedList<String> OUT_MESSAGES = new LinkedList<>();
-  private final LinkedList<String> IN_MESSAGES = new LinkedList<>();
+  private final LinkedList<Packet> IN_MESSAGES = new LinkedList<>();
   private final String HOST;
   private final int PORT;
   
@@ -58,6 +58,11 @@ public class NetworkManager implements Runnable
     output = null;
   }
   
+  private void processInput(String line)
+  {
+  
+  }
+  
   public void sendMessage(String msg)
   {
     synchronized(OUT_MESSAGES)
@@ -87,11 +92,12 @@ public class NetworkManager implements Runnable
   @Override
   public void run()
   {
-    long cMod = mod;
+    long cMod;
     
     while(running)
     {
       LinkedList<String> out = getOut();
+      cMod = mod;
       
       out.forEach(e -> {
         
@@ -116,7 +122,7 @@ public class NetworkManager implements Runnable
   
       if(line != null)
       {
-        IN_MESSAGES.add(line);
+        processInput(line);
         ++mod;
       }
       

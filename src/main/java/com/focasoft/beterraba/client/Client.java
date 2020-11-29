@@ -123,6 +123,7 @@ public class Client extends Canvas implements Runnable
   
   public void stop()
   {
+    FRAME.setVisible(false);
     WORKER.kill();
   }
   
