@@ -8,6 +8,8 @@ import com.focasoft.focaworld.client.Camera;
 import com.focasoft.focaworld.entity.Entity;
 import java.awt.Graphics;
 import java.util.LinkedList;
+
+import com.focasoft.focaworld.entity.entities.EntityPlayer;
 import org.json.JSONObject;
 
 public class World
@@ -116,7 +118,18 @@ public class World
       ENTITIES.add(entity);
     }
   }
-  
+
+  public EntityPlayer getPlayer(String name)
+  {
+    for(Entity en : getEntities())
+    {
+      if((en instanceof EntityPlayer) && en.getName().equals(name))
+        return (EntityPlayer) en;
+    }
+
+    return null;
+  }
+
   public LinkedList<Entity> getEntities()
   {
     synchronized(this.lock)
