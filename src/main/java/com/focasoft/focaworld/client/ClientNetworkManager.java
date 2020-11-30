@@ -3,7 +3,6 @@ package com.focasoft.focaworld.client;
 import com.focasoft.focaworld.net.BadPacketException;
 import com.focasoft.focaworld.net.Packet;
 import com.focasoft.focaworld.net.PacketParser;
-import com.focasoft.focaworld.net.packets.PacketPlayerJoin;
 import org.json.JSONObject;
 
 import java.io.IOException;

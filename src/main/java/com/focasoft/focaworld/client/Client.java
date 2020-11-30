@@ -99,7 +99,8 @@ public class Client extends Canvas implements Runnable
   {
     if(!WORLD.isLoaded())
       return;
-    
+
+    NETWORK_MANAGER.processIncomingPackets();
     CONTROLLER.update();
     WORLD.update();
   }

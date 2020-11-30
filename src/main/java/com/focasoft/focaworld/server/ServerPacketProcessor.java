@@ -1,15 +1,41 @@
 package com.focasoft.focaworld.server;
 
+import com.focasoft.focaworld.entity.entities.EntityPlayer;
 import com.focasoft.focaworld.net.Packet;
 import com.focasoft.focaworld.net.PacketProcessor;
+import com.focasoft.focaworld.net.packets.PacketPlayerMove;
+import com.focasoft.focaworld.world.World;
 
 import java.util.LinkedList;
 
 public class ServerPacketProcessor implements PacketProcessor
 {
+  private final ServerNetworkManager MANAGER;
+  private final Server SERVER;
+  private final World WORLD;
+
+  public ServerPacketProcessor(Server server, ServerNetworkManager manager, World world)
+  {
+    this.SERVER = server;
+    this.WORLD = world;
+    this.MANAGER = manager;
+  }
+
   @Override
   public void processPackets(LinkedList<Packet> packets)
   {
+    for(Packet packet : packets)
+    {
+      if(packet instanceof PacketPlayerMove)
+        processPlayerMove((PacketPlayerMove) packet);
+    }
+  }
 
+  private void processPlayerMove(PacketPlayerMove packet)
+  {
+    EntityPlayer player = WORLD.getPlayer(packet.getName());
+    player.moveX(packet.getX());
+    player.moveY(packet.getY());
+    MANAGER.broadcast(packet, packet.getName());
   }
 }

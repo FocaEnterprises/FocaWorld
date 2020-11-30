@@ -4,7 +4,6 @@ import com.focasoft.focaworld.entity.entities.EntityPlayer;
 import com.focasoft.focaworld.net.Packet;
 import com.focasoft.focaworld.net.packets.PacketHandshake;
 import com.focasoft.focaworld.net.packets.PacketPlayerJoin;
-import com.focasoft.focaworld.net.packets.PacketPlayerMove;
 import com.focasoft.focaworld.player.PlayerControllerServer;
 import com.focasoft.focaworld.task.AsyncWorker;
 import com.focasoft.focaworld.world.World;
@@ -17,6 +16,7 @@ public class ServerNetworkManager
 {
   private final LinkedList<PlayerControllerServer> HANDLERS = new LinkedList<>();
   private final LinkedList<Packet> PACKETS = new LinkedList<>();
+  private final ServerPacketProcessor PROCESSOR;
   private final AsyncWorker WORKER;
   private final Server SERVER;
   private final World WORLD;
@@ -26,15 +26,12 @@ public class ServerNetworkManager
     this.SERVER = server;
     this.WORKER = worker;
     this.WORLD = server.getWorld();
+    this.PROCESSOR = new ServerPacketProcessor(SERVER, this, WORLD);
   }
   
   public void processPackets()
   {
-    for(Packet packet : drainInput())
-    {
-      if(packet instanceof PacketPlayerMove)
-        handlePlayerMove((PacketPlayerMove) packet);
-    }
+    PROCESSOR.processPackets(drainInput());
   }
   
   public void checkEntry(Packet packet)
@@ -116,15 +113,4 @@ public class ServerNetworkManager
     addHandler(new PlayerControllerServer(SERVER, player, socket, WORKER));
     broadcast(new PacketPlayerJoin(player));
   }
-
-  // --------------------------------------------------------------------------
-
-  private void handlePlayerMove(PacketPlayerMove packet)
-  {
-    EntityPlayer player = WORLD.getPlayer(packet.getName());
-    player.moveX(packet.getX());
-    player.moveY(packet.getY());
-    broadcast(packet, packet.getName());
-  }
-
 }
