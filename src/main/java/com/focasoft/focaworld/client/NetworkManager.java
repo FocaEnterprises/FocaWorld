@@ -129,6 +129,7 @@ public class NetworkManager implements Runnable
       out.forEach(e -> {
         
         output.println(e);
+        output.flush();
         OUT_MESSAGES.remove(e);
         ++mod;
       });

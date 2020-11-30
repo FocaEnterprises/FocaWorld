@@ -3,14 +3,11 @@ package com.focasoft.focaworld.player;
 import com.focasoft.focaworld.entity.entities.EntityPlayer;
 import com.focasoft.focaworld.net.Packet;
 import com.focasoft.focaworld.server.Server;
+import com.focasoft.focaworld.task.AsyncWorker;
 import com.focasoft.focaworld.world.World;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Scanner;
@@ -18,6 +15,7 @@ import java.util.Scanner;
 public class PlayerControllerServer implements PlayerController, Runnable
 {
   private final EntityPlayer PLAYER;
+  private final AsyncWorker WORKER;
   private final Thread THREAD;
   private final Socket SOCKET;
   private final Server SERVER;
@@ -27,11 +25,12 @@ public class PlayerControllerServer implements PlayerController, Runnable
 
   private boolean listening;
 
-  public PlayerControllerServer(Server server, EntityPlayer player, Socket socket)
+  public PlayerControllerServer(Server server, EntityPlayer player, Socket socket, AsyncWorker worker)
   {
     this.SERVER = server;
     this.PLAYER = player;
     this.SOCKET = socket;
+    this.WORKER = worker;
 
     player.setController(this);
     listening = true;
@@ -49,7 +48,10 @@ public class PlayerControllerServer implements PlayerController, Runnable
 
   public void sendMessage(String message)
   {
-
+    WORKER.addTask(() -> {
+      output.println(message);
+      output.flush();
+    });
   }
 
   public void sendMessage(JSONObject json)

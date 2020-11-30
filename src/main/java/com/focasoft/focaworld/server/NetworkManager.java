@@ -29,12 +29,18 @@ public class NetworkManager
   
   public void processPackets()
   {
-  
+    for(Packet packet : drainInput())
+    {
+
+    }
   }
   
   public void checkEntry(Packet packet)
   {
-  
+    synchronized(PACKETS)
+    {
+      PACKETS.add(packet);
+    }
   }
 
   public void broadcast(Packet packet, String... ignores)
@@ -55,6 +61,14 @@ public class NetworkManager
         return true;
 
     return false;
+  }
+
+  private LinkedList<Packet> drainInput()
+  {
+    synchronized(PACKETS)
+    {
+      return new LinkedList<>(PACKETS);
+    }
   }
 
   public void removeHandler(PlayerControllerServer handler)
@@ -97,6 +111,7 @@ public class NetworkManager
     }
 
     EntityPlayer player = SERVER.registerPlayer(packet.getName());
+    addHandler(new PlayerControllerServer(SERVER, player, socket, WORKER));
     broadcast(new PacketPlayerJoin(player));
   }
 }
