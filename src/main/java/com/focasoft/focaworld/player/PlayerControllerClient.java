@@ -24,6 +24,8 @@ public class PlayerControllerClient implements PlayerController
     this.PLAYER = player;
     this.INPUT = input;
     this.CAMERA = camera;
+
+    player.setController(this);
   }
   
   public void update()

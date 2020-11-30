@@ -66,7 +66,7 @@ public class Client extends Canvas implements Runnable
     CAMERA = new Camera();
     CONTROLLER = new PlayerControllerClient(this, player, INPUT, CAMERA);
     WORLD.addEntity(player);
-  
+
     if(multiplayer) {
       NETWORK_MANAGER = new NetworkManager("br-3.enxadahost.com", 10215);
     

@@ -11,7 +11,7 @@ import java.awt.Graphics;
 
 public class EntityPlayer extends EntityLiving
 {
-  private final PlayerController CONTROLLER;
+  private PlayerController controller;
 
   protected boolean right;
   protected boolean left;
@@ -20,10 +20,9 @@ public class EntityPlayer extends EntityLiving
   
   protected int speed = 1;
   
-  public EntityPlayer(World world, String name, PlayerController controller, int x, int y)
+  public EntityPlayer(World world, String name, int x, int y)
   {
     super(world, name, x, y, 10);
-    this.CONTROLLER = controller;
   }
   
   @Override
@@ -60,7 +59,12 @@ public class EntityPlayer extends EntityLiving
 
   public PlayerController getController()
   {
-    return CONTROLLER;
+    return controller;
+  }
+
+  public void setController(PlayerController controller)
+  {
+    this.controller = controller;
   }
 
   public boolean isMovingRight()

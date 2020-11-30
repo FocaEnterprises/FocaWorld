@@ -19,6 +19,8 @@ public class PlayerControllerServer implements PlayerController, Runnable
     this.SERVER = server;
     this.PLAYER = player;
     this.SOCKET = socket;
+
+    player.setController(this);
   }
 
   public void sendMessage(String message)
