@@ -11,9 +11,9 @@ import java.util.Scanner;
 public class UnknowClient implements Runnable
 {
   private final Socket SOCKET;
-  private final NetworkManager MANAGER;
+  private final ServerNetworkManager MANAGER;
   
-  public UnknowClient(Socket socket, NetworkManager manager)
+  public UnknowClient(Socket socket, ServerNetworkManager manager)
   {
     this.SOCKET = socket;
     this.MANAGER = manager;

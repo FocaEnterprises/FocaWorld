@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class SocketManager implements Runnable
+public class SocketHandler implements Runnable
 {
   private final Server SERVER;
   private final Thread THREAD;
@@ -13,7 +13,7 @@ public class SocketManager implements Runnable
   
   private volatile boolean running = true;
   
-  public SocketManager(Server server)
+  public SocketHandler(Server server)
   {
     this.SERVER = server;
     this.THREAD = new Thread(this, "Socket Manager");

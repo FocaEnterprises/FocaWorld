@@ -26,7 +26,7 @@ public class Client extends Canvas implements Runnable
   private final Camera CAMERA;
   private final PlayerInput INPUT;
   private final PlayerControllerClient CONTROLLER;
-  private final NetworkManager NETWORK_MANAGER;
+  private final ClientNetworkManager NETWORK_MANAGER;
   
   private final JFrame FRAME;
   private final BufferedImage LAYER;
@@ -68,7 +68,7 @@ public class Client extends Canvas implements Runnable
     WORLD.addEntity(player);
 
     if(multiplayer) {
-      NETWORK_MANAGER = new NetworkManager("br-3.enxadahost.com", 10215);
+      NETWORK_MANAGER = new ClientNetworkManager("br-3.enxadahost.com", 10215);
     
       try {
         NETWORK_MANAGER.connect();
@@ -132,7 +132,7 @@ public class Client extends Canvas implements Runnable
     return this.CONTROLLER;
   }
   
-  public NetworkManager getNetworkManager()
+  public ClientNetworkManager getNetworkManager()
   {
     return this.NETWORK_MANAGER;
   }

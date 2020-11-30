@@ -8,8 +8,8 @@ import com.focasoft.focaworld.world.gen.WorldGenerator;
 
 public class Server implements Runnable
 {
-  private final SocketManager SOCKET_HANDLER;
-  private final NetworkManager NETWORK_MANAGER;
+  private final SocketHandler SOCKET_HANDLER;
+  private final ServerNetworkManager NETWORK_MANAGER;
   private final AsyncWorker ASYNC;
   private final Worker WORKER;
   private final World WORLD;
@@ -20,8 +20,8 @@ public class Server implements Runnable
     WORKER = new Worker(this);
     WORLD = new World();
 
-    NETWORK_MANAGER = new NetworkManager(this, ASYNC);
-    SOCKET_HANDLER = new SocketManager(this);
+    NETWORK_MANAGER = new ServerNetworkManager(this, ASYNC);
+    SOCKET_HANDLER = new SocketHandler(this);
 
     WorldGenerator gen = new WorldGenerator(223124453L);
     WORLD.load(gen.generate("Spawn", 128, 128));
@@ -68,12 +68,12 @@ public class Server implements Runnable
     return WORLD;
   }
 
-  public SocketManager getSocketHandler()
+  public SocketHandler getSocketHandler()
   {
     return this.SOCKET_HANDLER;
   }
   
-  public NetworkManager getNetworkManager()
+  public ServerNetworkManager getNetworkManager()
   {
     return this.NETWORK_MANAGER;
   }

@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.LinkedList;
 
-public class NetworkManager
+public class ServerNetworkManager
 {
   private final LinkedList<PlayerControllerServer> HANDLERS = new LinkedList<>();
   private final LinkedList<Packet> PACKETS = new LinkedList<>();
@@ -21,7 +21,7 @@ public class NetworkManager
   private final Server SERVER;
   private final World WORLD;
 
-  public NetworkManager(Server server, AsyncWorker worker)
+  public ServerNetworkManager(Server server, AsyncWorker worker)
   {
     this.SERVER = server;
     this.WORKER = worker;
