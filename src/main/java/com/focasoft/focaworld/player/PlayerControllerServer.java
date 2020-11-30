@@ -6,13 +6,26 @@ import com.focasoft.focaworld.server.Server;
 import com.focasoft.focaworld.world.World;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class PlayerControllerServer implements PlayerController, Runnable
 {
   private final EntityPlayer PLAYER;
+  private final Thread THREAD;
   private final Socket SOCKET;
   private final Server SERVER;
+
+  private PrintStream output;
+  private Scanner input;
+
+  private boolean listening;
 
   public PlayerControllerServer(Server server, EntityPlayer player, Socket socket)
   {
@@ -21,6 +34,17 @@ public class PlayerControllerServer implements PlayerController, Runnable
     this.SOCKET = socket;
 
     player.setController(this);
+    listening = true;
+
+    THREAD = new Thread(this, "PlayerController: " + player.getName());
+    THREAD.start();
+
+    try {
+      this.input = new Scanner(SOCKET.getInputStream());
+      this.output = new PrintStream(SOCKET.getOutputStream());
+    } catch(IOException e) {
+      e.printStackTrace();
+    }
   }
 
   public void sendMessage(String message)
@@ -38,10 +62,24 @@ public class PlayerControllerServer implements PlayerController, Runnable
     sendMessage(packet.serialize());
   }
 
+  public void destroy()
+  {
+    listening = false;
+
+    try {
+      THREAD.join();
+    } catch(InterruptedException e){
+      e.printStackTrace();
+    }
+  }
+
   @Override
   public void run()
   {
+    while(listening)
+    {
 
+    }
   }
 
   @Override

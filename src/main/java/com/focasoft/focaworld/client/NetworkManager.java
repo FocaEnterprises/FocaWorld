@@ -3,14 +3,13 @@ package com.focasoft.focaworld.client;
 import com.focasoft.focaworld.net.BadPacketException;
 import com.focasoft.focaworld.net.Packet;
 import com.focasoft.focaworld.net.PacketParser;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import org.json.JSONObject;
+
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.net.Socket;
 import java.util.LinkedList;
-import org.json.JSONObject;
+import java.util.Scanner;
 
 public class NetworkManager implements Runnable
 {
@@ -19,8 +18,9 @@ public class NetworkManager implements Runnable
   private final String HOST;
   private final int PORT;
   
-  private BufferedReader input;
-  private BufferedWriter output;
+  private Scanner input;
+  private PrintStream output;
+
   private Socket socket;
   private Thread thread;
   
@@ -36,8 +36,8 @@ public class NetworkManager implements Runnable
   public void connect() throws IOException
   {
     socket = new Socket(HOST, PORT);
-    input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-    output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+    input = new Scanner(socket.getInputStream());
+    output = new PrintStream(socket.getOutputStream());
     thread = new Thread(this, "Network Manager");
     running = true;
     thread.start();
@@ -128,25 +128,13 @@ public class NetworkManager implements Runnable
       
       out.forEach(e -> {
         
-        try {
-          output.write(e);
-          output.flush();
-        } catch(IOException ioException) {
-          ioException.printStackTrace();
-        }
-        
+        output.println(e);
         OUT_MESSAGES.remove(e);
         ++mod;
       });
       
-      String line = null;
-      
-      try {
-        line = input.readLine();
-      } catch(IOException e) {
-        e.printStackTrace();
-      }
-  
+      String line = input.nextLine();
+
       if(line != null)
       {
         parseInput(line);
