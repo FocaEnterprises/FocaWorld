@@ -1,7 +1,10 @@
 package com.focasoft.focaworld.net.packets;
 
+import com.focasoft.focaworld.net.BadPacketException;
 import com.focasoft.focaworld.net.Packet;
 import com.focasoft.focaworld.net.PacketType;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class PacketHandshake extends Packet
 {
@@ -17,5 +20,18 @@ public class PacketHandshake extends Packet
   public String getName()
   {
     return NAME;
+  }
+
+  public static PacketHandshake parse(JSONObject json)
+  {
+    PacketHandshake packet;
+
+    try {
+      packet = new PacketHandshake(json.getString("name"));
+    } catch(JSONException e){
+      throw new BadPacketException(e.getMessage());
+    }
+
+    return packet;
   }
 }

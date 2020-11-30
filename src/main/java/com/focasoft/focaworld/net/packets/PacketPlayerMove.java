@@ -1,7 +1,10 @@
 package com.focasoft.focaworld.net.packets;
 
+import com.focasoft.focaworld.net.BadPacketException;
 import com.focasoft.focaworld.net.Packet;
 import com.focasoft.focaworld.net.PacketType;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class PacketPlayerMove extends Packet
 {
@@ -35,5 +38,18 @@ public class PacketPlayerMove extends Packet
   public int getY()
   {
     return Y;
+  }
+
+  public static PacketPlayerMove parse(JSONObject json)
+  {
+    PacketPlayerMove packet;
+
+    try {
+      packet = new PacketPlayerMove(json.getString("name"), json.getInt("x"), json.getInt("y"));
+    } catch(JSONException e){
+      throw new BadPacketException(e.getMessage());
+    }
+
+    return packet;
   }
 }
