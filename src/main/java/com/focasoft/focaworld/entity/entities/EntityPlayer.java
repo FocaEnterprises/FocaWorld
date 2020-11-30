@@ -5,11 +5,14 @@ import static com.focasoft.focaworld.client.Client.TILE_SIZE;
 import com.focasoft.focaworld.client.Camera;
 import com.focasoft.focaworld.client.Sprites;
 import com.focasoft.focaworld.entity.EntityLiving;
+import com.focasoft.focaworld.player.PlayerController;
 import com.focasoft.focaworld.world.World;
 import java.awt.Graphics;
 
 public class EntityPlayer extends EntityLiving
 {
+  private final PlayerController CONTROLLER;
+
   protected boolean right;
   protected boolean left;
   protected boolean up;
@@ -17,9 +20,10 @@ public class EntityPlayer extends EntityLiving
   
   protected int speed = 1;
   
-  public EntityPlayer(World world, String name, int x, int y)
+  public EntityPlayer(World world, String name, PlayerController controller, int x, int y)
   {
     super(world, name, x, y, 10);
+    this.CONTROLLER = controller;
   }
   
   @Override
@@ -52,6 +56,11 @@ public class EntityPlayer extends EntityLiving
   public void setSpeed(int speed)
   {
     this.speed = speed;
+  }
+
+  public PlayerController getController()
+  {
+    return CONTROLLER;
   }
 
   public boolean isMovingRight()

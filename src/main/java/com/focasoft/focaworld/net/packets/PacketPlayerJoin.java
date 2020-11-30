@@ -1,5 +1,6 @@
 package com.focasoft.focaworld.net.packets;
 
+import com.focasoft.focaworld.entity.entities.EntityPlayer;
 import com.focasoft.focaworld.net.BadPacketException;
 import com.focasoft.focaworld.net.Packet;
 import com.focasoft.focaworld.net.PacketType;
@@ -24,6 +25,11 @@ public class PacketPlayerJoin extends Packet
     DATA.put("name", name);
     DATA.put("x", x);
     DATA.put("y", y);
+  }
+  
+  public PacketPlayerJoin(EntityPlayer player)
+  {
+    this(player.getName(), player.getX(), player.getY());
   }
 
   public String getName()

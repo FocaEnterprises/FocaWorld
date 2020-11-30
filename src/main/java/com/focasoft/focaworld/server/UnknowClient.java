@@ -11,9 +11,9 @@ import java.util.Scanner;
 public class UnknowClient implements Runnable
 {
   private final Socket SOCKET;
-  private final ServerPacketManager MANAGER;
+  private final NetworkManager MANAGER;
   
-  public UnknowClient(Socket socket, ServerPacketManager manager)
+  public UnknowClient(Socket socket, NetworkManager manager)
   {
     this.SOCKET = socket;
     this.MANAGER = manager;
@@ -53,7 +53,7 @@ public class UnknowClient implements Runnable
             continue;
           }
           
-          MANAGER.checkLogin(packet, SOCKET);
+          MANAGER.checkLogin((PacketHandshake) packet, SOCKET);
         }
         catch(BadPacketException | IOException e)
         {

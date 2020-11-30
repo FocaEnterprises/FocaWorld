@@ -52,7 +52,7 @@ public class SocketManager implements Runnable
   
   private void handleConnection(Socket socket)
   {
-    new UnknowClient(socket, SERVER.getPacketManager());
+    new UnknowClient(socket, SERVER.getNetworkManager());
   }
   
   public synchronized void start()

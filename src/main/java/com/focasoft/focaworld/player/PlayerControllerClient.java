@@ -11,7 +11,7 @@ import com.focasoft.focaworld.entity.entities.EntityPlayer;
 import com.focasoft.focaworld.net.packets.PacketPlayerMove;
 import com.focasoft.focaworld.world.World;
 
-public class PlayerControllerClient
+public class PlayerControllerClient implements PlayerController
 {
   private final EntityPlayer PLAYER;
   private final PlayerInput INPUT;
@@ -65,14 +65,94 @@ public class PlayerControllerClient
     CAMERA.setY(Camera.clamp(getY() - HEIGHT / 2, 0, getWorld().getHeight() * TILE_SIZE - HEIGHT));
   }
 
+  @Override
+  public World getWorld()
+  {
+    return PLAYER.getWorld();
+  }
+
+  @Override
+  public String getName()
+  {
+    return PLAYER.getName();
+  }
+
+  @Override
+  public void setName(String name)
+  {
+    PLAYER.setName(name);
+  }
+
+  @Override
   public int getSpeed()
   {
     return PLAYER.getSpeed();
   }
 
+  @Override
   public void setSpeed(int speed)
   {
     PLAYER.setSpeed(speed);
+  }
+
+  @Override
+  public int getLife()
+  {
+    return PLAYER.getLife();
+  }
+
+  @Override
+  public void setLife(int life)
+  {
+    PLAYER.setLife(life);
+  }
+
+  @Override
+  public int getMaxLife()
+  {
+    return PLAYER.getMaxLife();
+  }
+
+  @Override
+  public void setMaxLife(int maxLife)
+  {
+    PLAYER.setMaxLife(maxLife);
+  }
+
+  @Override
+  public int getX()
+  {
+    return PLAYER.getX();
+  }
+
+  @Override
+  public void setX(int x)
+  {
+    PLAYER.setX(x);
+  }
+
+  @Override
+  public int getY()
+  {
+    return PLAYER.getY();
+  }
+
+  @Override
+  public void setY(int y)
+  {
+    PLAYER.setY(y);
+  }
+
+  @Override
+  public void moveX(int move)
+  {
+    PLAYER.moveX(move);
+  }
+
+  @Override
+  public void moveY(int move)
+  {
+    PLAYER.moveY(move);
   }
 
   public boolean isMovingRight()
@@ -113,70 +193,5 @@ public class PlayerControllerClient
   public void setMovingUp(boolean up)
   {
     PLAYER.setMovingUp(up);
-  }
-  
-  public int getLife()
-  {
-    return PLAYER.getLife();
-  }
-  
-  public void setLife(int life)
-  {
-    PLAYER.setLife(life);
-  }
-  
-  public int getMaxLife()
-  {
-    return PLAYER.getMaxLife();
-  }
-  
-  public void setMaxLife(int maxLife)
-  {
-    PLAYER.setMaxLife(maxLife);
-  }
-  
-  public String getName()
-  {
-    return PLAYER.getName();
-  }
-  
-  public void setName(String name)
-  {
-    PLAYER.setName(name);
-  }
-  
-  public int getX()
-  {
-    return PLAYER.getX();
-  }
-  
-  public void setX(int x)
-  {
-    PLAYER.setX(x);
-  }
-  
-  public int getY()
-  {
-    return PLAYER.getY();
-  }
-  
-  public void setY(int y)
-  {
-    PLAYER.setY(y);
-  }
-  
-  public void moveX(int move)
-  {
-    PLAYER.moveX(move);
-  }
-  
-  public void moveY(int move)
-  {
-    PLAYER.moveY(move);
-  }
-  
-  public World getWorld()
-  {
-    return PLAYER.getWorld();
   }
 }

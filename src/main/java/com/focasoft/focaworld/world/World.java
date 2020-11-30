@@ -124,7 +124,18 @@ public class World
       return new LinkedList<>(this.ENTITIES);
     }
   }
-  
+
+  public boolean containsEntity(String name)
+  {
+    for(Entity e : getEntities())
+    {
+      if(e.getName().equals(name))
+        return true;
+    }
+
+    return false;
+  }
+
   public boolean isLoaded()
   {
     return loaded;

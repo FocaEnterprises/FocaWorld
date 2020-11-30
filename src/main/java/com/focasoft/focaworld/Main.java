@@ -11,7 +11,7 @@ public class Main
     {
       if(args[0].equals("--clientMode"))
       {
-        new Client(false);
+        new Client(args.length > 1 && args[1].equals("--multiplayer"));
         return;
       }
       
