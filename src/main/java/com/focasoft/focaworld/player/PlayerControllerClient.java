@@ -6,7 +6,9 @@ import static com.focasoft.focaworld.client.Client.HEIGHT;
 import static java.awt.event.KeyEvent.*;
 
 import com.focasoft.focaworld.client.Camera;
+import com.focasoft.focaworld.client.Client;
 import com.focasoft.focaworld.entity.entities.EntityPlayer;
+import com.focasoft.focaworld.net.packets.PacketPlayerMove;
 import com.focasoft.focaworld.world.World;
 
 public class PlayerControllerClient
@@ -14,9 +16,11 @@ public class PlayerControllerClient
   private final EntityPlayer PLAYER;
   private final PlayerInput INPUT;
   private final Camera CAMERA;
-  
-  public PlayerControllerClient(EntityPlayer player, PlayerInput input, Camera camera)
+  private final Client CLIENT;
+
+  public PlayerControllerClient(Client client, EntityPlayer player, PlayerInput input, Camera camera)
   {
+    this.CLIENT = client;
     this.PLAYER = player;
     this.INPUT = input;
     this.CAMERA = camera;
@@ -28,6 +32,31 @@ public class PlayerControllerClient
     setMovingLeft(INPUT.isPressed(VK_A));
     setMovingUp(INPUT.isPressed(VK_W));
     setMovingDown(INPUT.isPressed(VK_S));
+
+    // TODO: Pensar numa maneira mais eficiente de fazer isso
+    if(CLIENT.isMultiplayer())
+    {
+      int x = 0;
+      int y = 0;
+
+      if(INPUT.isPressed(VK_D))
+        ++x;
+
+      if(INPUT.isPressed(VK_A))
+        --x;
+
+      if(INPUT.isPressed(VK_S))
+        ++y;
+
+      if(INPUT.isPressed(VK_W))
+        --y;
+
+      if(x != 0 || y != 0)
+      {
+        PacketPlayerMove packet = new PacketPlayerMove(getName(), x, y);
+        CLIENT.getNetworkManager().sendPacket(packet);
+      }
+    }
   }
   
   public void updateCamera()
@@ -35,7 +64,7 @@ public class PlayerControllerClient
     CAMERA.setX(Camera.clamp(getX() - WIDTH / 2, 0, getWorld().getWidth() * TILE_SIZE - WIDTH));
     CAMERA.setY(Camera.clamp(getY() - HEIGHT / 2, 0, getWorld().getHeight() * TILE_SIZE - HEIGHT));
   }
-  
+
   public boolean isMovingRight()
   {
     return PLAYER.isMovingRight();

@@ -45,7 +45,7 @@ public class Client extends Canvas implements Runnable
     this.MULTIPLAYER = multiplayer;
     this.setPreferredSize(new Dimension(scaledWidth(), scaledHeight()));
     
-    FRAME = new JFrame("Gamezinho");
+    FRAME = new JFrame("Foca World - " + (multiplayer ? "Multiplayer" : "Singleplayer"));
     FRAME.setResizable(false);
     FRAME.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     FRAME.add(this);
@@ -64,7 +64,7 @@ public class Client extends Canvas implements Runnable
     WORKER = new Worker(this);
     INPUT = new PlayerInput(this);
     CAMERA = new Camera();
-    CONTROLLER = new PlayerControllerClient(player, INPUT, CAMERA);
+    CONTROLLER = new PlayerControllerClient(this, player, INPUT, CAMERA);
     WORLD.addEntity(player);
   
     if(multiplayer) {
