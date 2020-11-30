@@ -110,7 +110,21 @@ public class World
       ENTITIES.remove(entity);
     }
   }
-  
+
+  public void removeEntity(String name)
+  {
+    LinkedList<Entity> entities = getEntities();
+
+    for(Entity ent : entities)
+    {
+      if(ent.getName().equals(name))
+      {
+        removeEntity(ent);
+        return;
+      }
+    }
+  }
+
   public void addEntity(Entity entity)
   {
     synchronized(this.lock)

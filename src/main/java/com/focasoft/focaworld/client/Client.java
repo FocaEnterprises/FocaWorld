@@ -68,7 +68,7 @@ public class Client extends Canvas implements Runnable
     WORLD.addEntity(player);
 
     if(multiplayer) {
-      NETWORK_MANAGER = new ClientNetworkManager("br-3.enxadahost.com", 10215);
+      NETWORK_MANAGER = new ClientNetworkManager(this, "br-3.enxadahost.com", 10215);
     
       try {
         NETWORK_MANAGER.connect();

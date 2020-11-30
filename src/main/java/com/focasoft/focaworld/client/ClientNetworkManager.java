@@ -16,7 +16,10 @@ public class ClientNetworkManager implements Runnable
 {
   private final LinkedList<String> OUT_MESSAGES = new LinkedList<>();
   private final LinkedList<Packet> IN_MESSAGES = new LinkedList<>();
+
+  private final ClientPacketProcessor PROCESSOR;
   private final String HOST;
+
   private final int PORT;
   
   private Scanner input;
@@ -28,10 +31,12 @@ public class ClientNetworkManager implements Runnable
   private boolean running;
   private long mod;
   
-  public ClientNetworkManager(String hostname, int port)
+  public ClientNetworkManager(Client client, String hostname, int port)
   {
     this.HOST = hostname;
     this.PORT = port;
+
+    this.PROCESSOR = new ClientPacketProcessor(client);
   }
   
   public void connect() throws IOException
@@ -119,11 +124,7 @@ public class ClientNetworkManager implements Runnable
 
   public void processIncomingPackets()
   {
-    for(Packet packet : drainInput())
-    {
-      if(packet instanceof PacketPlayerJoin);
-
-    }
+    PROCESSOR.processPackets(drainInput());
   }
 
   @Override
@@ -137,7 +138,6 @@ public class ClientNetworkManager implements Runnable
       cMod = mod;
       
       out.forEach(e -> {
-        
         output.println(e);
         output.flush();
         OUT_MESSAGES.remove(e);
