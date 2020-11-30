@@ -43,7 +43,17 @@ public class EntityPlayer extends EntityLiving
   {
     g.drawImage(Sprites.player, x - camera.getX(), y - camera.getY(), TILE_SIZE, TILE_SIZE, null);
   }
-  
+
+  public int getSpeed()
+  {
+    return speed;
+  }
+
+  public void setSpeed(int speed)
+  {
+    this.speed = speed;
+  }
+
   public boolean isMovingRight()
   {
     return right;

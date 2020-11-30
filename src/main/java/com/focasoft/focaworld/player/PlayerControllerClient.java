@@ -40,16 +40,16 @@ public class PlayerControllerClient
       int y = 0;
 
       if(INPUT.isPressed(VK_D))
-        ++x;
+        x += getSpeed();
 
       if(INPUT.isPressed(VK_A))
-        --x;
+        x -= getSpeed();
 
       if(INPUT.isPressed(VK_S))
-        ++y;
+        y += getSpeed();
 
       if(INPUT.isPressed(VK_W))
-        --y;
+        y -= getSpeed();
 
       if(x != 0 || y != 0)
       {
@@ -63,6 +63,16 @@ public class PlayerControllerClient
   {
     CAMERA.setX(Camera.clamp(getX() - WIDTH / 2, 0, getWorld().getWidth() * TILE_SIZE - WIDTH));
     CAMERA.setY(Camera.clamp(getY() - HEIGHT / 2, 0, getWorld().getHeight() * TILE_SIZE - HEIGHT));
+  }
+
+  public int getSpeed()
+  {
+    return PLAYER.getSpeed();
+  }
+
+  public void setSpeed(int speed)
+  {
+    PLAYER.setSpeed(speed);
   }
 
   public boolean isMovingRight()
