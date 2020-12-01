@@ -104,10 +104,7 @@ public class PlayerControllerServer implements PlayerController, Runnable
   {
     while(listening)
     {
-      if(input.hasNextLine())
-      {
-        processInput(input.nextLine());
-      }
+      processInput(input.nextLine());
 
       try {
         Thread.sleep(10);

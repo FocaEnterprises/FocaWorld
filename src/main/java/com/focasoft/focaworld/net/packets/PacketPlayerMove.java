@@ -22,7 +22,7 @@ public class PacketPlayerMove extends Packet
 
     DATA.put("name", name);
     DATA.put("x", xi);
-    DATA.put("Y", yi);
+    DATA.put("y", yi);
   }
 
   public String getName()

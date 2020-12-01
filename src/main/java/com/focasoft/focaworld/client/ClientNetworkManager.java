@@ -4,6 +4,7 @@ import com.focasoft.focaworld.net.BadPacketException;
 import com.focasoft.focaworld.net.Packet;
 import com.focasoft.focaworld.net.PacketParser;
 import com.focasoft.focaworld.net.packets.PacketHandshake;
+import com.focasoft.focaworld.task.AsyncWorker;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -18,6 +19,7 @@ public class ClientNetworkManager implements Runnable
   private final LinkedList<Packet> IN_MESSAGES = new LinkedList<>();
 
   private final ClientPacketProcessor PROCESSOR;
+  private final AsyncWorker WORKER;
   private final Client CLIENT;
   private final String HOST;
 
@@ -30,7 +32,6 @@ public class ClientNetworkManager implements Runnable
   private Thread thread;
   
   private volatile boolean running = true;
-  private long mod;
   
   public ClientNetworkManager(Client client, String hostname, int port)
   {
@@ -39,6 +40,9 @@ public class ClientNetworkManager implements Runnable
 
     this.PROCESSOR = new ClientPacketProcessor(client);
     this.CLIENT = client;
+
+    WORKER = new AsyncWorker();
+    WORKER.start();
   }
   
   public void connect() throws IOException
@@ -131,41 +135,32 @@ public class ClientNetworkManager implements Runnable
     PROCESSOR.processPackets(drainInput());
   }
 
+  public void processOutPackets()
+  {
+    WORKER.addTask(() -> {
+      LinkedList<String> out = ClientNetworkManager.this.getOut();
+
+      out.forEach(e -> {
+        ClientNetworkManager.this.output.println(e);
+        ClientNetworkManager.this.OUT_MESSAGES.remove(e);
+        System.out.println("Escrevi: " + e);
+      });
+    });
+  }
+
   @Override
   public void run()
   {
-    long cMod;
-    
     while(running)
     {
       if(socket.isClosed())
         System.out.println("Fecho");
-
-      LinkedList<String> out = getOut();
-      cMod = mod;
-
-      out.forEach(e -> {
-        output.println(e);
-        OUT_MESSAGES.remove(e);
-        System.out.println("Escrevi: " + e);
-        ++mod;
-      });
       
-      String line = input.hasNextLine() ? input.nextLine() : null;
+      String line = input.nextLine();
 
       if(line != null)
       {
         parseInput(line);
-        ++mod;
-      }
-      
-      if(mod == cMod)
-      {
-        try {
-          Thread.sleep(100);
-        } catch(InterruptedException e) {
-          e.printStackTrace();
-        }
       }
     }
   }
