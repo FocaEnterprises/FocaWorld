@@ -6,6 +6,7 @@ public enum PacketType
   PLAYER_MOVE("PLAYER_MOVE"),
   PLAYER_JOIN("PLAYER_JOIN"),
   PLAYER_QUIT("PLAYER_QUIT"),
+  WORLD("WORLD"),
   ;
   
   private final String DESC;

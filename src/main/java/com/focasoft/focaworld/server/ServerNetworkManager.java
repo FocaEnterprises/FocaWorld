@@ -123,7 +123,9 @@ public class ServerNetworkManager
     }
 
     EntityPlayer player = SERVER.registerPlayer(packet.getName());
-    addHandler(new PlayerControllerServer(SERVER, player, socket, WORKER));
+    PlayerControllerServer controller = new PlayerControllerServer(SERVER, player, socket, WORKER);
+    controller.sendPacket(WORLD.toPacket());
+    addHandler(controller);
     broadcast(new PacketPlayerJoin(player));
   }
 }

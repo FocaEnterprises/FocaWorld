@@ -1,16 +1,18 @@
 package com.focasoft.focaworld.world;
 
-import static com.focasoft.focaworld.client.Client.TILE_SIZE;
-import static com.focasoft.focaworld.client.Client.WIDTH;
-import static com.focasoft.focaworld.client.Client.HEIGHT;
-
 import com.focasoft.focaworld.client.Camera;
 import com.focasoft.focaworld.entity.Entity;
+import com.focasoft.focaworld.entity.entities.EntityPlayer;
+import com.focasoft.focaworld.net.packets.PacketWorld;
+import org.json.JSONObject;
+
 import java.awt.Graphics;
+import java.util.Arrays;
 import java.util.LinkedList;
 
-import com.focasoft.focaworld.entity.entities.EntityPlayer;
-import org.json.JSONObject;
+import static com.focasoft.focaworld.client.Client.HEIGHT;
+import static com.focasoft.focaworld.client.Client.TILE_SIZE;
+import static com.focasoft.focaworld.client.Client.WIDTH;
 
 public class World
 {
@@ -163,6 +165,34 @@ public class World
     return false;
   }
 
+  public PacketWorld toPacket()
+  {
+    JSONObject json = new JSONObject();
+    json.put("name", name);
+    json.put("width", width);
+    json.put("height", height);
+
+    this.tiles = new byte[width * height];
+
+    JSONObject tiles = json.getJSONObject("tiles");
+
+    byte[] tileArray = getTiles();
+
+    for(int x = 0; x < width; x++)
+    {
+      for(int y = 0; y < height; y++)
+      {
+        int i = x + y * width;
+        int tile = tileArray[i];
+
+        tiles.put(String.valueOf(i), tile);
+      }
+    }
+
+
+    return new PacketWorld(json);
+  }
+
   public boolean isLoaded()
   {
     return loaded;
@@ -186,5 +216,12 @@ public class World
   public int getHeight()
   {
     return height;
+  }
+
+  public byte[] getTiles()
+  {
+    synchronized(this.lock) {
+      return Arrays.copyOf(tiles, tiles.length);
+    }
   }
 }

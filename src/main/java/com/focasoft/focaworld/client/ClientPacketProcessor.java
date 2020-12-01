@@ -51,6 +51,7 @@ public class ClientPacketProcessor implements PacketProcessor
       return;
     }
 
+
     WORLD.addEntity(new EntityPlayer(WORLD, join.getName(), join.getX(), join.getY()));
   }
 
