@@ -76,7 +76,6 @@ public class Client extends Canvas implements Runnable
     
       try {
         NETWORK_MANAGER.connect();
-        NETWORK_MANAGER.sendPacket(new PacketHandshake(getName()));
       } catch(IOException e) {
         System.out.println("Falha ao abrir conexão com o servidor");
         e.printStackTrace();
@@ -134,7 +133,12 @@ public class Client extends Canvas implements Runnable
     FRAME.setVisible(false);
     WORKER.kill();
   }
-  
+
+  public String getName()
+  {
+    return CONTROLLER != null ? CONTROLLER.getName() : "FocaClient";
+  }
+
   public PlayerControllerClient getPlayerController()
   {
     return this.CONTROLLER;

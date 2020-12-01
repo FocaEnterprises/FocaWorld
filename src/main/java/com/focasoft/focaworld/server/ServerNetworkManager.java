@@ -99,6 +99,7 @@ public class ServerNetworkManager
     if(SERVER.isPlayerRegistered(packet.getName()))
     {
       try {
+        System.out.println("Já registrado");
         socket.getOutputStream().write(("{\"code\":\"DP\"}").getBytes());
         socket.getOutputStream().flush();
         socket.close();

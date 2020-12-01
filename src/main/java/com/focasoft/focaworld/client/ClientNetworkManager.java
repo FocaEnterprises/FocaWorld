@@ -3,10 +3,11 @@ package com.focasoft.focaworld.client;
 import com.focasoft.focaworld.net.BadPacketException;
 import com.focasoft.focaworld.net.Packet;
 import com.focasoft.focaworld.net.PacketParser;
+import com.focasoft.focaworld.net.packets.PacketHandshake;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.LinkedList;
 import java.util.Scanner;
@@ -17,17 +18,18 @@ public class ClientNetworkManager implements Runnable
   private final LinkedList<Packet> IN_MESSAGES = new LinkedList<>();
 
   private final ClientPacketProcessor PROCESSOR;
+  private final Client CLIENT;
   private final String HOST;
 
   private final int PORT;
   
   private Scanner input;
-  private PrintStream output;
+  private PrintWriter output;
 
   private Socket socket;
   private Thread thread;
   
-  private volatile boolean running;
+  private volatile boolean running = true;
   private long mod;
   
   public ClientNetworkManager(Client client, String hostname, int port)
@@ -36,14 +38,16 @@ public class ClientNetworkManager implements Runnable
     this.PORT = port;
 
     this.PROCESSOR = new ClientPacketProcessor(client);
+    this.CLIENT = client;
   }
   
   public void connect() throws IOException
   {
     socket = new Socket(HOST, PORT);
     input = new Scanner(socket.getInputStream());
-    output = new PrintStream(socket.getOutputStream());
+    output = new PrintWriter(socket.getOutputStream(), true);
     thread = new Thread(this, "Network Manager");
+    sendPacket(new PacketHandshake(CLIENT.getName()));
     running = true;
     thread.start();
   }
@@ -134,13 +138,16 @@ public class ClientNetworkManager implements Runnable
     
     while(running)
     {
+      if(socket.isClosed())
+        System.out.println("Fecho");
+
       LinkedList<String> out = getOut();
       cMod = mod;
-      
+
       out.forEach(e -> {
         output.println(e);
-        output.flush();
         OUT_MESSAGES.remove(e);
+        System.out.println("Escrevi: " + e);
         ++mod;
       });
       

@@ -4,6 +4,7 @@ import com.focasoft.focaworld.net.BadPacketException;
 import com.focasoft.focaworld.net.Packet;
 import com.focasoft.focaworld.net.PacketParser;
 import com.focasoft.focaworld.net.packets.PacketHandshake;
+
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Scanner;
@@ -19,13 +20,15 @@ public class UnknowClient implements Runnable
     this.MANAGER = manager;
     new Thread(this).start();
   }
-  
+
   @Override
   public void run()
   {
+    System.out.println("Iniciando UnknownClient: " + SOCKET.getInetAddress());
     Scanner scanner;
     boolean exit = false;
-    
+    long last = System.currentTimeMillis();
+
     try
     {
       scanner = new Scanner(SOCKET.getInputStream());
@@ -35,9 +38,14 @@ public class UnknowClient implements Runnable
       e.printStackTrace();
       return;
     }
-    
+
     while(!exit)
     {
+      if(System.currentTimeMillis() - last >= 10000) {
+        System.out.println("Nada ainda");
+        last = System.currentTimeMillis();
+      }
+
       if(scanner.hasNextLine())
       {
         exit = true;
@@ -80,5 +88,7 @@ public class UnknowClient implements Runnable
         e.printStackTrace();
       }
     }
+
+    System.out.println("Fechou.");
   }
 }

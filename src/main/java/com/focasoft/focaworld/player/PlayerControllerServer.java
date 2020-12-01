@@ -11,7 +11,7 @@ import com.focasoft.focaworld.world.World;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
@@ -24,7 +24,7 @@ public class PlayerControllerServer implements PlayerController, Runnable
   private final Socket SOCKET;
   private final Server SERVER;
 
-  private PrintStream output;
+  private PrintWriter output;
   private Scanner input;
 
   private boolean listening;
@@ -40,22 +40,26 @@ public class PlayerControllerServer implements PlayerController, Runnable
     player.setController(this);
     listening = true;
 
-    THREAD = new Thread(this, "PlayerController: " + player.getName());
-    THREAD.start();
-
     try {
       this.input = new Scanner(SOCKET.getInputStream());
-      this.output = new PrintStream(SOCKET.getOutputStream());
+      this.output = new PrintWriter(SOCKET.getOutputStream(), true);
     } catch(IOException e) {
       e.printStackTrace();
     }
+
+    THREAD = new Thread(this, "PlayerController: " + player.getName());
+    THREAD.start();
   }
 
   public void sendMessage(String message)
   {
     WORKER.addTask(() -> {
       output.println(message);
-      output.flush();
+      try {
+        SOCKET.getOutputStream().flush();
+      } catch(IOException e) {
+        e.printStackTrace();
+      }
     });
   }
 
