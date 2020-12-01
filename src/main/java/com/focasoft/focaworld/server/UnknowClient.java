@@ -42,7 +42,8 @@ public class UnknowClient implements Runnable
       {
         exit = true;
         String line = scanner.nextLine();
-        
+        System.out.println("UnknowClient: " + line);
+
         try
         {
           Packet packet = PacketParser.parsePacket(line);

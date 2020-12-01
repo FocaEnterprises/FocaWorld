@@ -27,7 +27,7 @@ public class ClientNetworkManager implements Runnable
   private Socket socket;
   private Thread thread;
   
-  private boolean running;
+  private volatile boolean running;
   private long mod;
   
   public ClientNetworkManager(Client client, String hostname, int port)
@@ -67,6 +67,7 @@ public class ClientNetworkManager implements Runnable
   
   private void parseInput(String line)
   {
+    System.out.println(line);
     Packet packet;
 
     try {
@@ -143,7 +144,7 @@ public class ClientNetworkManager implements Runnable
         ++mod;
       });
       
-      String line = input.nextLine();
+      String line = input.hasNextLine() ? input.nextLine() : null;
 
       if(line != null)
       {

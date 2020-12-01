@@ -14,8 +14,8 @@ public class Main
         new Client(args.length > 1 && args[1].equals("--multiplayer"));
         return;
       }
-      
-     new Server();
     }
+
+    new Server();
   }
 }

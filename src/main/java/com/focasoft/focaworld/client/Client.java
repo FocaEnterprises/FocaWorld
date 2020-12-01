@@ -1,6 +1,7 @@
 package com.focasoft.focaworld.client;
 
 import com.focasoft.focaworld.entity.entities.EntityPlayer;
+import com.focasoft.focaworld.net.packets.PacketHandshake;
 import com.focasoft.focaworld.player.PlayerControllerClient;
 import com.focasoft.focaworld.player.PlayerInput;
 import com.focasoft.focaworld.task.Worker;
@@ -59,7 +60,7 @@ public class Client extends Canvas implements Runnable
     
     WORLD = new World();
     
-    EntityPlayer player = new EntityPlayer(WORLD, "Giver", 20, 30);
+    EntityPlayer player = new EntityPlayer(WORLD, "Giver" + System.currentTimeMillis() / 1000, 0, 0);
     
     WORKER = new Worker(this);
     INPUT = new PlayerInput(this);
@@ -67,11 +68,15 @@ public class Client extends Canvas implements Runnable
     CONTROLLER = new PlayerControllerClient(this, player, INPUT, CAMERA);
     WORLD.addEntity(player);
 
+    WorldGenerator gens = new WorldGenerator(223124453L);
+    WORLD.load(gens.generate("World", 128, 128));
+
     if(multiplayer) {
       NETWORK_MANAGER = new ClientNetworkManager(this, "br-3.enxadahost.com", 10215);
     
       try {
         NETWORK_MANAGER.connect();
+        NETWORK_MANAGER.sendPacket(new PacketHandshake(getName()));
       } catch(IOException e) {
         System.out.println("Falha ao abrir conexão com o servidor");
         e.printStackTrace();
@@ -84,7 +89,7 @@ public class Client extends Canvas implements Runnable
       WORLD.load(gen.generate("World", 128, 128));
       NETWORK_MANAGER = null;
     }
-    
+
     WORKER.start();
   }
   
@@ -100,7 +105,9 @@ public class Client extends Canvas implements Runnable
     if(!WORLD.isLoaded())
       return;
 
-    NETWORK_MANAGER.processIncomingPackets();
+    if(MULTIPLAYER)
+      NETWORK_MANAGER.processIncomingPackets();
+
     CONTROLLER.update();
     WORLD.update();
   }

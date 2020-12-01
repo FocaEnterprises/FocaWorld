@@ -1,8 +1,11 @@
 package com.focasoft.focaworld.player;
 
 import com.focasoft.focaworld.entity.entities.EntityPlayer;
+import com.focasoft.focaworld.net.BadPacketException;
 import com.focasoft.focaworld.net.Packet;
+import com.focasoft.focaworld.net.PacketParser;
 import com.focasoft.focaworld.server.Server;
+import com.focasoft.focaworld.server.ServerNetworkManager;
 import com.focasoft.focaworld.task.AsyncWorker;
 import com.focasoft.focaworld.world.World;
 import org.json.JSONObject;
@@ -14,6 +17,7 @@ import java.util.Scanner;
 
 public class PlayerControllerServer implements PlayerController, Runnable
 {
+  private final ServerNetworkManager MANAGER;
   private final EntityPlayer PLAYER;
   private final AsyncWorker WORKER;
   private final Thread THREAD;
@@ -31,6 +35,7 @@ public class PlayerControllerServer implements PlayerController, Runnable
     this.PLAYER = player;
     this.SOCKET = socket;
     this.WORKER = worker;
+    this.MANAGER = server.getNetworkManager();
 
     player.setController(this);
     listening = true;
@@ -75,12 +80,36 @@ public class PlayerControllerServer implements PlayerController, Runnable
     }
   }
 
+  private void processInput(String line)
+  {
+    System.out.println("Input do Client: " + line);
+    Packet packet;
+
+    try {
+      packet = PacketParser.parsePacket(line);
+    } catch(BadPacketException e) {
+      e.printStackTrace();
+      return;
+    }
+
+    MANAGER.checkEntry(packet);
+  }
+
   @Override
   public void run()
   {
     while(listening)
     {
+      if(input.hasNextLine())
+      {
+        processInput(input.nextLine());
+      }
 
+      try {
+        Thread.sleep(10);
+      } catch(InterruptedException e) {
+        e.printStackTrace();
+      }
     }
   }
 

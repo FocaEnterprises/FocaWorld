@@ -40,7 +40,7 @@ public class Worker implements Runnable
       
       if(System.currentTimeMillis() - timer >= 1000)
       {
-        System.out.println(fps);
+        //System.out.println(fps);
         fps = 0;
         timer += 1000;
       }
