@@ -53,6 +53,9 @@ public class PlayerControllerServer implements PlayerController, Runnable
 
   public void sendMessage(String message)
   {
+    if(SOCKET.isClosed())
+      return;
+
     WORKER.addTask(() -> {
       output.println(message);
     });
@@ -68,20 +71,8 @@ public class PlayerControllerServer implements PlayerController, Runnable
     sendMessage(packet.serialize());
   }
 
-  public void destroy()
-  {
-    listening = false;
-
-    try {
-      THREAD.join();
-    } catch(InterruptedException e){
-      e.printStackTrace();
-    }
-  }
-
   private void processInput(String line)
   {
-    System.out.println("Input do Client: " + line);
     Packet packet;
 
     try {
@@ -99,7 +90,16 @@ public class PlayerControllerServer implements PlayerController, Runnable
   {
     while(listening)
     {
-      processInput(input.nextLine());
+      if(SOCKET.isClosed())
+      {
+        MANAGER.handleLogout(this);
+        listening = false;
+        continue;
+      }
+
+      if(input.hasNextLine()) {
+        processInput(input.nextLine());
+      }
 
       try {
         Thread.sleep(10);
@@ -113,6 +113,12 @@ public class PlayerControllerServer implements PlayerController, Runnable
   public World getWorld()
   {
     return PLAYER.getWorld();
+  }
+
+  @Override
+  public EntityPlayer getPlayer()
+  {
+    return PLAYER;
   }
 
   @Override

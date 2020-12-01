@@ -62,6 +62,12 @@ public class Server implements Runnable
     return player;
   }
 
+  // TODO: Salvar jogador na config
+  public void unregisterPlayer(EntityPlayer player)
+  {
+    WORLD.removeEntity(player.getName());
+  }
+
   public boolean isPlayerRegistered(String name)
   {
     return WORLD.containsEntity(name);

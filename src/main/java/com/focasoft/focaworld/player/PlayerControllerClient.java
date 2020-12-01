@@ -74,6 +74,12 @@ public class PlayerControllerClient implements PlayerController
   }
 
   @Override
+  public EntityPlayer getPlayer()
+  {
+    return PLAYER;
+  }
+
+  @Override
   public String getName()
   {
     return PLAYER.getName();

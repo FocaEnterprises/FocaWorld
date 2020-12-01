@@ -4,6 +4,7 @@ import com.focasoft.focaworld.entity.entities.EntityPlayer;
 import com.focasoft.focaworld.net.Packet;
 import com.focasoft.focaworld.net.packets.PacketHandshake;
 import com.focasoft.focaworld.net.packets.PacketPlayerJoin;
+import com.focasoft.focaworld.net.packets.PacketPlayerQuit;
 import com.focasoft.focaworld.player.PlayerControllerServer;
 import com.focasoft.focaworld.task.AsyncWorker;
 import com.focasoft.focaworld.world.World;
@@ -99,7 +100,13 @@ public class ServerNetworkManager
     }
   }
 
-  public void checkLogin(PacketHandshake packet, Socket socket)
+  public void handleLogout(PlayerControllerServer player)
+  {
+    broadcast(new PacketPlayerQuit(player.getName()));
+    SERVER.unregisterPlayer(player.getPlayer());
+  }
+
+  public void handleLogin(PacketHandshake packet, Socket socket)
   {
     if(SERVER.isPlayerRegistered(packet.getName()))
     {

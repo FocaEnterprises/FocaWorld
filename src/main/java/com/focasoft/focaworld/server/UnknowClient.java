@@ -62,7 +62,7 @@ public class UnknowClient implements Runnable
             continue;
           }
           
-          MANAGER.checkLogin((PacketHandshake) packet, SOCKET);
+          MANAGER.handleLogin((PacketHandshake) packet, SOCKET);
         }
         catch(BadPacketException | IOException e)
         {
