@@ -72,7 +72,7 @@ public class Client extends Canvas implements Runnable
     WORLD.load(gens.generate("World", 128, 128));
 
     if(multiplayer) {
-      NETWORK_MANAGER = new ClientNetworkManager(this, "br-3.enxadahost.com", 10215);
+      NETWORK_MANAGER = new ClientNetworkManager(this, "localhost", 10215);
     
       try {
         NETWORK_MANAGER.connect();
@@ -104,8 +104,10 @@ public class Client extends Canvas implements Runnable
     if(!WORLD.isLoaded())
       return;
 
-    if(MULTIPLAYER)
+    if(MULTIPLAYER) {
       NETWORK_MANAGER.processIncomingPackets();
+      NETWORK_MANAGER.processOutPackets();
+    }
 
     CONTROLLER.update();
     WORLD.update();

@@ -51,9 +51,10 @@ public class ClientNetworkManager implements Runnable
     input = new Scanner(socket.getInputStream());
     output = new PrintWriter(socket.getOutputStream(), true);
     thread = new Thread(this, "Network Manager");
-    sendPacket(new PacketHandshake(CLIENT.getName()));
     running = true;
     thread.start();
+
+    sendPacket(new PacketHandshake(CLIENT.getName()));
   }
   
   public void disconnect() throws IOException
@@ -122,12 +123,17 @@ public class ClientNetworkManager implements Runnable
     return in;
   }
   
-  private LinkedList<String> getOut()
+  private LinkedList<String> drainOut()
   {
+    LinkedList<String> out;
+
     synchronized(OUT_MESSAGES)
     {
-      return new LinkedList<>(OUT_MESSAGES);
+      out = new LinkedList<>(OUT_MESSAGES);
+      OUT_MESSAGES.clear();
     }
+
+    return out;
   }
 
   public void processIncomingPackets()
@@ -137,12 +143,14 @@ public class ClientNetworkManager implements Runnable
 
   public void processOutPackets()
   {
+    if(OUT_MESSAGES.size() == 0)
+      return;
+
     WORKER.addTask(() -> {
-      LinkedList<String> out = ClientNetworkManager.this.getOut();
+      LinkedList<String> out = ClientNetworkManager.this.drainOut();
 
       out.forEach(e -> {
         ClientNetworkManager.this.output.println(e);
-        ClientNetworkManager.this.OUT_MESSAGES.remove(e);
         System.out.println("Escrevi: " + e);
       });
     });

@@ -55,11 +55,6 @@ public class PlayerControllerServer implements PlayerController, Runnable
   {
     WORKER.addTask(() -> {
       output.println(message);
-      try {
-        SOCKET.getOutputStream().flush();
-      } catch(IOException e) {
-        e.printStackTrace();
-      }
     });
   }
 

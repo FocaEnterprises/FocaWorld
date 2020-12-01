@@ -64,10 +64,15 @@ public class ServerNetworkManager
 
   private LinkedList<Packet> drainInput()
   {
+    LinkedList<Packet> packs;
+
     synchronized(PACKETS)
     {
-      return new LinkedList<>(PACKETS);
+      packs = new LinkedList<>(PACKETS);
+      PACKETS.clear();
     }
+
+    return packs;
   }
 
   public void removeHandler(PlayerControllerServer handler)
