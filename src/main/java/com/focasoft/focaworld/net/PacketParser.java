@@ -4,6 +4,7 @@ import com.focasoft.focaworld.net.packets.PacketHandshake;
 import com.focasoft.focaworld.net.packets.PacketPlayerJoin;
 import com.focasoft.focaworld.net.packets.PacketPlayerMove;
 import com.focasoft.focaworld.net.packets.PacketPlayerQuit;
+import com.focasoft.focaworld.net.packets.PacketWorld;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,6 +37,9 @@ public class PacketParser
 
     if(type.equals(PLAYER_QUIT.getDescName()))
       return PacketPlayerQuit.parse(data);
+
+    if(type.equals(WORLD.getDescName()))
+      return PacketWorld.parse(data);
 
     throw new BadPacketException("Tipo de packet é inválido!");
   }
