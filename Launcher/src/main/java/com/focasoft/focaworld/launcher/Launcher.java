@@ -7,7 +7,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.io.IOException;
 
-public class FocaLauncher extends Canvas implements Runnable
+public class Launcher extends Canvas implements Runnable
 {
   private static final int WIDTH = 640;
   private static final int HEIGHT = 480;
@@ -19,7 +19,7 @@ public class FocaLauncher extends Canvas implements Runnable
   private Thread thread;
   private volatile boolean running;
 
-  private FocaLauncher()
+  private Launcher()
   {
     setPreferredSize(new Dimension(WIDTH, HEIGHT));
     FRAME = new JFrame("Foca World - Launcher");
@@ -103,6 +103,6 @@ public class FocaLauncher extends Canvas implements Runnable
 
   public static void main(String[] args)
   {
-    new FocaLauncher();
+    new Launcher();
   }
 }

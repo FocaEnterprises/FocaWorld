@@ -6,10 +6,10 @@ import java.io.InputStreamReader;
 
 public class GameRuntime implements Runnable
 {
-  private final FocaLauncher LAUNCHER;
+  private final Launcher LAUNCHER;
   private final Process PROCESS;
 
-  public GameRuntime(FocaLauncher launcher, Process process)
+  public GameRuntime(Launcher launcher, Process process)
   {
     this.LAUNCHER = launcher;
     this.PROCESS = process;

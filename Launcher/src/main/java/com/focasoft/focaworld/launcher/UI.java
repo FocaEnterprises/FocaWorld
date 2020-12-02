@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class UI implements KeyListener, MouseInputListener
 {
   private final String VALID = "ABCDEFGHIJKLMOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  private final FocaLauncher LAUNCHER;
+  private final Launcher LAUNCHER;
 
   protected ArrayList<Button> buttons = new ArrayList<>();
   protected Button hover;
@@ -26,7 +26,7 @@ public class UI implements KeyListener, MouseInputListener
   private int x;
   private int y;
 
-  public UI(FocaLauncher launcher)
+  public UI(Launcher launcher)
   {
     this.LAUNCHER = launcher;
     launcher.addKeyListener(this);
