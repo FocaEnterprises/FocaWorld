@@ -99,7 +99,12 @@ public class ClientNetworkManager implements Runnable
       OUT_MESSAGES.add(msg);
     }
   }
-  
+
+  protected void sendPacketNow(Packet packet)
+  {
+    output.println(packet.serialize());
+  }
+
   public void sendMessage(JSONObject json)
   {
     sendMessage(json.toString());

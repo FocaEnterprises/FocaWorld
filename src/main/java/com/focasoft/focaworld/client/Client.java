@@ -71,10 +71,7 @@ public class Client extends Canvas implements Runnable
     if(multiplayer) {
       NETWORK_MANAGER = new ClientNetworkManager(this, "localhost", 10215);
 
-      Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-        NETWORK_MANAGER.sendPacket(new PacketPlayerQuit(getName()));
-        NETWORK_MANAGER.processOutPackets();
-      }, "Shutdown"));
+      Runtime.getRuntime().addShutdownHook(new Thread(() -> NETWORK_MANAGER.sendPacketNow(new PacketPlayerQuit(getName())), "Shutdown"));
 
       try {
         NETWORK_MANAGER.connect();
