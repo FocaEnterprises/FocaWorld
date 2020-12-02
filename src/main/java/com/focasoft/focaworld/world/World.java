@@ -1,6 +1,6 @@
 package com.focasoft.focaworld.world;
 
-import com.focasoft.focaworld.client.Camera;
+import com.focasoft.focaworld.client.render.Camera;
 import com.focasoft.focaworld.entity.Entity;
 import com.focasoft.focaworld.entity.entities.EntityPlayer;
 import com.focasoft.focaworld.net.packets.PacketWorld;

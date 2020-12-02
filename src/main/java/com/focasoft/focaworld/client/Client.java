@@ -1,5 +1,8 @@
 package com.focasoft.focaworld.client;
 
+import com.focasoft.focaworld.client.render.Camera;
+import com.focasoft.focaworld.client.render.GUI;
+import com.focasoft.focaworld.client.render.Sprites;
 import com.focasoft.focaworld.entity.entities.EntityPlayer;
 import com.focasoft.focaworld.net.packets.PacketPlayerQuit;
 import com.focasoft.focaworld.player.PlayerControllerClient;
@@ -21,21 +24,22 @@ public class Client extends Canvas implements Runnable
   public static final int HEIGHT = 320;
   public static final int SCALE = 2;
   public static final int TILE_SIZE = 16;
-  
+
+  private final GUI UI;
   private final Worker WORKER;
   private final World WORLD;
   private final Camera CAMERA;
   private final PlayerInput INPUT;
   private final PlayerControllerClient CONTROLLER;
   private final ClientNetworkManager NETWORK_MANAGER;
-  
+
   private final JFrame FRAME;
   private final BufferedImage LAYER;
   private final Graphics GRAPHICS;
   
   private final boolean MULTIPLAYER;
   
-  public Client(boolean multiplayer)
+  public Client(String nick, boolean multiplayer)
   {
     if(!Sprites.init())
     {
@@ -57,11 +61,14 @@ public class Client extends Canvas implements Runnable
     createBufferStrategy(3);
     GRAPHICS = getBufferStrategy().getDrawGraphics();
     LAYER = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
-    
+    UI = new GUI(this);
     WORLD = new World();
-    
-    EntityPlayer player = new EntityPlayer(WORLD, "Giver" + System.currentTimeMillis() / 1000, 0, 0);
-    
+
+    if(nick.length() > 8)
+      nick = nick.substring(0, 7);
+
+    EntityPlayer player = new EntityPlayer(WORLD, nick, 0, 0);
+
     WORKER = new Worker(this);
     INPUT = new PlayerInput(this);
     CAMERA = new Camera();
@@ -88,6 +95,7 @@ public class Client extends Canvas implements Runnable
       NETWORK_MANAGER = null;
     }
 
+    UI.create();
     WORKER.start();
   }
   
@@ -125,7 +133,8 @@ public class Client extends Canvas implements Runnable
     }
     
     GRAPHICS.drawImage(LAYER, 0, 0, scaledWidth(), scaledHeight(), null);
-    
+    UI.render(GRAPHICS);
+
     getBufferStrategy().show();
   }
   

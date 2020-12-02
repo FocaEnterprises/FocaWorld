@@ -7,15 +7,26 @@ public class Main
 {
   public static void main(String[] args)
   {
-    if(args.length > 0)
+    if(args.length == 0)
     {
-      if(args[0].equals("--clientMode"))
-      {
-        new Client(args.length > 1 && args[1].equals("--multiplayer"));
-        return;
-      }
+      new Server();
+      return;
+    }
+    
+    if(args.length < 2)
+    {
+      System.out.println("Missing arguments!");
+      System.exit(0);
+      return;
+    }
+    
+    if(args[0].equals("--clientMode"))
+    {
+      String nick = args[1];
+      boolean multiplayer = args.length > 2 && args[2].equals("--multiplayer");
+      new Client(nick, multiplayer);
     }
 
-    new Server();
+    System.out.println("Argumentos fracos");
   }
 }

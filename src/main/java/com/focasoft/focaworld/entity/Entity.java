@@ -1,6 +1,6 @@
 package com.focasoft.focaworld.entity;
 
-import com.focasoft.focaworld.client.Camera;
+import com.focasoft.focaworld.client.render.Camera;
 import com.focasoft.focaworld.world.World;
 import java.awt.Graphics;
 

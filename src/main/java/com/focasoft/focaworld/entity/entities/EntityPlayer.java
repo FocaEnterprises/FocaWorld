@@ -2,11 +2,18 @@ package com.focasoft.focaworld.entity.entities;
 
 import static com.focasoft.focaworld.client.Client.TILE_SIZE;
 
-import com.focasoft.focaworld.client.Camera;
-import com.focasoft.focaworld.client.Sprites;
+import com.focasoft.focaworld.Main;
+import com.focasoft.focaworld.client.Client;
+import com.focasoft.focaworld.client.render.Camera;
+import com.focasoft.focaworld.client.render.GUI;
+import com.focasoft.focaworld.client.render.Sprites;
+import com.focasoft.focaworld.client.render.Text;
 import com.focasoft.focaworld.entity.EntityLiving;
 import com.focasoft.focaworld.player.PlayerController;
 import com.focasoft.focaworld.world.World;
+
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 
 public class EntityPlayer extends EntityLiving
@@ -45,6 +52,7 @@ public class EntityPlayer extends EntityLiving
   public void render(Graphics g, Camera camera)
   {
     g.drawImage(Sprites.player, x - camera.getX(), y - camera.getY(), TILE_SIZE, TILE_SIZE, null);
+    GUI.getInstance().addText(new Text(name, new Font("arial", Font.PLAIN, 12), Color.BLACK, (x - camera.getX()) * Client.SCALE, (y - camera.getY()) * Client.SCALE));
   }
 
   public int getSpeed()

@@ -1,6 +1,6 @@
 package com.focasoft.focaworld.world;
 
-import static com.focasoft.focaworld.client.Sprites.*;
+import static com.focasoft.focaworld.client.render.Sprites.*;
 
 import java.awt.image.BufferedImage;
 

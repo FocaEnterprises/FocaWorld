@@ -1,4 +1,4 @@
-package com.focasoft.focaworld.client;
+package com.focasoft.focaworld.client.render;
 
 public class Camera
 {

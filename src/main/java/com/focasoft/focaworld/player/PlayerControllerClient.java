@@ -5,7 +5,7 @@ import static com.focasoft.focaworld.client.Client.WIDTH;
 import static com.focasoft.focaworld.client.Client.HEIGHT;
 import static java.awt.event.KeyEvent.*;
 
-import com.focasoft.focaworld.client.Camera;
+import com.focasoft.focaworld.client.render.Camera;
 import com.focasoft.focaworld.client.Client;
 import com.focasoft.focaworld.entity.entities.EntityPlayer;
 import com.focasoft.focaworld.net.packets.PacketPlayerMove;

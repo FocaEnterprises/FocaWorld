@@ -1,4 +1,4 @@
-package com.focasoft.focaworld.client;
+package com.focasoft.focaworld.client.render;
 
 import static com.focasoft.focaworld.client.Client.TILE_SIZE;
 

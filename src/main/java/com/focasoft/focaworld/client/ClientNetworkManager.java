@@ -76,7 +76,7 @@ public class ClientNetworkManager implements Runnable
   
   private void parseInput(String line)
   {
-    System.out.println(line);
+    System.out.println("Recebi: " + line);
     Packet packet;
 
     try {
