@@ -13,9 +13,11 @@ public class Server implements Runnable
   private final AsyncWorker ASYNC;
   private final Worker WORKER;
   private final World WORLD;
-  
-  public Server()
+  private final String NAME;
+
+  public Server(String serverName)
   {
+    NAME = serverName;
     ASYNC = new AsyncWorker();
     WORKER = new Worker(this);
     WORLD = new World();
@@ -86,5 +88,10 @@ public class Server implements Runnable
   public ServerNetworkManager getNetworkManager()
   {
     return this.NETWORK_MANAGER;
+  }
+
+  public String getName()
+  {
+    return NAME;
   }
 }
