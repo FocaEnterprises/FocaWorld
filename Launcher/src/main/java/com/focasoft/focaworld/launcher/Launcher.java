@@ -46,10 +46,8 @@ public class Launcher extends Canvas implements Runnable
       draw();
 
       try {
-        Thread.sleep(50L);
-      } catch(InterruptedException e) {
-        e.printStackTrace();
-      }
+        Thread.sleep(25L);
+      } catch(InterruptedException ignore) { }
     }
   }
 
@@ -57,14 +55,7 @@ public class Launcher extends Canvas implements Runnable
   {
     running = false;
 
-    try {
-      thread.join();
-    } catch(InterruptedException e) {
-      e.printStackTrace();
-    }
-
-    String cmd = "java -jar " + args;
-
+    String cmd = "java -jar runtime/Core.jar " + args;
     Process process;
 
     try {

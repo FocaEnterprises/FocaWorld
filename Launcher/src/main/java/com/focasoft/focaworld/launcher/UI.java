@@ -66,7 +66,7 @@ public class UI implements KeyListener, MouseInputListener
 
   private void performLaunch()
   {
-    if(chars[0] == 0)
+    if(chars[0] == ' ')
       return;
 
     String args = "--clientMode ";
