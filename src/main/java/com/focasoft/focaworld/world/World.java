@@ -83,7 +83,7 @@ public class World
       {
         JSONObject ent = entities.getJSONObject(key);
         Entity entity = createIntance(ent.getString("class"),
-                                      ent.getString("name"),
+                                      key,
                                       ent.getInt("x"),
                                       ent.getInt("y"));
 
@@ -216,6 +216,17 @@ public class World
       }
     }
 
+    JSONObject entities = new JSONObject();
+
+    getEntities().forEach(e -> {
+      JSONObject ent = new JSONObject();
+      ent.put("x", e.getX());
+      ent.put("y", e.getY());
+      ent.put("class", e.getClass().getName());
+      entities.put(e.getName(), ent);
+    });
+
+    json.put("entities", entities);
 
     return new PacketWorld(json);
   }
