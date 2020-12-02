@@ -20,10 +20,12 @@ public class Main
     {
       boolean multiplayer = args.length > 2 && args[2].equals("--multiplayer");
       new Client(name, multiplayer);
+      return;
     }
     else if(args[0].equals("--serverMode"))
     {
       new Server(name);
+      return;
     }
 
     System.out.println("Argumentos fracos");

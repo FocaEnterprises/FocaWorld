@@ -1,8 +1,9 @@
 package com.focasoft.focaworld.client;
 
+import com.focasoft.focaworld.assets.Resources;
 import com.focasoft.focaworld.client.render.Camera;
 import com.focasoft.focaworld.client.render.GUI;
-import com.focasoft.focaworld.client.render.Sprites;
+import com.focasoft.focaworld.assets.Sprites;
 import com.focasoft.focaworld.entity.entities.EntityPlayer;
 import com.focasoft.focaworld.net.packets.PacketPlayerQuit;
 import com.focasoft.focaworld.player.PlayerControllerClient;
@@ -41,9 +42,9 @@ public class Client extends Canvas implements Runnable
   
   public Client(String nick, boolean multiplayer)
   {
-    if(!Sprites.init())
+    if(!Resources.setup() || !Sprites.init())
     {
-      System.out.println("Falha ao carregar sprites! Saindo.");
+      System.out.println("Falha ao carregar resources! Saindo.");
       System.exit(0);
     }
     

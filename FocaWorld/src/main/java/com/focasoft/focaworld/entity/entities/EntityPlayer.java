@@ -2,11 +2,10 @@ package com.focasoft.focaworld.entity.entities;
 
 import static com.focasoft.focaworld.client.Client.TILE_SIZE;
 
-import com.focasoft.focaworld.Main;
 import com.focasoft.focaworld.client.Client;
 import com.focasoft.focaworld.client.render.Camera;
 import com.focasoft.focaworld.client.render.GUI;
-import com.focasoft.focaworld.client.render.Sprites;
+import com.focasoft.focaworld.assets.Sprites;
 import com.focasoft.focaworld.client.render.Text;
 import com.focasoft.focaworld.entity.EntityLiving;
 import com.focasoft.focaworld.player.PlayerController;

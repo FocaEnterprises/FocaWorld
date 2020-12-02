@@ -1,8 +1,7 @@
-package com.focasoft.focaworld.client.render;
+package com.focasoft.focaworld.assets;
 
 import static com.focasoft.focaworld.client.Client.TILE_SIZE;
 
-import com.focasoft.focaworld.Main;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.ImageIO;
@@ -28,7 +27,7 @@ public final class Sprites
   {
     try
     {
-      spritesheet = load("sprites/Spritesheet");
+      spritesheet = load("Spritesheet");
       loadDefaults();
     }
     catch(Exception e)
@@ -64,6 +63,6 @@ public final class Sprites
   
   private static BufferedImage load(String path) throws IOException
   {
-    return ImageIO.read(Main.class.getResource("/" + path + ".png"));
+    return ImageIO.read(Resources.getImageStream(path + ".png"));
   }
 }
