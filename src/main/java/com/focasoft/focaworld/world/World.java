@@ -59,38 +59,31 @@ public class World
   
   public void load(JSONObject json)
   {
-    try
-    {
+    try {
       name = json.getString("name");
       width = json.getInt("width");
       height = json.getInt("height");
-      
+
       this.tiles = new byte[width * height];
-      
+
       JSONObject tiles = json.getJSONObject("tiles");
-      
-      for(String key : tiles.keySet())
-      {
+
+      for(String key : tiles.keySet()) {
         this.tiles[Integer.parseInt(key)] = (byte) tiles.getInt(key);
       }
 
-      if(json.isNull("entities"))
-        return;
+      if(!json.isNull("entities")) {
+        JSONObject entities = json.getJSONObject("entities");
 
-      JSONObject entities = json.getJSONObject("entities");
+        for(String key : entities.keySet()) {
+          JSONObject ent = entities.getJSONObject(key);
+          Entity entity = createIntance(ent.getString("class"), key, ent.getInt("x"), ent.getInt("y"));
 
-      for(String key : entities.keySet())
-      {
-        JSONObject ent = entities.getJSONObject(key);
-        Entity entity = createIntance(ent.getString("class"),
-                                      key,
-                                      ent.getInt("x"),
-                                      ent.getInt("y"));
+          if(containsEntity(entity.getName()))
+            continue;
 
-        if(containsEntity(entity.getName()))
-          continue;
-
-        addEntity(entity);
+          addEntity(entity);
+        }
       }
     }
     catch(Exception e)
@@ -99,7 +92,7 @@ public class World
       e.printStackTrace();
       return;
     }
-    
+
     loaded = true;
   }
 
@@ -201,7 +194,7 @@ public class World
 
     this.tiles = new byte[width * height];
 
-    JSONObject tiles = json.getJSONObject("tiles");
+    JSONObject tiles = new JSONObject();
 
     byte[] tileArray = getTiles();
 
