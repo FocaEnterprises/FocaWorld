@@ -6,7 +6,7 @@ import com.focasoft.focaworld.entity.entities.EntityPlayer;
 import com.focasoft.focaworld.net.packets.PacketWorld;
 import org.json.JSONObject;
 
-import java.awt.Graphics;
+import java.awt.*;
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -77,7 +77,7 @@ public class World
 
         for(String key : entities.keySet()) {
           JSONObject ent = entities.getJSONObject(key);
-          Entity entity = createIntance(ent.getString("class"), key, ent.getInt("x"), ent.getInt("y"));
+          Entity entity = createInstance(ent.getString("class"), key, ent.getInt("x"), ent.getInt("y"));
 
           if(containsEntity(entity.getName()))
             continue;
@@ -96,9 +96,9 @@ public class World
     loaded = true;
   }
 
-  private Entity createIntance(String clazzName, String name, int x, int y) throws Exception
+  private Entity createInstance(String clazzName, String name, int x, int y) throws Exception
   {
-    Class<?> clazz = Class.forName("com.focasoft.focaworld.entity.entities." + clazzName);
+    Class<?> clazz = Class.forName(clazzName);
     Constructor<?> cons = clazz.getDeclaredConstructor(World.class, String.class, int.class, int.class);
     return (Entity) cons.newInstance(this, name, x, y);
   }
@@ -191,8 +191,6 @@ public class World
     json.put("name", name);
     json.put("width", width);
     json.put("height", height);
-
-    this.tiles = new byte[width * height];
 
     JSONObject tiles = new JSONObject();
 

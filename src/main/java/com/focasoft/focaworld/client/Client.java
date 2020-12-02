@@ -1,7 +1,7 @@
 package com.focasoft.focaworld.client;
 
 import com.focasoft.focaworld.entity.entities.EntityPlayer;
-import com.focasoft.focaworld.net.packets.PacketHandshake;
+import com.focasoft.focaworld.net.packets.PacketPlayerQuit;
 import com.focasoft.focaworld.player.PlayerControllerClient;
 import com.focasoft.focaworld.player.PlayerInput;
 import com.focasoft.focaworld.task.Worker;
@@ -68,12 +68,14 @@ public class Client extends Canvas implements Runnable
     CONTROLLER = new PlayerControllerClient(this, player, INPUT, CAMERA);
     WORLD.addEntity(player);
 
-    WorldGenerator gens = new WorldGenerator(223124453L);
-    WORLD.load(gens.generate("World", 128, 128));
-
     if(multiplayer) {
       NETWORK_MANAGER = new ClientNetworkManager(this, "localhost", 10215);
-    
+
+      Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+        NETWORK_MANAGER.sendPacket(new PacketPlayerQuit(getName()));
+        NETWORK_MANAGER.processOutPackets();
+      }, "Shutdown"));
+
       try {
         NETWORK_MANAGER.connect();
       } catch(IOException e) {
@@ -101,13 +103,13 @@ public class Client extends Canvas implements Runnable
   
   private void tick()
   {
-    if(!WORLD.isLoaded())
-      return;
-
     if(MULTIPLAYER) {
       NETWORK_MANAGER.processIncomingPackets();
       NETWORK_MANAGER.processOutPackets();
     }
+
+    if(!WORLD.isLoaded())
+      return;
 
     CONTROLLER.update();
     WORLD.update();

@@ -100,10 +100,24 @@ public class ServerNetworkManager
     }
   }
 
+  private void handleLogout(PlayerControllerServer player, PacketPlayerQuit packet)
+  {
+    SERVER.unregisterPlayer(player.getPlayer());
+    removeHandler(player);
+  }
+
   public void handleLogout(PlayerControllerServer player)
   {
-    broadcast(new PacketPlayerQuit(player.getName()));
-    SERVER.unregisterPlayer(player.getPlayer());
+    handleLogout(player, new PacketPlayerQuit(player.getName()));
+  }
+
+  public void handleLogout(PacketPlayerQuit packet)
+  {
+    getHandlers().forEach(e -> {
+      if(e.getName().equals(packet.getName())){
+        handleLogout(e, packet);
+      }
+    });
   }
 
   public void handleLogin(PacketHandshake packet, Socket socket)
