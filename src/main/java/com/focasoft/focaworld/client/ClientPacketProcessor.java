@@ -6,6 +6,7 @@ import com.focasoft.focaworld.net.PacketProcessor;
 import com.focasoft.focaworld.net.packets.PacketPlayerJoin;
 import com.focasoft.focaworld.net.packets.PacketPlayerMove;
 import com.focasoft.focaworld.net.packets.PacketPlayerQuit;
+import com.focasoft.focaworld.net.packets.PacketWorld;
 import com.focasoft.focaworld.player.PlayerControllerClient;
 import com.focasoft.focaworld.world.World;
 
@@ -39,6 +40,9 @@ public class ClientPacketProcessor implements PacketProcessor
 
       if(packet instanceof PacketPlayerMove)
         processPlayerMove((PacketPlayerMove) packet);
+
+      if(packet instanceof PacketWorld)
+        processWorld((PacketWorld) packet);
     }
   }
 
@@ -50,7 +54,6 @@ public class ClientPacketProcessor implements PacketProcessor
       PLAYER.setY(join.getY());
       return;
     }
-
 
     WORLD.addEntity(new EntityPlayer(WORLD, join.getName(), join.getX(), join.getY()));
   }
@@ -75,5 +78,10 @@ public class ClientPacketProcessor implements PacketProcessor
 
     player.moveX(move.getX());
     player.moveY(move.getY());
+  }
+
+  private void processWorld(PacketWorld world)
+  {
+    WORLD.load(world.getWorld());
   }
 }

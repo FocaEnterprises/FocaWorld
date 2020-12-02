@@ -7,6 +7,7 @@ import com.focasoft.focaworld.net.packets.PacketWorld;
 import org.json.JSONObject;
 
 import java.awt.Graphics;
+import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.LinkedList;
 
@@ -72,6 +73,25 @@ public class World
       {
         this.tiles[Integer.parseInt(key)] = (byte) tiles.getInt(key);
       }
+
+      if(json.isNull("entities"))
+        return;
+
+      JSONObject entities = json.getJSONObject("entities");
+
+      for(String key : entities.keySet())
+      {
+        JSONObject ent = entities.getJSONObject(key);
+        Entity entity = createIntance(ent.getString("class"),
+                                      ent.getString("name"),
+                                      ent.getInt("x"),
+                                      ent.getInt("y"));
+
+        if(containsEntity(entity.getName()))
+          continue;
+
+        addEntity(entity);
+      }
     }
     catch(Exception e)
     {
@@ -82,7 +102,14 @@ public class World
     
     loaded = true;
   }
-  
+
+  private Entity createIntance(String clazzName, String name, int x, int y) throws Exception
+  {
+    Class<?> clazz = Class.forName("com.focasoft.focaworld.entity.entities." + clazzName);
+    Constructor<?> cons = clazz.getDeclaredConstructor(World.class, String.class, int.class, int.class);
+    return (Entity) cons.newInstance(this, name, x, y);
+  }
+
   public Tile getTile(int x, int y)
   {
     synchronized(this.lock)
