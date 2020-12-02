@@ -219,6 +219,7 @@ public class World
       entities.put(e.getName(), ent);
     });
 
+    json.put("tiles", tiles);
     json.put("entities", entities);
 
     return new PacketWorld(json);
