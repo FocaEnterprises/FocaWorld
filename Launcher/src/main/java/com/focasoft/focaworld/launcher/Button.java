@@ -26,16 +26,19 @@ public class Button
 
   public void draw(Graphics g)
   {
-    g.setColor(new Color(0x5CAAD4));
+    g.setColor(new Color(0x151414));
     g.fillRect(x, y, w, h);
 
-    g.setFont(new Font("Arial", Font.PLAIN, 14));
+    g.setColor(new Color(0x2B2F31));
+    g.fillRect(x + 2, y + 2, w - 4, h - 4);
+
+    g.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
     g.setColor(Color.WHITE);
-    g.drawString(text, x + (w - g.getFontMetrics().stringWidth(text)) / 2, y + h / 2);
+    g.drawString(text, x + (w - g.getFontMetrics().stringWidth(text)) / 2, y + h / 2 + 8);
 
     if(ui.hover == this)
     {
-      g.setColor(new Color(0, 0, 0, 212));
+      g.setColor(new Color(0, 0, 0, 146));
       g.fillRect(x, y, w, h);
     }
   }

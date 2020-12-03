@@ -1,22 +1,21 @@
 package com.focasoft.focaworld.launcher;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
-import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
+import java.awt.*;
 import java.io.IOException;
 
 public class Launcher extends Canvas implements Runnable
 {
-  private static final int WIDTH = 640;
-  private static final int HEIGHT = 480;
+  public static final int WIDTH = 640;
+  public static final int HEIGHT = 480;
 
   private final JFrame FRAME;
   private final Graphics GRAPHICS;
   private final UI GUI;
 
   private Thread thread;
+
   private volatile boolean running;
 
   private Launcher()
@@ -54,6 +53,7 @@ public class Launcher extends Canvas implements Runnable
   protected void launch(String args)
   {
     running = false;
+    thread.interrupt();
 
     String cmd = "java -jar runtime/Core.jar " + args;
     Process process;
@@ -84,9 +84,8 @@ public class Launcher extends Canvas implements Runnable
 
   private void draw()
   {
-    GRAPHICS.setColor(Color.BLACK);
+    GRAPHICS.setColor(new Color(71, 71, 71));
     GRAPHICS.fillRect(0, 0, WIDTH, HEIGHT);
-
     GUI.render(GRAPHICS);
 
     getBufferStrategy().show();

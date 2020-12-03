@@ -1,5 +1,8 @@
 package com.focasoft.focaworld.launcher;
 
+import static com.focasoft.focaworld.launcher.Launcher.WIDTH;
+import static com.focasoft.focaworld.launcher.Launcher.HEIGHT;
+
 import javax.swing.event.MouseInputListener;
 import java.awt.Color;
 import java.awt.Font;
@@ -11,7 +14,7 @@ import java.util.ArrayList;
 
 public class UI implements KeyListener, MouseInputListener
 {
-  private final String VALID = "ABCDEFGHIJKLMOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  private final String VALID = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   private final Launcher LAUNCHER;
 
   protected ArrayList<Button> buttons = new ArrayList<>();
@@ -19,8 +22,8 @@ public class UI implements KeyListener, MouseInputListener
   protected Button multi;
   protected Button single;
 
-  private char[] chars = {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '};
-  private int i = 0;
+  private final char[] chars = {'D', 'I', 'G', 'I', 'T', 'E', ' ', ' '};
+  private int i = 5;
 
   private boolean click;
   private int x;
@@ -33,11 +36,12 @@ public class UI implements KeyListener, MouseInputListener
     launcher.addMouseMotionListener(this);
     launcher.addMouseListener(this);
 
-    multi = new Button(this, "Multiplayer", 120, 120, 80, 40);
-    single = new Button(this, "Singlesplayer", 120, 180, 80, 40);
+    single = new Button(this, "Singlesplayer", WIDTH / 2 - 120, 260, 100, 40);
+    multi = new Button(this, "Multiplayer", WIDTH / 2 + 16, 260, 100, 40);
 
     buttons.add(multi);
     buttons.add(single);
+    launcher.requestFocus();
   }
 
   public void update()
@@ -88,10 +92,25 @@ public class UI implements KeyListener, MouseInputListener
 
   public void render(Graphics g)
   {
-    buttons.forEach(e -> e.draw(g));
+    String txt = "Nickname";
+
     g.setColor(Color.WHITE);
-    g.setFont(new Font("arial", Font.PLAIN, 16));
-    g.drawString(new String(chars), 200, 200);
+    g.setFont(new Font("Comic Sans MS", Font.BOLD, 32));
+    g.drawString(txt, (WIDTH - g.getFontMetrics().stringWidth(txt)) / 2, 130);
+
+    g.setColor(new Color(17, 17, 17));
+    g.fillRect((WIDTH - 240) / 2, 152, 240, 58);
+
+    g.setColor(new Color(30, 30, 30));
+    g.fillRect((WIDTH - 232) / 2, 156, 232, 50);
+
+    g.setColor(Color.WHITE);
+    g.setFont(new Font("Comic Sans MS", Font.BOLD, 26));
+
+    String name = new String(chars);
+    g.drawString(name, (WIDTH - g.getFontMetrics().stringWidth(name)) / 2, 190);
+
+    buttons.forEach(e -> e.draw(g));
   }
 
   @Override
