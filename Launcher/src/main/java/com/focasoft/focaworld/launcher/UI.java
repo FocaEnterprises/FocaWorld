@@ -22,8 +22,8 @@ public class UI implements KeyListener, MouseInputListener
   protected Button multi;
   protected Button single;
 
-  private final char[] chars = {'D', 'I', 'G', 'I', 'T', 'E', ' ', ' '};
-  private int i = 5;
+  private final char[] chars = {'D', 'I', 'G', 'I', 'T', 'E', 'A', 'Q'};
+  private int i = 7;
 
   private boolean click;
   private int x;
@@ -131,7 +131,13 @@ public class UI implements KeyListener, MouseInputListener
     if(!match)
       return;
 
-    if(i >= chars.length)
+    if(i > chars.length -1)
+    {
+      i = chars.length -1;
+      return;
+    }
+
+    if(chars[i] != ' ')
       return;
 
     chars[i] = ch;
@@ -143,14 +149,21 @@ public class UI implements KeyListener, MouseInputListener
   {
     if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE)
     {
-      if(i > chars.length -1)
+      if(i >= chars.length)
         i = chars.length -1;
 
-      chars[i] = ' ';
+      if(i == chars.length -1 && chars[i] != ' ')
+      {
+        chars[i] = ' ';
+        return;
+      }
+
       --i;
 
       if(i < 0)
         i = 0;
+
+      chars[i] = ' ';
     }
   }
 

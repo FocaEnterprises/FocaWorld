@@ -1,8 +1,10 @@
 package com.focasoft.focaworld.launcher;
 
-import javax.imageio.ImageIO;
 import javax.swing.JFrame;
-import java.awt.*;
+import java.awt.Canvas;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
 import java.io.IOException;
 
 public class Launcher extends Canvas implements Runnable
