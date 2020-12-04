@@ -87,10 +87,10 @@ public class World
           if(entity instanceof EntityPlayer)
           {
             EntityPlayer player = (EntityPlayer) entity;
-            player.setMovingRight(json.getBoolean("right"));
-            player.setMovingLeft(json.getBoolean("left"));
-            player.setMovingUp(json.getBoolean("up"));
-            player.setMovingDown(json.getBoolean("down"));
+            player.setMovingRight(ent.getBoolean("right"));
+            player.setMovingLeft(ent.getBoolean("left"));
+            player.setMovingUp(ent.getBoolean("up"));
+            player.setMovingDown(ent.getBoolean("down"));
           }
 
           addEntity(entity);

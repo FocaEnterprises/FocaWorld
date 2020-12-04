@@ -159,6 +159,7 @@ public class Client extends Canvas implements Runnable
       NETWORK_MANAGER.sendPacketNow(new PacketPlayerQuit(getName()));
 
     WORKER.kill();
+    System.exit(0);
   }
 
   public String getName()

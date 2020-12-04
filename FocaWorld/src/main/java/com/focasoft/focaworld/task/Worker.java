@@ -67,7 +67,7 @@ public class Worker implements Runnable
     
     try
     {
-      THREAD.join();
+      THREAD.join(500);
     }
     catch(InterruptedException e)
     {
