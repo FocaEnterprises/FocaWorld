@@ -76,8 +76,10 @@ public class ClientPacketProcessor implements PacketProcessor
     if(player == null)
       return;
 
-    player.moveX(move.getX());
-    player.moveY(move.getY());
+    player.setMovingRight(move.isRight());
+    player.setMovingLeft(move.isLeft());
+    player.setMovingUp(move.isUp());
+    player.setMovingDown(move.isDown());
   }
 
   private void processWorld(PacketWorld world)

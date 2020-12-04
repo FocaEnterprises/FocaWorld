@@ -38,8 +38,12 @@ public class ServerPacketProcessor implements PacketProcessor
   private void processPlayerMove(PacketPlayerMove packet)
   {
     EntityPlayer player = WORLD.getPlayer(packet.getName());
-    player.moveX(packet.getX());
-    player.moveY(packet.getY());
+
+    player.setMovingRight(packet.isRight());
+    player.setMovingLeft(packet.isLeft());
+    player.setMovingUp(packet.isUp());
+    player.setMovingDown(packet.isDown());
+
     MANAGER.broadcast(packet, packet.getName());
   }
 

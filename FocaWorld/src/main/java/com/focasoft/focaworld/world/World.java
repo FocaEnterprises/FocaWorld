@@ -72,15 +72,26 @@ public class World
         this.tiles[Integer.parseInt(key)] = (byte) tiles.getInt(key);
       }
 
-      if(!json.isNull("entities")) {
+      if(!json.isNull("entities"))
+      {
         JSONObject entities = json.getJSONObject("entities");
 
-        for(String key : entities.keySet()) {
+        for(String key : entities.keySet())
+        {
           JSONObject ent = entities.getJSONObject(key);
           Entity entity = createInstance(ent.getString("class"), key, ent.getInt("x"), ent.getInt("y"));
 
           if(containsEntity(entity.getName()))
             continue;
+
+          if(entity instanceof EntityPlayer)
+          {
+            EntityPlayer player = (EntityPlayer) entity;
+            player.setMovingRight(json.getBoolean("right"));
+            player.setMovingLeft(json.getBoolean("left"));
+            player.setMovingUp(json.getBoolean("up"));
+            player.setMovingDown(json.getBoolean("down"));
+          }
 
           addEntity(entity);
         }
@@ -214,6 +225,17 @@ public class World
       ent.put("x", e.getX());
       ent.put("y", e.getY());
       ent.put("class", e.getClass().getName());
+
+      if(e instanceof EntityPlayer)
+      {
+        EntityPlayer player = (EntityPlayer) e;
+
+        ent.put("right", player.isMovingRight());
+        ent.put("left", player.isMovingLeft());
+        ent.put("up", player.isMovingUp());
+        ent.put("down", player.isMovingDown());
+      }
+
       entities.put(e.getName(), ent);
     });
 

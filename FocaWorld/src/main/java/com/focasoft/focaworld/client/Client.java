@@ -40,6 +40,8 @@ public class Client extends Canvas implements Runnable
 
   private final boolean MULTIPLAYER;
 
+  private boolean stoping = false;
+
   public Client(String nick, boolean multiplayer)
   {
     if(!Resources.setup() || !Sprites.init())
@@ -112,7 +114,12 @@ public class Client extends Canvas implements Runnable
   {
     if(!FRAME.isVisible())
     {
-      stop();
+      if(!stoping)
+      {
+        stoping = true;
+        stop();
+      }
+
       return;
     }
 

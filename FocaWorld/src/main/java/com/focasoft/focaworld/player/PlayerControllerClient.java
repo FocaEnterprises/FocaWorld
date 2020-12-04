@@ -18,6 +18,11 @@ public class PlayerControllerClient implements PlayerController
   private final Camera CAMERA;
   private final Client CLIENT;
 
+  private boolean lastRight;
+  private boolean lastLeft;
+  private boolean lastUp;
+  private boolean lastDown;
+
   public PlayerControllerClient(Client client, EntityPlayer player, PlayerInput input, Camera camera)
   {
     this.CLIENT = client;
@@ -30,35 +35,28 @@ public class PlayerControllerClient implements PlayerController
   
   public void update()
   {
-    setMovingRight(INPUT.isPressed(VK_D));
-    setMovingLeft(INPUT.isPressed(VK_A));
-    setMovingUp(INPUT.isPressed(VK_W));
-    setMovingDown(INPUT.isPressed(VK_S));
+    boolean right = INPUT.isPressed(VK_D);
+    boolean left = INPUT.isPressed(VK_A);
+    boolean up = INPUT.isPressed(VK_W);
+    boolean down = INPUT.isPressed(VK_S);
 
-    // TODO: Pensar numa maneira mais eficiente de fazer isso
+    setMovingRight(right);
+    setMovingLeft(left);
+    setMovingUp(up);
+    setMovingDown(down);
+
     if(CLIENT.isMultiplayer())
     {
-      int x = 0;
-      int y = 0;
-
-      if(INPUT.isPressed(VK_D))
-        x += getSpeed();
-
-      if(INPUT.isPressed(VK_A))
-        x -= getSpeed();
-
-      if(INPUT.isPressed(VK_S))
-        y += getSpeed();
-
-      if(INPUT.isPressed(VK_W))
-        y -= getSpeed();
-
-      if(x != 0 || y != 0)
+      if(right != lastRight || left != lastLeft || up != lastUp || down != lastDown)
       {
-        PacketPlayerMove packet = new PacketPlayerMove(getName(), x, y);
-        CLIENT.getNetworkManager().sendPacket(packet);
+        CLIENT.getNetworkManager().sendPacket(new PacketPlayerMove(getName(), right, left, up, down));
       }
     }
+
+    lastRight = right;
+    lastLeft = left;
+    lastUp = up;
+    lastDown = down;
   }
   
   public void updateCamera()

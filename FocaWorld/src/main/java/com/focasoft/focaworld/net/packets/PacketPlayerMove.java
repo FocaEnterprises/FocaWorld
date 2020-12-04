@@ -9,20 +9,26 @@ import org.json.JSONObject;
 public class PacketPlayerMove extends Packet
 {
   private final String NAME;
-  private final int X;
-  private final int Y;
+  private final boolean RIGHT;
+  private final boolean LEFT;
+  private final boolean UP;
+  private final boolean DOWN;
 
-  public PacketPlayerMove(String name, int xi, int yi)
+  public PacketPlayerMove(String name, boolean right, boolean left, boolean up, boolean down)
   {
     super(PacketType.PLAYER_MOVE);
 
     this.NAME = name;
-    this.X = xi;
-    this.Y = yi;
+    this.RIGHT = right;
+    this.LEFT = left;
+    this.UP = up;
+    this.DOWN = down;
 
     DATA.put("name", name);
-    DATA.put("x", xi);
-    DATA.put("y", yi);
+    DATA.put("right", right);
+    DATA.put("left", left);
+    DATA.put("up", up);
+    DATA.put("down", down);
   }
 
   public String getName()
@@ -30,14 +36,24 @@ public class PacketPlayerMove extends Packet
     return NAME;
   }
 
-  public int getX()
+  public boolean isRight()
   {
-    return X;
+    return RIGHT;
   }
 
-  public int getY()
+  public boolean isLeft()
   {
-    return Y;
+    return LEFT;
+  }
+
+  public boolean isDown()
+  {
+    return DOWN;
+  }
+
+  public boolean isUp()
+  {
+    return UP;
   }
 
   public static PacketPlayerMove parse(JSONObject json)
@@ -45,7 +61,12 @@ public class PacketPlayerMove extends Packet
     PacketPlayerMove packet;
 
     try {
-      packet = new PacketPlayerMove(json.getString("name"), json.getInt("x"), json.getInt("y"));
+      packet = new PacketPlayerMove(
+              json.getString("name"),
+              json.getBoolean("right"),
+              json.getBoolean("left"),
+              json.getBoolean("up"),
+              json.getBoolean("down"));
     } catch(JSONException e){
       throw new BadPacketException(e.getMessage());
     }
