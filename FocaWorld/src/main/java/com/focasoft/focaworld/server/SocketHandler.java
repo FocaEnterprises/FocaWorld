@@ -20,7 +20,7 @@ public class SocketHandler implements Runnable
     
     try
     {
-      SOCKET = new ServerSocket(10215);
+      SOCKET = new ServerSocket(10039);
     }
     catch(IOException e)
     {
