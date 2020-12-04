@@ -37,9 +37,9 @@ public class Client extends Canvas implements Runnable
   private final JFrame FRAME;
   private final BufferedImage LAYER;
   private final Graphics GRAPHICS;
-  
+
   private final boolean MULTIPLAYER;
-  
+
   public Client(String nick, boolean multiplayer)
   {
     if(!Resources.setup() || !Sprites.init())
@@ -47,18 +47,20 @@ public class Client extends Canvas implements Runnable
       System.out.println("Falha ao carregar resources! Saindo.");
       System.exit(0);
     }
-    
+
+    Runtime.getRuntime().addShutdownHook(new Thread(this::stop, "Shutdown"));
+
     this.MULTIPLAYER = multiplayer;
     this.setPreferredSize(new Dimension(scaledWidth(), scaledHeight()));
-    
+
     FRAME = new JFrame("Foca World - " + (multiplayer ? "Multiplayer" : "Singleplayer"));
     FRAME.setResizable(false);
-    FRAME.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    FRAME.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     FRAME.add(this);
     FRAME.pack();
     FRAME.setLocationRelativeTo(null);
     FRAME.setVisible(true);
-    
+
     createBufferStrategy(3);
     GRAPHICS = getBufferStrategy().getDrawGraphics();
     LAYER = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
@@ -76,10 +78,9 @@ public class Client extends Canvas implements Runnable
     CONTROLLER = new PlayerControllerClient(this, player, INPUT, CAMERA);
     WORLD.addEntity(player);
 
-    if(multiplayer) {
-      NETWORK_MANAGER = new ClientNetworkManager(this, "localhost", 10215);
-
-      Runtime.getRuntime().addShutdownHook(new Thread(() -> NETWORK_MANAGER.sendPacketNow(new PacketPlayerQuit(getName())), "Shutdown"));
+    if(multiplayer)
+    {
+      NETWORK_MANAGER = new ClientNetworkManager(this, "us-1.purplehost.com.br", 10039);
 
       try {
         NETWORK_MANAGER.connect();
@@ -109,6 +110,12 @@ public class Client extends Canvas implements Runnable
   
   private void tick()
   {
+    if(!FRAME.isVisible())
+    {
+      stop();
+      return;
+    }
+
     if(MULTIPLAYER) {
       NETWORK_MANAGER.processIncomingPackets();
       NETWORK_MANAGER.processOutPackets();
@@ -141,7 +148,9 @@ public class Client extends Canvas implements Runnable
   
   public void stop()
   {
-    FRAME.setVisible(false);
+    if(MULTIPLAYER)
+      NETWORK_MANAGER.sendPacketNow(new PacketPlayerQuit(getName()));
+
     WORKER.kill();
   }
 
