@@ -170,7 +170,13 @@ public class ClientNetworkManager implements Runnable
 
   private void read() throws IOException
   {
-    int len = input.readInt();
+    int len;
+
+    try { // Exception if input hasn't four bytes
+      len = input.readInt();
+    } catch(IOException ex){
+      return;
+    }
 
     if(len < 1)
       return;

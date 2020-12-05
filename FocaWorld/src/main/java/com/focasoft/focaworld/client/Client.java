@@ -1,9 +1,9 @@
 package com.focasoft.focaworld.client;
 
 import com.focasoft.focaworld.assets.Resources;
+import com.focasoft.focaworld.assets.Sprites;
 import com.focasoft.focaworld.client.render.Camera;
 import com.focasoft.focaworld.client.render.GUI;
-import com.focasoft.focaworld.assets.Sprites;
 import com.focasoft.focaworld.entity.entities.EntityPlayer;
 import com.focasoft.focaworld.net.packets.PacketPlayerQuit;
 import com.focasoft.focaworld.player.PlayerControllerClient;
@@ -11,13 +11,14 @@ import com.focasoft.focaworld.player.PlayerInput;
 import com.focasoft.focaworld.task.Worker;
 import com.focasoft.focaworld.world.World;
 import com.focasoft.focaworld.world.gen.WorldGenerator;
+
+import javax.swing.JFrame;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import javax.swing.JFrame;
 
 public class Client extends Canvas implements Runnable
 {
@@ -155,8 +156,13 @@ public class Client extends Canvas implements Runnable
   
   public void stop()
   {
-    if(MULTIPLAYER)
-      NETWORK_MANAGER.sendPacketNow(new PacketPlayerQuit(getName()));
+    if(MULTIPLAYER) {
+      try {
+        NETWORK_MANAGER.sendPacketNow(new PacketPlayerQuit(getName()));
+      } catch(IOException ex) {
+        ex.printStackTrace();
+      }
+    }
 
     // TODO: WORKER.kill();
     System.exit(0);

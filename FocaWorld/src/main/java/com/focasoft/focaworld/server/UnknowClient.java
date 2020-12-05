@@ -5,9 +5,9 @@ import com.focasoft.focaworld.net.Packet;
 import com.focasoft.focaworld.net.PacketParser;
 import com.focasoft.focaworld.net.packets.PacketHandshake;
 
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Scanner;
 
 public class UnknowClient implements Runnable
 {
@@ -25,13 +25,13 @@ public class UnknowClient implements Runnable
   public void run()
   {
     System.out.println("Iniciando UnknownClient: " + SOCKET.getInetAddress());
-    Scanner scanner;
+    DataInputStream in;
     boolean exit = false;
     long last = System.currentTimeMillis();
 
     try
     {
-      scanner = new Scanner(SOCKET.getInputStream());
+      in = new DataInputStream(SOCKET.getInputStream());
     }
     catch(IOException e)
     {
@@ -46,10 +46,10 @@ public class UnknowClient implements Runnable
         last = System.currentTimeMillis();
       }
 
-      if(scanner.hasNextLine())
+      if(in.hasNextLine())
       {
         exit = true;
-        String line = scanner.nextLine();
+        String line = in.nextLine();
         System.out.println("UnknowClient: " + line);
 
         try
