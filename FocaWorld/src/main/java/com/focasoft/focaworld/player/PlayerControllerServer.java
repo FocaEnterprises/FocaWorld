@@ -9,12 +9,11 @@ import com.focasoft.focaworld.server.ServerNetworkManager;
 import com.focasoft.focaworld.task.AsyncWorker;
 import com.focasoft.focaworld.utils.ThreadUtils;
 import com.focasoft.focaworld.world.World;
-import org.json.JSONObject;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Scanner;
 
 public class PlayerControllerServer implements PlayerController, Runnable
 {
@@ -25,8 +24,8 @@ public class PlayerControllerServer implements PlayerController, Runnable
   private final Socket SOCKET;
   private final Server SERVER;
 
-  private PrintWriter output;
-  private Scanner input;
+  private DataOutputStream output;
+  private DataInputStream input;
 
   private boolean listening;
 
@@ -42,8 +41,8 @@ public class PlayerControllerServer implements PlayerController, Runnable
     listening = true;
 
     try {
-      this.input = new Scanner(SOCKET.getInputStream());
-      this.output = new PrintWriter(SOCKET.getOutputStream(), true);
+      this.input = new DataInputStream(SOCKET.getInputStream());
+      this.output = new DataOutputStream(SOCKET.getOutputStream());
     } catch(IOException e) {
       e.printStackTrace();
     }
@@ -52,19 +51,20 @@ public class PlayerControllerServer implements PlayerController, Runnable
     THREAD.start();
   }
 
-  public void sendMessage(String message)
+  public void sendMessage(byte[] msg)
   {
     if(SOCKET.isClosed())
       return;
 
     WORKER.addTask(() -> {
-      output.println(message);
+      try {
+        output.writeInt(msg.length);
+        output.write(msg);
+      }
+      catch(IOException e){
+        e.printStackTrace();
+      }
     });
-  }
-
-  public void sendMessage(JSONObject json)
-  {
-    sendMessage(json.toString());
   }
 
   public void sendPacket(Packet packet)
@@ -72,12 +72,12 @@ public class PlayerControllerServer implements PlayerController, Runnable
     sendMessage(packet.serialize());
   }
 
-  private void processInput(String line)
+  private void processInput(byte[] data)
   {
     Packet packet;
 
     try {
-      packet = PacketParser.parsePacket(line);
+      packet = PacketParser.parsePacket(data);
     } catch(BadPacketException e) {
       e.printStackTrace();
       return;
@@ -98,10 +98,27 @@ public class PlayerControllerServer implements PlayerController, Runnable
         continue;
       }
 
-      if(input.hasNextLine()) {
-        processInput(input.nextLine());
+      int len;
+
+      try {
+        len = input.readInt();
+      } catch(IOException e){
+        continue;
       }
 
+      if(len < 1)
+        continue;
+
+      byte[] data = new byte[len];
+
+      try {
+        input.readFully(data, 0, len);
+      } catch(IOException e){
+        e.printStackTrace();
+        continue;
+      }
+
+      processInput(data);
       ThreadUtils.sleep(10);
     }
   }

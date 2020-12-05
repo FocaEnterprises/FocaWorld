@@ -57,11 +57,11 @@ public class UnknownClient implements Runnable
       try {
         len = in.readInt();
       } catch(IOException e) {
-        return;
+        continue;
       }
 
       if(len < 1)
-        return;
+        continue;
 
       byte[] data = new byte[len];
       Packet packet;
@@ -76,13 +76,13 @@ public class UnknownClient implements Runnable
       catch(Exception e)
       {
         close("Invalid input!");
-        return;
+        continue;
       }
 
       if(!(packet instanceof PacketHandshake))
       {
         close("Invalid credentials!");
-        return;
+        continue;
       }
 
       MANAGER.handleLogin((PacketHandshake) packet, SOCKET);
