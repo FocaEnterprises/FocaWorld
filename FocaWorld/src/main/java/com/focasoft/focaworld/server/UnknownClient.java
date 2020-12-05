@@ -1,6 +1,5 @@
 package com.focasoft.focaworld.server;
 
-import com.focasoft.focaworld.net.BadPacketException;
 import com.focasoft.focaworld.net.Packet;
 import com.focasoft.focaworld.net.PacketParser;
 import com.focasoft.focaworld.net.packets.PacketHandshake;
@@ -9,14 +8,17 @@ import com.focasoft.focaworld.utils.ThreadUtils;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Arrays;
 
-public class UnknowClient implements Runnable
+public class UnknownClient implements Runnable
 {
   private final Socket SOCKET;
   private final ServerNetworkManager MANAGER;
   
-  public UnknowClient(Socket socket, ServerNetworkManager manager)
+  public UnknownClient(Socket socket, ServerNetworkManager manager)
   {
+    System.out.println("Novo UnknownClient: " + socket.getInetAddress());
+
     this.SOCKET = socket;
     this.MANAGER = manager;
     new Thread(this).start();
@@ -25,7 +27,6 @@ public class UnknowClient implements Runnable
   @Override
   public void run()
   {
-    System.out.println("Novo UnknownClient: " + SOCKET.getInetAddress());
     DataInputStream in;
     boolean exit = false;
     long last = System.currentTimeMillis();
@@ -37,50 +38,54 @@ public class UnknowClient implements Runnable
     catch(IOException e)
     {
       e.printStackTrace();
+      close("Input failure!");
       return;
     }
 
     while(!exit)
     {
+      ThreadUtils.sleep(50);
+
       if(System.currentTimeMillis() - last >= 10000) {
         System.out.println("Nada ainda");
-        last = System.currentTimeMillis();
-      }
-
-      if(in.hasNextLine())
-      {
-        exit = true;
-        String line = in.nextLine();
-        System.out.println("UnknowClient: " + line);
-
-        try
-        {
-          Packet packet = PacketParser.parsePacket(line);
-          
-          if(!(packet instanceof PacketHandshake))
-          {
-            SOCKET.close();
-            continue;
-          }
-          
-          MANAGER.handleLogin((PacketHandshake) packet, SOCKET);
-        }
-        catch(BadPacketException | IOException e)
-        {
-          try
-          {
-            SOCKET.close();
-          }
-          catch(IOException ioException)
-          {
-            ioException.printStackTrace();
-          }
-        }
-        
+        close("No input!");
         return;
       }
 
-      ThreadUtils.sleep(50);
+      int len;
+
+      try {
+        len = in.readInt();
+      } catch(IOException e) {
+        return;
+      }
+
+      if(len < 1)
+        return;
+
+      byte[] data = new byte[len];
+      Packet packet;
+      exit = true;
+
+      try
+      {
+        in.readFully(data, 0, len);
+        System.out.println("Entrada UnknowClient: " + Arrays.toString(data));
+        packet = PacketParser.parsePacket(data);
+      }
+      catch(Exception e)
+      {
+        close("Invalid input!");
+        return;
+      }
+
+      if(!(packet instanceof PacketHandshake))
+      {
+        close("Invalid credentials!");
+        return;
+      }
+
+      MANAGER.handleLogin((PacketHandshake) packet, SOCKET);
     }
   }
 
