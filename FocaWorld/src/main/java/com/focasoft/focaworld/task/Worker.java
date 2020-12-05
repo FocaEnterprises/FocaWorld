@@ -1,5 +1,7 @@
 package com.focasoft.focaworld.task;
 
+import com.focasoft.focaworld.utils.ThreadUtils;
+
 public class Worker implements Runnable
 {
   private final Runnable RUNNABLE;
@@ -44,15 +46,8 @@ public class Worker implements Runnable
         fps = 0;
         timer += 1000;
       }
-      
-      try
-      {
-        Thread.sleep(5);
-      }
-      catch(InterruptedException e)
-      {
-        e.printStackTrace();
-      }
+
+      ThreadUtils.sleep(5);
     }
   }
   

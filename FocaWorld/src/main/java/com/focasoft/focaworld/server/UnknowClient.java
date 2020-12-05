@@ -4,6 +4,7 @@ import com.focasoft.focaworld.net.BadPacketException;
 import com.focasoft.focaworld.net.Packet;
 import com.focasoft.focaworld.net.PacketParser;
 import com.focasoft.focaworld.net.packets.PacketHandshake;
+import com.focasoft.focaworld.utils.ThreadUtils;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -24,7 +25,7 @@ public class UnknowClient implements Runnable
   @Override
   public void run()
   {
-    System.out.println("Iniciando UnknownClient: " + SOCKET.getInetAddress());
+    System.out.println("Novo UnknownClient: " + SOCKET.getInetAddress());
     DataInputStream in;
     boolean exit = false;
     long last = System.currentTimeMillis();
@@ -78,17 +79,22 @@ public class UnknowClient implements Runnable
         
         return;
       }
-  
-      try
-      {
-        Thread.sleep(50);
-      }
-      catch(InterruptedException e)
-      {
-        e.printStackTrace();
-      }
-    }
 
-    System.out.println("Fechou.");
+      ThreadUtils.sleep(50);
+    }
+  }
+
+  public void close(String reason)
+  {
+    try
+    {
+      SOCKET.getOutputStream().write(reason.getBytes());
+      SOCKET.getOutputStream().flush();
+      SOCKET.close();
+    }
+    catch(IOException e)
+    {
+      e.printStackTrace();
+    }
   }
 }

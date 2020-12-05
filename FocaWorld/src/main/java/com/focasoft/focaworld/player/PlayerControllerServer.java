@@ -7,6 +7,7 @@ import com.focasoft.focaworld.net.PacketParser;
 import com.focasoft.focaworld.server.Server;
 import com.focasoft.focaworld.server.ServerNetworkManager;
 import com.focasoft.focaworld.task.AsyncWorker;
+import com.focasoft.focaworld.utils.ThreadUtils;
 import com.focasoft.focaworld.world.World;
 import org.json.JSONObject;
 
@@ -101,11 +102,7 @@ public class PlayerControllerServer implements PlayerController, Runnable
         processInput(input.nextLine());
       }
 
-      try {
-        Thread.sleep(10);
-      } catch(InterruptedException e) {
-        e.printStackTrace();
-      }
+      ThreadUtils.sleep(10);
     }
   }
 

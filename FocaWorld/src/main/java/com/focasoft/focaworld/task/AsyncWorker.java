@@ -1,5 +1,7 @@
 package com.focasoft.focaworld.task;
 
+import com.focasoft.focaworld.utils.ThreadUtils;
+
 import java.util.LinkedList;
 
 public class AsyncWorker implements Runnable
@@ -20,10 +22,7 @@ public class AsyncWorker implements Runnable
     {
       if(QUEUE.size() == 0)
       {
-        try {
-          Thread.sleep(5);
-        }
-        catch(InterruptedException ignore) { }
+        ThreadUtils.sleep(5);
       }
       
       try
