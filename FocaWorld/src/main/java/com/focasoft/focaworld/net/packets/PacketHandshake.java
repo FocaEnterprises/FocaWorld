@@ -22,7 +22,7 @@ public class PacketHandshake extends Packet
     return NAME;
   }
 
-  public static PacketHandshake parse(JSONObject json)
+  public static PacketHandshake parse(byte[] data)
   {
     PacketHandshake packet;
 

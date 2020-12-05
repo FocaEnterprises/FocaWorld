@@ -47,7 +47,7 @@ public class PacketPlayerJoin extends Packet
     return X;
   }
 
-  public static PacketPlayerJoin parse(JSONObject json)
+  public static PacketPlayerJoin parse(byte[] data)
   {
     PacketPlayerJoin packet;
 

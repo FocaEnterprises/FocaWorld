@@ -23,7 +23,7 @@ public class PacketPlayerQuit extends Packet
     return NAME;
   }
 
-  public static PacketPlayerQuit parse(JSONObject json)
+  public static PacketPlayerQuit parse(byte[] data)
   {
     PacketPlayerQuit packet;
 

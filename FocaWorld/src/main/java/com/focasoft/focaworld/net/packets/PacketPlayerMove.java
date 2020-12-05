@@ -56,7 +56,7 @@ public class PacketPlayerMove extends Packet
     return UP;
   }
 
-  public static PacketPlayerMove parse(JSONObject json)
+  public static PacketPlayerMove parse(byte[] data)
   {
     PacketPlayerMove packet;
 

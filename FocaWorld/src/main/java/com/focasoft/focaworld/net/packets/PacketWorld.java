@@ -23,7 +23,7 @@ public class PacketWorld extends Packet
     return WORLD;
   }
 
-  public static PacketWorld parse(JSONObject json)
+  public static PacketWorld parse(byte[] data)
   {
     PacketWorld packet;
 

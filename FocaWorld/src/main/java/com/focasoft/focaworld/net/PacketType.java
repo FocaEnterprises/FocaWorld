@@ -2,22 +2,22 @@ package com.focasoft.focaworld.net;
 
 public enum PacketType
 {
-  HANDSHAKE("HANDSHAKE"),
-  PLAYER_MOVE("PLAYER_MOVE"),
-  PLAYER_JOIN("PLAYER_JOIN"),
-  PLAYER_QUIT("PLAYER_QUIT"),
-  WORLD("WORLD"),
+  HANDSHAKE((byte) 0),
+  PLAYER_JOIN((byte) 1),
+  PLAYER_QUIT((byte) 2),
+  PLAYER_MOVE((byte) 3),
+  WORLD((byte) 4),
   ;
   
-  private final String DESC;
+  private final byte ID;
   
-  PacketType(String desc)
+  PacketType(byte id)
   {
-    DESC = desc;
+    ID = id;
   }
   
-  public String getDescName()
+  public byte getID()
   {
-    return DESC;
+    return ID;
   }
 }

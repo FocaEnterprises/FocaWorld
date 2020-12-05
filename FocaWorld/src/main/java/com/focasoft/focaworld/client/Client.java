@@ -82,7 +82,7 @@ public class Client extends Canvas implements Runnable
 
     if(multiplayer)
     {
-      NETWORK_MANAGER = new ClientNetworkManager(this, "us-1.purplehost.com.br", 10039);
+      NETWORK_MANAGER = new ClientNetworkManager(this, "game.weider.com.br", 10039);
 
       try {
         NETWORK_MANAGER.connect();
@@ -158,7 +158,7 @@ public class Client extends Canvas implements Runnable
     if(MULTIPLAYER)
       NETWORK_MANAGER.sendPacketNow(new PacketPlayerQuit(getName()));
 
-    WORKER.kill();
+    // TODO: WORKER.kill();
     System.exit(0);
   }
 
