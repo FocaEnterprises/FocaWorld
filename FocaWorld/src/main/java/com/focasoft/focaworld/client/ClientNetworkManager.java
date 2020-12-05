@@ -5,17 +5,17 @@ import com.focasoft.focaworld.net.Packet;
 import com.focasoft.focaworld.net.PacketParser;
 import com.focasoft.focaworld.net.packets.PacketHandshake;
 import com.focasoft.focaworld.task.AsyncWorker;
-import org.json.JSONObject;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.Scanner;
 
 public class ClientNetworkManager implements Runnable
 {
-  private final LinkedList<String> OUT_MESSAGES = new LinkedList<>();
+  private final LinkedList<byte[]> OUT_MESSAGES = new LinkedList<>();
   private final LinkedList<Packet> IN_MESSAGES = new LinkedList<>();
 
   private final ClientPacketProcessor PROCESSOR;
@@ -25,8 +25,8 @@ public class ClientNetworkManager implements Runnable
 
   private final int PORT;
   
-  private Scanner input;
-  private PrintWriter output;
+  private DataInputStream input;
+  private DataOutputStream output;
 
   private Socket socket;
   private Thread thread;
@@ -48,8 +48,8 @@ public class ClientNetworkManager implements Runnable
   public void connect() throws IOException
   {
     socket = new Socket(HOST, PORT);
-    input = new Scanner(socket.getInputStream());
-    output = new PrintWriter(socket.getOutputStream(), true);
+    input = new DataInputStream(socket.getInputStream());
+    output = new DataOutputStream(socket.getOutputStream());
     thread = new Thread(this, "Network Manager");
     running = true;
     thread.start();
@@ -74,13 +74,13 @@ public class ClientNetworkManager implements Runnable
     output = null;
   }
   
-  private void parseInput(String line)
+  private void parseInput(byte[] data)
   {
-    System.out.println("Recebi: " + line);
+    System.out.println("Recebi: " + Arrays.toString(data));
     Packet packet;
 
     try {
-      packet = PacketParser.parsePacket(line);
+      packet = PacketParser.parsePacket(data);
     } catch(BadPacketException e) {
       e.printStackTrace();
       return;
@@ -92,7 +92,7 @@ public class ClientNetworkManager implements Runnable
     }
   }
   
-  public void sendMessage(String msg)
+  public void sendMessage(byte[] msg)
   {
     synchronized(OUT_MESSAGES)
     {
@@ -100,21 +100,23 @@ public class ClientNetworkManager implements Runnable
     }
   }
 
-  protected void sendPacketNow(Packet packet)
-  {
-    output.println(packet.serialize());
-  }
-
-  public void sendMessage(JSONObject json)
-  {
-    sendMessage(json.toString());
-  }
-  
   public void sendPacket(Packet packet)
   {
     sendMessage(packet.serialize());
   }
-  
+
+  protected void sendPacketNow(Packet packet) throws IOException
+  {
+    sendMessageNow(packet.serialize());
+  }
+
+  protected void sendMessageNow(byte[] msg) throws IOException
+  {
+    output.writeInt(msg.length);
+    output.write(msg);
+    output.flush();
+  }
+
   public LinkedList<Packet> drainInput()
   {
     LinkedList<Packet> in;
@@ -128,9 +130,9 @@ public class ClientNetworkManager implements Runnable
     return in;
   }
   
-  private LinkedList<String> drainOut()
+  private LinkedList<byte[]> drainOut()
   {
-    LinkedList<String> out;
+    LinkedList<byte[]> out;
 
     synchronized(OUT_MESSAGES)
     {
@@ -152,13 +154,31 @@ public class ClientNetworkManager implements Runnable
       return;
 
     WORKER.addTask(() -> {
-      LinkedList<String> out = ClientNetworkManager.this.drainOut();
+      LinkedList<byte[]> out = ClientNetworkManager.this.drainOut();
 
       out.forEach(e -> {
-        ClientNetworkManager.this.output.println(e);
-        System.out.println("Escrevi: " + e);
+        try {
+          ClientNetworkManager.this.sendMessageNow(e);
+          System.out.println("Escrevi: " + Arrays.toString(e));
+        }
+        catch(IOException ex) {
+          ex.printStackTrace();
+        }
       });
     });
+  }
+
+  private void read() throws IOException
+  {
+    int len = input.readInt();
+
+    if(len < 1)
+      return;
+
+    byte[] data = new byte[len];
+
+    input.readFully(data, 0, len);
+    parseInput(data);
   }
 
   @Override
@@ -168,12 +188,11 @@ public class ClientNetworkManager implements Runnable
     {
       if(socket.isClosed())
         System.out.println("Fecho");
-      
-      String line = input.nextLine();
 
-      if(line != null)
-      {
-        parseInput(line);
+      try {
+        read();
+      } catch(IOException e) {
+        e.printStackTrace();
       }
     }
   }
