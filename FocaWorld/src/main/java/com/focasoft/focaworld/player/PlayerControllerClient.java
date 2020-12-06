@@ -42,7 +42,7 @@ public class PlayerControllerClient implements PlayerController
     {
       if(lastX != getX() || lastY != getY())
       {
-        CLIENT.getNetworkManager().sendPacket(new PacketPlayerMove(getName(), right, left, up, down));
+        CLIENT.getNetworkManager().sendPacket(new PacketPlayerMove(getId(), (byte) (getX() - lastX), (byte) (getY() - lastY)));
       }
     }
 
@@ -138,6 +138,18 @@ public class PlayerControllerClient implements PlayerController
   public void setY(int y)
   {
     PLAYER.setY(y);
+  }
+
+  @Override
+  public short getId()
+  {
+    return PLAYER.getId();
+  }
+
+  @Override
+  public void setId(short id)
+  {
+    PLAYER.setId(id);
   }
 
   @Override

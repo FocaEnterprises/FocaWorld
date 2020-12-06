@@ -58,7 +58,7 @@ public class Server implements Runnable
   // TODO: Carregar dados do jogador de uma config
   public EntityPlayer registerPlayer(String name)
   {
-    EntityPlayer player = new EntityPlayer(WORLD, name, 16, 16);
+    EntityPlayer player = new EntityPlayer(WORLD, name, (short) WORLD.nextEntityID(), 16, 16);
     WORLD.addEntity(player);
 
     return player;

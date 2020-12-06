@@ -52,38 +52,37 @@ public class ClientPacketProcessor implements PacketProcessor
     {
       PLAYER.setX(join.getX());
       PLAYER.setY(join.getY());
+      PLAYER.setId(join.getID());
       return;
     }
 
-    WORLD.addEntity(new EntityPlayer(WORLD, join.getName(), join.getX(), join.getY()));
+    WORLD.addEntity(new EntityPlayer(WORLD, join.getName(), join.getID(), join.getX(), join.getY()));
   }
 
   private void processPlayerQuit(PacketPlayerQuit quit)
   {
-    if(quit.getName().equals(CLIENT.getName()))
+    if(quit.getID() == PLAYER.getId())
     {
       CLIENT.stop();
       return;
     }
 
-    WORLD.removeEntity(quit.getName());
+    WORLD.removeEntity(quit.getID());
   }
 
   private void processPlayerMove(PacketPlayerMove move)
   {
-    EntityPlayer player = WORLD.getPlayer(move.getName());
+    EntityPlayer player = WORLD.getPlayer(move.getID());
 
     if(player == null)
       return;
 
-    player.setMovingRight(move.isRight());
-    player.setMovingLeft(move.isLeft());
-    player.setMovingUp(move.isUp());
-    player.setMovingDown(move.isDown());
+    player.moveX(move.getX());
+    player.moveY(move.getY());
   }
 
   private void processWorld(PacketWorld world)
   {
-    WORLD.load(world.getWorld());
+    WORLD.load(world.getJsonWorld());
   }
 }

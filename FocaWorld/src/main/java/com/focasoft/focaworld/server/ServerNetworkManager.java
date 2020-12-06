@@ -43,21 +43,21 @@ public class ServerNetworkManager
     }
   }
 
-  public void broadcast(Packet packet, String... ignores)
+  public void broadcast(Packet packet, short... ignores)
   {
     for(PlayerControllerServer handler : getHandlers())
     {
-      if(ignore(handler.getName(), ignores))
+      if(ignore(handler.getId(), ignores))
         continue;
 
       handler.sendPacket(packet);
     }
   }
 
-  private boolean ignore(String name, String[] ignore)
+  private boolean ignore(short id, short[] ignore)
   {
-    for(String s : ignore)
-      if(name.equals(s))
+    for(short otherId : ignore)
+      if(id == otherId)
         return true;
 
     return false;
@@ -108,14 +108,14 @@ public class ServerNetworkManager
 
   public void handleLogout(PlayerControllerServer player)
   {
-    handleLogout(player, new PacketPlayerQuit(player.getName()));
+    handleLogout(player, new PacketPlayerQuit(player.getId()));
   }
 
   public void handleLogout(PacketPlayerQuit packet)
   {
-    getHandlers().forEach(e -> {
-      if(e.getName().equals(packet.getName())){
-        handleLogout(e, packet);
+    getHandlers().forEach(controller -> {
+      if(controller.getId() == packet.getID()){
+        handleLogout(controller, packet);
       }
     });
   }

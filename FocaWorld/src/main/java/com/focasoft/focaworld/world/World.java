@@ -5,12 +5,15 @@ import com.focasoft.focaworld.entity.Entity;
 import com.focasoft.focaworld.entity.entities.EntityPlayer;
 import com.focasoft.focaworld.net.packets.PacketWorld;
 import com.focasoft.focaworld.world.gen.WorldGenerator;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.awt.*;
+import java.awt.Graphics;
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.focasoft.focaworld.client.Client.HEIGHT;
 import static com.focasoft.focaworld.client.Client.TILE_SIZE;
@@ -18,6 +21,7 @@ import static com.focasoft.focaworld.client.Client.WIDTH;
 
 public class World
 {
+  private final AtomicInteger IDS = new AtomicInteger();
   private final Object lock = new Object();
   
   private final LinkedList<Entity> ENTITIES = new LinkedList<>();
@@ -27,7 +31,9 @@ public class World
   
   private int width;
   private int height;
-  
+
+  private long seed;
+
   private boolean loaded;
   
   public World()
@@ -58,73 +64,6 @@ public class World
     getEntities().forEach(e -> e.render(g, camera));
   }
 
-  public void load(String name, int width, int height, long seed)
-  {
-    load(new WorldGenerator(seed).generate(name, width, height));
-  }
-
-  public void loadEntities(JSONObject json)
-  {
-
-  }
-
-  public void load(JSONObject json)
-  {
-    try {
-      name = json.getString("name");
-      width = json.getInt("width");
-      height = json.getInt("height");
-
-      this.tiles = new byte[width * height];
-
-      JSONObject tiles = json.getJSONObject("tiles");
-
-      for(String key : tiles.keySet()) {
-        this.tiles[Integer.parseInt(key)] = (byte) tiles.getInt(key);
-      }
-
-      if(!json.isNull("entities"))
-      {
-        JSONObject entities = json.getJSONObject("entities");
-
-        for(String key : entities.keySet())
-        {
-          JSONObject ent = entities.getJSONObject(key);
-          Entity entity = createInstance(ent.getString("class"), key, ent.getInt("x"), ent.getInt("y"));
-
-          if(containsEntity(entity.getName()))
-            continue;
-
-          if(entity instanceof EntityPlayer)
-          {
-            EntityPlayer player = (EntityPlayer) entity;
-            player.setMovingRight(ent.getBoolean("right"));
-            player.setMovingLeft(ent.getBoolean("left"));
-            player.setMovingUp(ent.getBoolean("up"));
-            player.setMovingDown(ent.getBoolean("down"));
-          }
-
-          addEntity(entity);
-        }
-      }
-    }
-    catch(Exception e)
-    {
-      System.out.println("Falha ao carregar o mundo.");
-      e.printStackTrace();
-      return;
-    }
-
-    loaded = true;
-  }
-
-  private Entity createInstance(String clazzName, String name, int x, int y) throws Exception
-  {
-    Class<?> clazz = Class.forName(clazzName);
-    Constructor<?> cons = clazz.getDeclaredConstructor(World.class, String.class, int.class, int.class);
-    return (Entity) cons.newInstance(this, name, x, y);
-  }
-
   public Tile getTile(int x, int y)
   {
     synchronized(this.lock)
@@ -146,7 +85,14 @@ public class World
       tiles[x + y * width] = tile.getID();
     }
   }
-  
+
+  public byte[] getTiles()
+  {
+    synchronized(this.lock) {
+      return Arrays.copyOf(tiles, tiles.length);
+    }
+  }
+
   public void removeEntity(Entity entity)
   {
     synchronized(lock)
@@ -169,6 +115,20 @@ public class World
     }
   }
 
+  public void removeEntity(short id)
+  {
+    LinkedList<Entity> entities = getEntities();
+
+    for(Entity ent : entities)
+    {
+      if(ent.getId() == id)
+      {
+        removeEntity(ent);
+        return;
+      }
+    }
+  }
+
   public void addEntity(Entity entity)
   {
     synchronized(this.lock)
@@ -177,15 +137,12 @@ public class World
     }
   }
 
-  public EntityPlayer getPlayer(String name)
+  public void addEntities(List<Entity> entities)
   {
-    for(Entity en : getEntities())
+    synchronized(this.lock)
     {
-      if((en instanceof EntityPlayer) && en.getName().equals(name))
-        return (EntityPlayer) en;
+      this.ENTITIES.addAll(entities);
     }
-
-    return null;
   }
 
   public LinkedList<Entity> getEntities()
@@ -207,53 +164,127 @@ public class World
     return false;
   }
 
+  public Entity getEntity(short id)
+  {
+    for(Entity ent : getEntities())
+    {
+      if(ent.getId() == id)
+        return ent;
+    }
+
+    return null;
+  }
+
+  public EntityPlayer getPlayer(short id)
+  {
+    for(Entity en : getEntities())
+    {
+      if((en instanceof EntityPlayer) && en.getId() == id)
+        return (EntityPlayer) en;
+    }
+
+    return null;
+  }
+
+  public EntityPlayer getPlayer(String name)
+  {
+    for(Entity en : getEntities())
+    {
+      if((en instanceof EntityPlayer) && en.getName().equals(name))
+        return (EntityPlayer) en;
+    }
+
+    return null;
+  }
+
+  public void load(String name, int width, int height, long seed)
+  {
+    load(new WorldGenerator(seed).generate(name, width, height));
+  }
+
+  public void load(JSONObject json)
+  {
+    try {
+      name = json.getString("name");
+      width = json.getInt("width");
+      height = json.getInt("height");
+      seed = json.getLong("seed");
+
+      this.tiles = new byte[width * height];
+
+      JSONObject tiles = json.getJSONObject("tiles");
+
+      for(String key : tiles.keySet()) {
+        this.tiles[Integer.parseInt(key)] = (byte) tiles.getInt(key);
+      }
+
+      if(!json.isNull("entities"))
+      {
+        JSONArray entities = json.getJSONArray("entities");
+
+        for(int i = 0; i < entities.length(); i++)
+        {
+          JSONObject entity = entities.getJSONObject(i);
+          Entity entityInstance = createInstance(
+                  entity.getString("class"),
+                  entity.getString("name"),
+                  (short) entity.getInt("id"),
+                  entity.getInt("x"),
+                  entity.getInt("y")
+          );
+
+          if(containsEntity(entityInstance.getName()))
+            continue;
+
+          addEntity(entityInstance);
+        }
+      }
+    }
+    catch(Exception e)
+    {
+      System.out.println("Falha ao carregar o mundo.");
+      e.printStackTrace();
+      return;
+    }
+
+    loaded = true;
+  }
+
   public PacketWorld toPacket()
   {
     JSONObject json = new JSONObject();
+    JSONArray entities = new JSONArray();
+
+    getEntities().forEach(entity -> {
+      JSONObject entityJson = new JSONObject();
+
+      entityJson.put("x", entity.getX());
+      entityJson.put("y", entity.getY());
+      entityJson.put("id", entity.getId());
+      entityJson.put("class", entity.getClass().getName());
+
+      entities.put(entityJson);
+    });
+
     json.put("name", name);
     json.put("width", width);
     json.put("height", height);
-
-    JSONObject tiles = new JSONObject();
-
-    byte[] tileArray = getTiles();
-
-    for(int x = 0; x < width; x++)
-    {
-      for(int y = 0; y < height; y++)
-      {
-        int i = x + y * width;
-        int tile = tileArray[i];
-
-        tiles.put(String.valueOf(i), tile);
-      }
-    }
-
-    JSONObject entities = new JSONObject();
-
-    getEntities().forEach(e -> {
-      JSONObject ent = new JSONObject();
-      ent.put("x", e.getX());
-      ent.put("y", e.getY());
-      ent.put("class", e.getClass().getName());
-
-      if(e instanceof EntityPlayer)
-      {
-        EntityPlayer player = (EntityPlayer) e;
-
-        ent.put("right", player.isMovingRight());
-        ent.put("left", player.isMovingLeft());
-        ent.put("up", player.isMovingUp());
-        ent.put("down", player.isMovingDown());
-      }
-
-      entities.put(e.getName(), ent);
-    });
-
-    json.put("tiles", tiles);
+    json.put("seed", seed);
     json.put("entities", entities);
 
     return new PacketWorld(json);
+  }
+
+  private Entity createInstance(String clazzName, String name, short id, int x, int y) throws Exception
+  {
+    Class<?> clazz = Class.forName(clazzName);
+    Constructor<?> cons = clazz.getDeclaredConstructor(World.class, String.class, short.class, int.class, int.class);
+    return (Entity) cons.newInstance(this, name, id, x, y);
+  }
+
+  public synchronized int nextEntityID()
+  {
+    return IDS.getAndIncrement();
   }
 
   public boolean isLoaded()
@@ -281,10 +312,8 @@ public class World
     return height;
   }
 
-  public byte[] getTiles()
+  public long getSeed()
   {
-    synchronized(this.lock) {
-      return Arrays.copyOf(tiles, tiles.length);
-    }
+    return seed;
   }
 }

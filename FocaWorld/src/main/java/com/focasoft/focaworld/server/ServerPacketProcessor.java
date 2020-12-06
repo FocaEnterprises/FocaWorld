@@ -35,16 +35,14 @@ public class ServerPacketProcessor implements PacketProcessor
     }
   }
 
-  private void processPlayerMove(PacketPlayerMove packet)
+  private void processPlayerMove(PacketPlayerMove move)
   {
-    EntityPlayer player = WORLD.getPlayer(packet.getName());
+    EntityPlayer player = WORLD.getPlayer(move.getID());
 
-    player.setMovingRight(packet.isRight());
-    player.setMovingLeft(packet.isLeft());
-    player.setMovingUp(packet.isUp());
-    player.setMovingDown(packet.isDown());
+    player.moveX(move.getX());
+    player.moveY(move.getY());
 
-    MANAGER.broadcast(packet, packet.getName());
+    MANAGER.broadcast(move, move.getID());
   }
 
   private void processPlayerQuit(PacketPlayerQuit quit)

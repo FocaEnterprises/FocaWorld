@@ -33,6 +33,10 @@ public interface PlayerController
 
   void setY(int y);
 
+  short getId();
+
+  void setId(short id);
+
   void moveX(int move);
 
   void moveY(int move);

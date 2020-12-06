@@ -3,67 +3,47 @@ package com.focasoft.focaworld.net.packets;
 import com.focasoft.focaworld.net.Packet;
 import com.focasoft.focaworld.net.PacketType;
 import com.focasoft.focaworld.utils.ByteUtils;
+import org.json.JSONObject;
 
 public class PacketWorld extends Packet
 {
-  private final String NAME;
+  private final JSONObject JSON;
 
-  private final long SEED;
-
-  private final int WIDTH;
-  private final int HEIGHT;
-
-  public PacketWorld(String name, long seed, int width, int height)
+  public PacketWorld(JSONObject json)
   {
     super(PacketType.WORLD);
 
-    this.NAME = name;
-    this.SEED = seed;
-    this.WIDTH = width;
-    this.HEIGHT = height;
+    this.JSON = json;
   }
 
   @Override
   public byte[] serialize()
   {
-    byte[] data = new byte[17 + NAME.length()];
+    String jsonString = JSON.toString();
+    byte[] data = new byte[jsonString.length() + 1];
     data[0] = TYPE.getID();
 
-    ByteUtils.writeLong(data, SEED, 1);
-    ByteUtils.writeInt(data, WIDTH, 9);
-    ByteUtils.writeInt(data, HEIGHT, 13);
-    ByteUtils.writeString(data, NAME, 17);
+    ByteUtils.writeString(data, jsonString, 1);
 
     return data;
   }
 
-  public String getName()
+  public JSONObject getJsonWorld()
   {
-    return NAME;
-  }
-
-  public long getSeed()
-  {
-    return SEED;
-  }
-
-  public int getWidth()
-  {
-    return WIDTH;
-  }
-
-  public int getHeight()
-  {
-    return HEIGHT;
+    return JSON;
   }
 
   public static PacketWorld parse(byte[] data)
   {
-    return new PacketWorld(
-            ByteUtils.readString(data, 17, data.length - 17),
-            ByteUtils.readLong(data, 1),
-            ByteUtils.readInt(data, 9),
-            ByteUtils.readInt(data, 13)
-    );
+    String str = ByteUtils.readString(data, 1, data.length - 1);
+    JSONObject json = new JSONObject(str);
+
+    // Validate JSON. Throws JSONException if key is not defined
+    json.getString("name");
+    json.getLong("seed");
+    json.getInt("width");
+    json.getInt("height");
+
+    return new PacketWorld(json);
   }
 }

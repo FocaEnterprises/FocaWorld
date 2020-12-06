@@ -208,6 +208,18 @@ public class PlayerControllerServer implements PlayerController, Runnable
   }
 
   @Override
+  public short getId()
+  {
+    return PLAYER.getId();
+  }
+
+  @Override
+  public void setId(short id)
+  {
+    PLAYER.setId(id);
+  }
+
+  @Override
   public void moveX(int move)
   {
     PLAYER.moveX(move);

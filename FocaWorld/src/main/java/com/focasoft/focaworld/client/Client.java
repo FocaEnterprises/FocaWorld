@@ -72,7 +72,7 @@ public class Client extends Canvas implements Runnable
     if(nick.length() > 8)
       nick = nick.substring(0, 7);
 
-    EntityPlayer player = new EntityPlayer(WORLD, nick, 0, 0);
+    EntityPlayer player = new EntityPlayer(WORLD, nick, (short) 0, 0, 0);
 
     WORKER = new Worker(this);
     INPUT = new PlayerInput(this);
@@ -156,7 +156,7 @@ public class Client extends Canvas implements Runnable
   {
     if(MULTIPLAYER) {
       try {
-        NETWORK_MANAGER.sendPacketNow(new PacketPlayerQuit(getName()));
+        NETWORK_MANAGER.sendPacketNow(new PacketPlayerQuit(CONTROLLER.getId()));
       } catch(IOException ex) {
         ex.printStackTrace();
       }

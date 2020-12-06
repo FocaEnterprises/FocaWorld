@@ -36,6 +36,7 @@ public class WorldGenerator
     }
     
     json.put("name", name);
+    json.put("seed", SEED);
     json.put("width", w);
     json.put("height", h);
     json.put("tiles", tiles);
