@@ -264,6 +264,7 @@ public class World
       entityJson.put("x", entity.getX());
       entityJson.put("y", entity.getY());
       entityJson.put("id", entity.getId());
+      entityJson.put("name", entity.getName());
       entityJson.put("class", entity.getClass().getName());
 
       entities.put(entityJson);
