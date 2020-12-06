@@ -212,10 +212,13 @@ public class World
 
       this.tiles = new byte[width * height];
 
-      JSONObject tiles = json.getJSONObject("tiles");
+      if(!json.isNull("tiles"))
+      {
+        JSONObject tiles = json.getJSONObject("tiles");
 
-      for(String key : tiles.keySet()) {
-        this.tiles[Integer.parseInt(key)] = (byte) tiles.getInt(key);
+        for(String key : tiles.keySet()) {
+          this.tiles[Integer.parseInt(key)] = (byte) tiles.getInt(key);
+        }
       }
 
       if(!json.isNull("entities"))
