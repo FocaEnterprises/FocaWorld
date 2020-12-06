@@ -18,22 +18,8 @@ public class WorldGenerator
   
   public JSONObject generate(String name, int w, int h)
   {
-    LevelGen.resetAndSetSeed(SEED);
     JSONObject json = new JSONObject();
-    JSONObject tiles = new JSONObject();
-    
-    byte[] gen = LevelGen.createAndValidateMap(w, h)[0];
-    
-    for(int x = 0; x < w; x++)
-    {
-      for(int y = 0; y < h; y++)
-      {
-        int i = x + y * w;
-        int tile = gen[i];
-        
-        tiles.put(String.valueOf(i), tile);
-      }
-    }
+    JSONObject tiles = generateTiles(w, h);
     
     json.put("name", name);
     json.put("seed", SEED);
@@ -42,5 +28,26 @@ public class WorldGenerator
     json.put("tiles", tiles);
     
     return json;
+  }
+
+  public JSONObject generateTiles(int w, int h)
+  {
+    LevelGen.resetAndSetSeed(SEED);
+    JSONObject tiles = new JSONObject();
+
+    byte[] gen = LevelGen.createAndValidateMap(w, h)[0];
+
+    for(int x = 0; x < w; x++)
+    {
+      for(int y = 0; y < h; y++)
+      {
+        int i = x + y * w;
+        int tile = gen[i];
+
+        tiles.put(String.valueOf(i), tile);
+      }
+    }
+
+    return tiles;
   }
 }

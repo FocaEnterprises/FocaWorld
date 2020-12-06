@@ -197,6 +197,14 @@ public class World
     return null;
   }
 
+  public void load(PacketWorld packet)
+  {
+    JSONObject world = packet.getJsonWorld();
+    JSONObject tiles = new WorldGenerator(world.getLong("seed")).generateTiles(world.getInt("width"), world.getInt("y"));
+
+    load(packet.getJsonWorld().put("tiles", tiles));
+  }
+
   public void load(String name, int width, int height, long seed)
   {
     load(new WorldGenerator(seed).generate(name, width, height));

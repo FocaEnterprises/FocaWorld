@@ -83,6 +83,6 @@ public class ClientPacketProcessor implements PacketProcessor
 
   private void processWorld(PacketWorld world)
   {
-    WORLD.load(world.getJsonWorld());
+    WORLD.load(world);
   }
 }
