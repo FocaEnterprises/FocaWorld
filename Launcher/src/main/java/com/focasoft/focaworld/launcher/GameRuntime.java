@@ -32,6 +32,11 @@ public class GameRuntime implements Runnable
         {
           System.out.println(line);
         }
+
+        while((line = errors.readLine()) != null)
+        {
+          System.out.println(line);
+        }
       }
       catch(IOException e)
       {
