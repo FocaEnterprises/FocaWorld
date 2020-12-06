@@ -200,7 +200,7 @@ public class World
   public void load(PacketWorld packet)
   {
     JSONObject world = packet.getJsonWorld();
-    JSONObject tiles = new WorldGenerator(world.getLong("seed")).generateTiles(world.getInt("width"), world.getInt("y"));
+    JSONObject tiles = new WorldGenerator(world.getLong("seed")).generateTiles(world.getInt("width"), world.getInt("height"));
 
     load(packet.getJsonWorld().put("tiles", tiles));
   }
