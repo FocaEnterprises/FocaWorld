@@ -1,38 +1,38 @@
 package com.focasoft.focaworld.net.packets;
 
-import com.focasoft.focaworld.net.BadPacketException;
 import com.focasoft.focaworld.net.Packet;
 import com.focasoft.focaworld.net.PacketType;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.focasoft.focaworld.utils.ByteUtils;
 
 public class PacketPlayerQuit extends Packet
 {
-  private final String NAME;
+  private final short ID;
 
-  public PacketPlayerQuit(String name)
+  public PacketPlayerQuit(short id)
   {
     super(PacketType.PLAYER_QUIT);
 
-    this.NAME = name;
-    DATA.put("name", name);
+    this.ID = id;
   }
 
-  public String getName()
+  public short getID()
   {
-    return NAME;
+    return ID;
+  }
+
+  @Override
+  public byte[] serialize()
+  {
+    byte[] data = new byte[3];
+
+    data[0] = TYPE.getID();
+    ByteUtils.writeShort(data, ID, 1);
+
+    return data;
   }
 
   public static PacketPlayerQuit parse(byte[] data)
   {
-    PacketPlayerQuit packet;
-
-    try{
-      packet = new PacketPlayerQuit(json.getString("name"));
-    } catch(JSONException e){
-      throw new BadPacketException(e.getMessage());
-    }
-
-    return packet;
+    return new PacketPlayerQuit(ByteUtils.readShort(data, 1));
   }
 }

@@ -4,6 +4,7 @@ import com.focasoft.focaworld.client.render.Camera;
 import com.focasoft.focaworld.entity.Entity;
 import com.focasoft.focaworld.entity.entities.EntityPlayer;
 import com.focasoft.focaworld.net.packets.PacketWorld;
+import com.focasoft.focaworld.world.gen.WorldGenerator;
 import org.json.JSONObject;
 
 import java.awt.*;
@@ -56,7 +57,17 @@ public class World
     
     getEntities().forEach(e -> e.render(g, camera));
   }
-  
+
+  public void load(String name, int width, int height, long seed)
+  {
+    load(new WorldGenerator(seed).generate(name, width, height));
+  }
+
+  public void loadEntities(JSONObject json)
+  {
+
+  }
+
   public void load(JSONObject json)
   {
     try {

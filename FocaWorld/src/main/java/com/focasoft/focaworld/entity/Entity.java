@@ -10,13 +10,15 @@ public abstract class Entity
   protected String name;
   protected int x;
   protected int y;
-  
-  public Entity(World world, String name, int x, int y)
+  protected short id;
+
+  public Entity(World world, String name, short id, int x, int y)
   {
     this.name = name;
     this.world = world;
     this.x = x;
     this.y = y;
+    this.id = id;
   }
   
   public abstract void tick();
@@ -62,7 +64,17 @@ public abstract class Entity
   {
     this.y += move;
   }
-  
+
+  public short getId()
+  {
+    return id;
+  }
+
+  public void setId(short id)
+  {
+    this.id = id;
+  }
+
   public World getWorld()
   {
     return world;

@@ -10,7 +10,6 @@ import com.focasoft.focaworld.player.PlayerControllerClient;
 import com.focasoft.focaworld.player.PlayerInput;
 import com.focasoft.focaworld.task.Worker;
 import com.focasoft.focaworld.world.World;
-import com.focasoft.focaworld.world.gen.WorldGenerator;
 
 import javax.swing.JFrame;
 import java.awt.Canvas;
@@ -95,8 +94,7 @@ public class Client extends Canvas implements Runnable
       }
     
     } else {
-      WorldGenerator gen = new WorldGenerator(223124453L);
-      WORLD.load(gen.generate("World", 128, 128));
+      WORLD.load("World", 128, 128, 223124453L);
       NETWORK_MANAGER = null;
     }
 

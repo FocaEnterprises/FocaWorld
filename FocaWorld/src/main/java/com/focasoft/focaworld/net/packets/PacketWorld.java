@@ -1,38 +1,69 @@
 package com.focasoft.focaworld.net.packets;
 
-import com.focasoft.focaworld.net.BadPacketException;
 import com.focasoft.focaworld.net.Packet;
 import com.focasoft.focaworld.net.PacketType;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.focasoft.focaworld.utils.ByteUtils;
 
 public class PacketWorld extends Packet
 {
-  private final JSONObject WORLD;
+  private final String NAME;
 
-  public PacketWorld(JSONObject json)
+  private final long SEED;
+
+  private final int WIDTH;
+  private final int HEIGHT;
+
+  public PacketWorld(String name, long seed, int width, int height)
   {
     super(PacketType.WORLD);
 
-    WORLD = json;
-    DATA.put("world", json);
+    this.NAME = name;
+    this.SEED = seed;
+    this.WIDTH = width;
+    this.HEIGHT = height;
   }
 
-  public JSONObject getWorld()
+  @Override
+  public byte[] serialize()
   {
-    return WORLD;
+    byte[] data = new byte[17 + NAME.length()];
+    data[0] = TYPE.getID();
+
+    ByteUtils.writeLong(data, SEED, 1);
+    ByteUtils.writeInt(data, WIDTH, 9);
+    ByteUtils.writeInt(data, HEIGHT, 13);
+    ByteUtils.writeString(data, NAME, 17);
+
+    return data;
+  }
+
+  public String getName()
+  {
+    return NAME;
+  }
+
+  public long getSeed()
+  {
+    return SEED;
+  }
+
+  public int getWidth()
+  {
+    return WIDTH;
+  }
+
+  public int getHeight()
+  {
+    return HEIGHT;
   }
 
   public static PacketWorld parse(byte[] data)
   {
-    PacketWorld packet;
-
-    try{
-      packet = new PacketWorld(json.getJSONObject("world"));
-    } catch(JSONException e){
-      throw new BadPacketException(e.getMessage());
-    }
-
-    return packet;
+    return new PacketWorld(
+            ByteUtils.readString(data, 17, data.length - 17),
+            ByteUtils.readLong(data, 1),
+            ByteUtils.readInt(data, 9),
+            ByteUtils.readInt(data, 13)
+    );
   }
 }

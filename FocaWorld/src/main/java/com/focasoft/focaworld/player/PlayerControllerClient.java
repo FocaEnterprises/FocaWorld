@@ -18,10 +18,8 @@ public class PlayerControllerClient implements PlayerController
   private final Camera CAMERA;
   private final Client CLIENT;
 
-  private boolean lastRight;
-  private boolean lastLeft;
-  private boolean lastUp;
-  private boolean lastDown;
+  private int lastX;
+  private int lastY;
 
   public PlayerControllerClient(Client client, EntityPlayer player, PlayerInput input, Camera camera)
   {
@@ -35,28 +33,21 @@ public class PlayerControllerClient implements PlayerController
   
   public void update()
   {
-    boolean right = INPUT.isPressed(VK_D);
-    boolean left = INPUT.isPressed(VK_A);
-    boolean up = INPUT.isPressed(VK_W);
-    boolean down = INPUT.isPressed(VK_S);
-
-    setMovingRight(right);
-    setMovingLeft(left);
-    setMovingUp(up);
-    setMovingDown(down);
+    setMovingRight(INPUT.isPressed(VK_D));
+    setMovingLeft(INPUT.isPressed(VK_A));
+    setMovingUp(INPUT.isPressed(VK_W));
+    setMovingDown(INPUT.isPressed(VK_S));
 
     if(CLIENT.isMultiplayer())
     {
-      if(right != lastRight || left != lastLeft || up != lastUp || down != lastDown)
+      if(lastX != getX() || lastY != getY())
       {
         CLIENT.getNetworkManager().sendPacket(new PacketPlayerMove(getName(), right, left, up, down));
       }
     }
 
-    lastRight = right;
-    lastLeft = left;
-    lastUp = up;
-    lastDown = down;
+    lastX = getX();
+    lastY = getY();
   }
   
   public void updateCamera()

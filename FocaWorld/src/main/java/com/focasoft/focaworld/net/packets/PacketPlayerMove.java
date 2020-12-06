@@ -1,76 +1,55 @@
 package com.focasoft.focaworld.net.packets;
 
-import com.focasoft.focaworld.net.BadPacketException;
 import com.focasoft.focaworld.net.Packet;
 import com.focasoft.focaworld.net.PacketType;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.focasoft.focaworld.utils.ByteUtils;
 
 public class PacketPlayerMove extends Packet
 {
-  private final String NAME;
-  private final boolean RIGHT;
-  private final boolean LEFT;
-  private final boolean UP;
-  private final boolean DOWN;
+  private final short ID;
+  private final byte X;
+  private final byte Y;
 
-  public PacketPlayerMove(String name, boolean right, boolean left, boolean up, boolean down)
+  public PacketPlayerMove(short id, byte x, byte y)
   {
     super(PacketType.PLAYER_MOVE);
 
-    this.NAME = name;
-    this.RIGHT = right;
-    this.LEFT = left;
-    this.UP = up;
-    this.DOWN = down;
-
-    DATA.put("name", name);
-    DATA.put("right", right);
-    DATA.put("left", left);
-    DATA.put("up", up);
-    DATA.put("down", down);
+    this.ID = id;
+    this.X = x;
+    this.Y = y;
   }
 
-  public String getName()
+  public byte getX()
   {
-    return NAME;
+    return X;
   }
 
-  public boolean isRight()
+  public byte getY()
   {
-    return RIGHT;
+    return Y;
   }
 
-  public boolean isLeft()
+  public short getID()
   {
-    return LEFT;
+    return ID;
   }
 
-  public boolean isDown()
+  @Override
+  public byte[] serialize()
   {
-    return DOWN;
-  }
+    byte[] data = new byte[5];
 
-  public boolean isUp()
-  {
-    return UP;
+    data[0] = TYPE.getID();
+    data[3] = X;
+    data[4] = Y;
+
+    ByteUtils.writeShort(data, ID, 1);
+
+    return data;
   }
 
   public static PacketPlayerMove parse(byte[] data)
   {
-    PacketPlayerMove packet;
-
-    try {
-      packet = new PacketPlayerMove(
-              json.getString("name"),
-              json.getBoolean("right"),
-              json.getBoolean("left"),
-              json.getBoolean("up"),
-              json.getBoolean("down"));
-    } catch(JSONException e){
-      throw new BadPacketException(e.getMessage());
-    }
-
-    return packet;
+    return new PacketPlayerMove(ByteUtils.readShort(data, 1), data[3], data[4]);
   }
 }

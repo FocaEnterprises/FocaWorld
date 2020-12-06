@@ -7,17 +7,17 @@ public abstract class EntityLiving extends Entity
   protected int life;
   protected int maxLife;
   
-  public EntityLiving(World world, String name, int x, int y, int life, int maxLife)
+  public EntityLiving(World world, String name, short id, int x, int y, int life, int maxLife)
   {
-    super(world, name, x, y);
+    super(world, name, id, x, y);
     
     this.life = life;
     this.maxLife = maxLife;
   }
   
-  public EntityLiving(World world, String name, int x, int y, int maxLife)
+  public EntityLiving(World world, String name, short id, int x, int y, int maxLife)
   {
-    this(world, name, x, y, maxLife, maxLife);
+    this(world, name, id, x, y, maxLife, maxLife);
   }
   
   public int getLife()

@@ -1,10 +1,8 @@
 package com.focasoft.focaworld.net.packets;
 
-import com.focasoft.focaworld.net.BadPacketException;
 import com.focasoft.focaworld.net.Packet;
 import com.focasoft.focaworld.net.PacketType;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.focasoft.focaworld.utils.ByteUtils;
 
 public class PacketHandshake extends Packet
 {
@@ -14,7 +12,6 @@ public class PacketHandshake extends Packet
   {
     super(PacketType.HANDSHAKE);
     this.NAME = name;
-    this.DATA.put("name", name);
   }
   
   public String getName()
@@ -22,16 +19,26 @@ public class PacketHandshake extends Packet
     return NAME;
   }
 
+  @Override
+  public byte[] serialize()
+  {
+    byte[] data = new byte[NAME.length() + 1];
+    data[0] = TYPE.getID();
+
+    ByteUtils.writeString(data, NAME, 1);
+
+    return data;
+  }
+
   public static PacketHandshake parse(byte[] data)
   {
-    PacketHandshake packet;
+    char[] chars = new char[data.length -1];
 
-    try {
-      packet = new PacketHandshake(json.getString("name"));
-    } catch(JSONException e){
-      throw new BadPacketException(e.getMessage());
+    for(int i = 1; i < data.length; i++)
+    {
+      chars[i -1] = (char) data[i];
     }
 
-    return packet;
+    return new PacketHandshake(new String(chars));
   }
 }

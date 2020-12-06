@@ -26,9 +26,9 @@ public class EntityPlayer extends EntityLiving
   
   protected int speed = 1;
   
-  public EntityPlayer(World world, String name, int x, int y)
+  public EntityPlayer(World world, String name, short id, int x, int y)
   {
-    super(world, name, x, y, 10);
+    super(world, name, id, x, y, 10);
   }
   
   @Override

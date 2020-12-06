@@ -20,4 +20,15 @@ public enum PacketType
   {
     return ID;
   }
+
+  public static PacketType byID(byte id)
+  {
+    for(PacketType type : values())
+    {
+      if(type.getID() == id)
+        return type;
+    }
+
+    return null;
+  }
 }
