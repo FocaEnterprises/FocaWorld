@@ -4,10 +4,16 @@ public class ThreadUtils
 {
   public static void sleep(long millis)
   {
+    sleep(millis, false);
+  }
+
+  public static void sleep(long millis, boolean print)
+  {
     try {
       Thread.sleep(millis);
     } catch(InterruptedException e) {
-      e.printStackTrace();
+      if(print)
+        e.printStackTrace();
     }
   }
 }

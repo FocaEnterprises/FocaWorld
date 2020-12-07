@@ -33,6 +33,7 @@ public class PacketPlayerQuit extends Packet
 
   public static PacketPlayerQuit parse(byte[] data)
   {
-    return new PacketPlayerQuit(ByteUtils.readShort(data, 1));
+    PacketPlayerQuit packet =  new PacketPlayerQuit(ByteUtils.readShort(data, 1));
+    return packet;
   }
 }

@@ -31,7 +31,7 @@ public class ClientNetworkManager implements Runnable
   private Socket socket;
   private Thread thread;
   
-  private volatile boolean running = true;
+  private volatile boolean running;
   
   public ClientNetworkManager(Client client, String hostname, int port)
   {
@@ -57,21 +57,22 @@ public class ClientNetworkManager implements Runnable
     sendPacket(new PacketHandshake(CLIENT.getName()));
   }
   
-  public void disconnect() throws IOException
+  public synchronized void disconnect() throws IOException
   {
     running = false;
-    
-    try{
+
+    OUT_MESSAGES.clear();
+    IN_MESSAGES.clear();
+
+    try {
       thread.join();
-    } catch(InterruptedException e)
-    {
+    } catch(InterruptedException e) {
       e.printStackTrace();
     }
-    
+
+    WORKER.flushAndKill();
+    System.out.println("BELEZA");
     socket.close();
-    socket = null;
-    input = null;
-    output = null;
   }
   
   private void parseInput(byte[] data)
@@ -94,6 +95,9 @@ public class ClientNetworkManager implements Runnable
   
   public void sendMessage(byte[] msg)
   {
+    if(!running)
+      return;
+
     synchronized(OUT_MESSAGES)
     {
       OUT_MESSAGES.add(msg);
@@ -102,6 +106,9 @@ public class ClientNetworkManager implements Runnable
 
   public void sendPacket(Packet packet)
   {
+    if(!running)
+      return;
+
     sendMessage(packet.serialize());
   }
 
@@ -112,6 +119,9 @@ public class ClientNetworkManager implements Runnable
 
   protected void sendMessageNow(byte[] msg) throws IOException
   {
+    if(!running)
+      return;
+
     output.writeInt(msg.length);
     output.write(msg);
     output.flush();
@@ -192,9 +202,6 @@ public class ClientNetworkManager implements Runnable
   {
     while(running)
     {
-      if(socket.isClosed())
-        System.out.println("Fecho");
-
       try {
         read();
       } catch(IOException e) {

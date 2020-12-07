@@ -41,6 +41,9 @@ public class AsyncWorker implements Runnable
   
   public void addTask(Runnable run)
   {
+    if(!working)
+      return;
+
     QUEUE.addLast(run);
   }
   
@@ -61,5 +64,11 @@ public class AsyncWorker implements Runnable
     {
       e.printStackTrace();
     }
+  }
+
+  public void flushAndKill()
+  {
+    kill();
+    QUEUE.forEach(Runnable::run);
   }
 }

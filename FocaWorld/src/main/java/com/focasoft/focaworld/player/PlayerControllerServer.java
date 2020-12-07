@@ -93,9 +93,10 @@ public class PlayerControllerServer implements PlayerController, Runnable
     {
       if(SOCKET.isClosed())
       {
+        System.out.println(getName() + ": Socket closed!");
         MANAGER.handleLogout(this);
         listening = false;
-        continue;
+        return;
       }
 
       int len;
@@ -121,6 +122,11 @@ public class PlayerControllerServer implements PlayerController, Runnable
       processInput(data);
       ThreadUtils.sleep(10);
     }
+  }
+
+  public void interrupt()
+  {
+    THREAD.interrupt();
   }
 
   @Override

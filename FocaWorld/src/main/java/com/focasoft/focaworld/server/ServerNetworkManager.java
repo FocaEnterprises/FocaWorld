@@ -103,6 +103,7 @@ public class ServerNetworkManager
   private void handleLogout(PlayerControllerServer player, PacketPlayerQuit packet)
   {
     SERVER.unregisterPlayer(player.getPlayer());
+    player.interrupt();
     removeHandler(player);
   }
 

@@ -157,6 +157,7 @@ public class Client extends Canvas implements Runnable
     if(MULTIPLAYER) {
       try {
         NETWORK_MANAGER.sendPacketNow(new PacketPlayerQuit(CONTROLLER.getId()));
+        NETWORK_MANAGER.disconnect();
       } catch(IOException ex) {
         ex.printStackTrace();
       }
