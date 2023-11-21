@@ -3,6 +3,8 @@ package com.focasoft.focaworld;
 import com.focasoft.focaworld.client.Client;
 import com.focasoft.focaworld.server.Server;
 
+import java.util.Random;
+
 public class Main
 {
   public static void main(String[] args)
@@ -25,6 +27,7 @@ public class Main
 
     if(args[0].equals("--clientMode"))
     {
+      name += new Random().nextInt(100);
       boolean multiplayer = args.length > 2 && args[2].equals("--multiplayer");
       new Client(name, multiplayer);
       return;

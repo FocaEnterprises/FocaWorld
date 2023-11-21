@@ -164,6 +164,16 @@ public class World
     return false;
   }
 
+  public Entity getEntity(String name)
+  {
+    for(Entity ent: getEntities())
+    {
+      if(ent.getName().equals(name)) return ent;
+    }
+
+    return null;
+  }
+
   public Entity getEntity(short id)
   {
     for(Entity ent : getEntities())
@@ -236,17 +246,21 @@ public class World
         for(int i = 0; i < entities.length(); i++)
         {
           JSONObject entity = entities.getJSONObject(i);
-          Entity entityInstance = createInstance(
-                  entity.getString("class"),
-                  entity.getString("name"),
-                  (short) entity.getInt("id"),
-                  entity.getInt("x"),
-                  entity.getInt("y")
-          );
 
-          if(containsEntity(entityInstance.getName()))
+          String name = entity.getString("name");
+          short id = (short) entity.getInt("id");
+          int x = entity.getInt("x");
+          int y = entity.getInt("y");
+
+          if(containsEntity(name)) {
+            Entity existingEntity = getEntity(name);
+            existingEntity.setId(id);
+            existingEntity.setX(x);
+            existingEntity.setY(y);
             continue;
+          }
 
+          Entity entityInstance = createInstance(entity.getString("class"), name, id, x, y);
           addEntity(entityInstance);
         }
       }

@@ -55,9 +55,9 @@ public class Client extends Canvas implements Runnable
     this.MULTIPLAYER = multiplayer;
     this.setPreferredSize(new Dimension(scaledWidth(), scaledHeight()));
 
-    FRAME = new JFrame("Foca World - " + (multiplayer ? "Multiplayer" : "Singleplayer"));
+    FRAME = new JFrame("Foca World - " + (multiplayer ? "Multiplayer" : "Singleplayer") + " " + nick);
     FRAME.setResizable(false);
-    FRAME.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+    FRAME.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     FRAME.add(this);
     FRAME.pack();
     FRAME.setLocationRelativeTo(null);
@@ -82,7 +82,7 @@ public class Client extends Canvas implements Runnable
 
     if(multiplayer)
     {
-      NETWORK_MANAGER = new ClientNetworkManager(this, "game.weider.com.br", 10039);
+      NETWORK_MANAGER = new ClientNetworkManager(this, "localhost", 10039);
 
       try {
         NETWORK_MANAGER.connect();

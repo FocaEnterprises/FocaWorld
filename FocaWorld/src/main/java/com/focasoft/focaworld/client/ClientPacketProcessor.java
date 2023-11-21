@@ -50,9 +50,10 @@ public class ClientPacketProcessor implements PacketProcessor
   {
     if(join.getName().equals(CLIENT.getName()))
     {
-      PLAYER.setX(join.getX());
-      PLAYER.setY(join.getY());
-      PLAYER.setId(join.getID());
+      PlayerControllerClient controller = CLIENT.getPlayerController();
+      controller.setLastX(join.getX());
+      controller.setLastY(join.getY());
+      controller.setEnabled(true);
       return;
     }
 

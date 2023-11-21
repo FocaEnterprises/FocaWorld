@@ -1,15 +1,18 @@
 package com.focasoft.focaworld.player;
 
-import static com.focasoft.focaworld.client.Client.TILE_SIZE;
-import static com.focasoft.focaworld.client.Client.WIDTH;
-import static com.focasoft.focaworld.client.Client.HEIGHT;
-import static java.awt.event.KeyEvent.*;
-
-import com.focasoft.focaworld.client.render.Camera;
 import com.focasoft.focaworld.client.Client;
+import com.focasoft.focaworld.client.render.Camera;
 import com.focasoft.focaworld.entity.entities.EntityPlayer;
 import com.focasoft.focaworld.net.packets.PacketPlayerMove;
 import com.focasoft.focaworld.world.World;
+
+import static com.focasoft.focaworld.client.Client.HEIGHT;
+import static com.focasoft.focaworld.client.Client.TILE_SIZE;
+import static com.focasoft.focaworld.client.Client.WIDTH;
+import static java.awt.event.KeyEvent.VK_A;
+import static java.awt.event.KeyEvent.VK_D;
+import static java.awt.event.KeyEvent.VK_S;
+import static java.awt.event.KeyEvent.VK_W;
 
 public class PlayerControllerClient implements PlayerController
 {
@@ -18,8 +21,10 @@ public class PlayerControllerClient implements PlayerController
   private final Camera CAMERA;
   private final Client CLIENT;
 
+  private boolean isEnabled = false;
   private int lastX;
   private int lastY;
+
 
   public PlayerControllerClient(Client client, EntityPlayer player, PlayerInput input, Camera camera)
   {
@@ -28,11 +33,16 @@ public class PlayerControllerClient implements PlayerController
     this.INPUT = input;
     this.CAMERA = camera;
 
+    this.lastX = player.getX();
+    this.lastY = player.getY();
+
     player.setController(this);
   }
   
   public void update()
   {
+    if(!isEnabled) return;
+
     setMovingRight(INPUT.isPressed(VK_D));
     setMovingLeft(INPUT.isPressed(VK_A));
     setMovingUp(INPUT.isPressed(VK_W));
@@ -202,5 +212,21 @@ public class PlayerControllerClient implements PlayerController
   public void setMovingUp(boolean up)
   {
     PLAYER.setMovingUp(up);
+  }
+
+  public boolean isEnabled() {
+    return isEnabled;
+  }
+
+  public void setEnabled(boolean enabled) {
+    isEnabled = enabled;
+  }
+
+  public void setLastX(int lastX) {
+    this.lastX = lastX;
+  }
+
+  public void setLastY(int lastY) {
+    this.lastY = lastY;
   }
 }
