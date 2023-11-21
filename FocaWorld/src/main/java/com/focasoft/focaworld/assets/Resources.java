@@ -29,7 +29,7 @@ public final class Resources
 
   public static InputStream getImageStream(String imageName)
   {
-    return getResource("sprites" + File.separator + imageName);
+    return getResource("/sprites" + File.separator + imageName);
   }
 
   public static InputStream getResource(String path)
