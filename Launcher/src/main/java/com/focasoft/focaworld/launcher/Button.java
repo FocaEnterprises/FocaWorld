@@ -4,8 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 
-public class Button
-{
+public class Button {
   protected UI ui;
   protected String text;
 
@@ -14,8 +13,7 @@ public class Button
   protected int w;
   protected int h;
 
-  public Button(UI ui, String text, int x, int y, int w, int h)
-  {
+  public Button(UI ui, String text, int x, int y, int w, int h) {
     this.ui = ui;
     this.text = text;
     this.x = x;
@@ -24,8 +22,7 @@ public class Button
     this.h = h;
   }
 
-  public void draw(Graphics g)
-  {
+  public void draw(Graphics g) {
     g.setColor(new Color(0x151414));
     g.fillRect(x, y, w, h);
 
@@ -36,50 +33,41 @@ public class Button
     g.setColor(Color.WHITE);
     g.drawString(text, x + (w - g.getFontMetrics().stringWidth(text)) / 2, y + h / 2 + 8);
 
-    if(ui.hover == this)
-    {
+    if (ui.hover == this) {
       g.setColor(new Color(0, 0, 0, 146));
       g.fillRect(x, y, w, h);
     }
   }
 
-  public String getText()
-  {
+  public String getText() {
     return text;
   }
 
-  public void setText(String text)
-  {
+  public void setText(String text) {
     this.text = text;
   }
 
-  public int getX()
-  {
+  public int getX() {
     return x;
   }
 
-  public void setX(int x)
-  {
+  public void setX(int x) {
     this.x = x;
   }
 
-  public int getY()
-  {
+  public int getY() {
     return y;
   }
 
-  public void setY(int y)
-  {
+  public void setY(int y) {
     this.y = y;
   }
 
-  public int getHeight()
-  {
+  public int getHeight() {
     return h;
   }
 
-  public int getWidth()
-  {
+  public int getWidth() {
     return w;
   }
 }

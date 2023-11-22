@@ -3,8 +3,7 @@ package com.focasoft.focaworld.player;
 import com.focasoft.focaworld.entity.entities.EntityPlayer;
 import com.focasoft.focaworld.world.World;
 
-public interface PlayerController
-{
+public interface PlayerController {
   World getWorld();
 
   EntityPlayer getPlayer();

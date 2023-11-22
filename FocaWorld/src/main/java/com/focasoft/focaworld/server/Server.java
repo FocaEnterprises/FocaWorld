@@ -6,8 +6,7 @@ import com.focasoft.focaworld.task.Worker;
 import com.focasoft.focaworld.world.World;
 import com.focasoft.focaworld.world.gen.WorldGenerator;
 
-public class Server implements Runnable
-{
+public class Server implements Runnable {
   private final SocketHandler SOCKET_HANDLER;
   private final ServerNetworkManager NETWORK_MANAGER;
   private final AsyncWorker ASYNC;
@@ -15,8 +14,7 @@ public class Server implements Runnable
   private final World WORLD;
   private final String NAME;
 
-  public Server(String serverName)
-  {
+  public Server(String serverName) {
     NAME = serverName;
     ASYNC = new AsyncWorker();
     WORKER = new Worker(this);
@@ -27,7 +25,7 @@ public class Server implements Runnable
 
     WorldGenerator gen = new WorldGenerator(223124453L);
     WORLD.load(gen.generate("Spawn", 128, 128));
-    
+
     WORKER.start();
     ASYNC.start();
     SOCKET_HANDLER.start();
@@ -36,28 +34,27 @@ public class Server implements Runnable
     System.out.println("Pessoal da host, isso eh seguro. Codigo fonte: ");
     System.out.println("https://github.com/foca-enterprises/beterraba");
   }
-  
+
   @Override
-  public void run()
-  {
+  public void run() {
     NETWORK_MANAGER.processPackets();
     WORLD.update();
   }
-  
-  public void stop()
-  {
-    if(WORKER != null)
+
+  public void stop() {
+    if (WORKER != null) {
       WORKER.kill();
-    
-    if(ASYNC != null)
+    }
+
+    if (ASYNC != null) {
       ASYNC.kill();
-    
+    }
+
     System.exit(0);
   }
 
   // TODO: Carregar dados do jogador de uma config
-  public EntityPlayer registerPlayer(String name)
-  {
+  public EntityPlayer registerPlayer(String name) {
     EntityPlayer player = new EntityPlayer(WORLD, name, (short) WORLD.nextEntityID(), 16, 16);
     WORLD.addEntity(player);
 
@@ -65,33 +62,27 @@ public class Server implements Runnable
   }
 
   // TODO: Salvar jogador na config
-  public void unregisterPlayer(EntityPlayer player)
-  {
+  public void unregisterPlayer(EntityPlayer player) {
     WORLD.removeEntity(player.getName());
   }
 
-  public boolean isPlayerRegistered(String name)
-  {
+  public boolean isPlayerRegistered(String name) {
     return WORLD.containsEntity(name);
   }
 
-  public World getWorld()
-  {
+  public World getWorld() {
     return WORLD;
   }
 
-  public SocketHandler getSocketHandler()
-  {
+  public SocketHandler getSocketHandler() {
     return this.SOCKET_HANDLER;
   }
-  
-  public ServerNetworkManager getNetworkManager()
-  {
+
+  public ServerNetworkManager getNetworkManager() {
     return this.NETWORK_MANAGER;
   }
 
-  public String getName()
-  {
+  public String getName() {
     return NAME;
   }
 }

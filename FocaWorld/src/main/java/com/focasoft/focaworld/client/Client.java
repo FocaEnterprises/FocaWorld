@@ -19,8 +19,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-public class Client extends Canvas implements Runnable
-{
+public class Client extends Canvas implements Runnable {
   public static final int WIDTH = 480;
   public static final int HEIGHT = 320;
   public static final int SCALE = 2;
@@ -42,10 +41,8 @@ public class Client extends Canvas implements Runnable
 
   private boolean stoping = false;
 
-  public Client(String nick, boolean multiplayer)
-  {
-    if(!Resources.setup() || !Sprites.init())
-    {
+  public Client(String nick, boolean multiplayer) {
+    if (!Resources.setup() || !Sprites.init()) {
       System.out.println("Falha ao carregar resources! Saindo.");
       System.exit(0);
     }
@@ -69,8 +66,9 @@ public class Client extends Canvas implements Runnable
     UI = new GUI(this);
     WORLD = new World();
 
-    if(nick.length() > 8)
+    if (nick.length() > 8) {
       nick = nick.substring(0, 7);
+    }
 
     EntityPlayer player = new EntityPlayer(WORLD, nick, (short) 0, 0, 0);
 
@@ -80,19 +78,18 @@ public class Client extends Canvas implements Runnable
     CONTROLLER = new PlayerControllerClient(this, player, INPUT, CAMERA);
     WORLD.addEntity(player);
 
-    if(multiplayer)
-    {
+    if (multiplayer) {
       NETWORK_MANAGER = new ClientNetworkManager(this, "localhost", 10039);
 
       try {
         NETWORK_MANAGER.connect();
-      } catch(IOException e) {
+      } catch (IOException e) {
         System.out.println("Falha ao abrir conexão com o servidor");
         e.printStackTrace();
         System.exit(0);
         return;
       }
-    
+
     } else {
       WORLD.load("World", 128, 128, 223124453L);
       NETWORK_MANAGER = null;
@@ -101,20 +98,16 @@ public class Client extends Canvas implements Runnable
     UI.create();
     WORKER.start();
   }
-  
+
   @Override
-  public synchronized void run()
-  {
+  public synchronized void run() {
     tick();
     render();
   }
-  
-  private void tick()
-  {
-    if(!FRAME.isVisible())
-    {
-      if(!stoping)
-      {
+
+  private void tick() {
+    if (!FRAME.isVisible()) {
+      if (!stoping) {
         stoping = true;
         stop();
       }
@@ -122,43 +115,39 @@ public class Client extends Canvas implements Runnable
       return;
     }
 
-    if(MULTIPLAYER) {
+    if (MULTIPLAYER) {
       NETWORK_MANAGER.processIncomingPackets();
       NETWORK_MANAGER.processOutPackets();
     }
 
-    if(!WORLD.isLoaded())
-      return;
+    if (!WORLD.isLoaded()) return;
 
     CONTROLLER.update();
     WORLD.update();
   }
-  
-  private void render()
-  {
+
+  private void render() {
     Graphics g = LAYER.getGraphics();
     g.setColor(Color.BLACK);
     g.fillRect(0, 0, WIDTH, HEIGHT);
-    
-    if(WORLD.isLoaded())
-    {
+
+    if (WORLD.isLoaded()) {
       CONTROLLER.updateCamera();
       WORLD.render(g, CAMERA);
     }
-    
+
     GRAPHICS.drawImage(LAYER, 0, 0, scaledWidth(), scaledHeight(), null);
     UI.render(GRAPHICS);
 
     getBufferStrategy().show();
   }
-  
-  public void stop()
-  {
-    if(MULTIPLAYER) {
+
+  public void stop() {
+    if (MULTIPLAYER) {
       try {
         NETWORK_MANAGER.sendPacketNow(new PacketPlayerQuit(CONTROLLER.getId()));
         NETWORK_MANAGER.disconnect();
-      } catch(IOException ex) {
+      } catch (IOException ex) {
         ex.printStackTrace();
       }
     }
@@ -167,43 +156,35 @@ public class Client extends Canvas implements Runnable
     System.exit(0);
   }
 
-  public String getName()
-  {
+  public String getName() {
     return CONTROLLER != null ? CONTROLLER.getName() : "FocaClient";
   }
 
-  public PlayerControllerClient getPlayerController()
-  {
+  public PlayerControllerClient getPlayerController() {
     return this.CONTROLLER;
   }
-  
-  public ClientNetworkManager getNetworkManager()
-  {
+
+  public ClientNetworkManager getNetworkManager() {
     return this.NETWORK_MANAGER;
   }
-  
-  public boolean isMultiplayer()
-  {
+
+  public boolean isMultiplayer() {
     return this.MULTIPLAYER;
   }
-  
-  public World getWorld()
-  {
+
+  public World getWorld() {
     return this.WORLD;
   }
-  
-  public PlayerInput getInput()
-  {
+
+  public PlayerInput getInput() {
     return this.INPUT;
   }
-  
-  public static int scaledWidth()
-  {
+
+  public static int scaledWidth() {
     return WIDTH * SCALE;
   }
-  
-  public static int scaledHeight()
-  {
+
+  public static int scaledHeight() {
     return HEIGHT * SCALE;
   }
 }

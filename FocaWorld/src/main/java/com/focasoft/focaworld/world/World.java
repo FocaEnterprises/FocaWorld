@@ -19,209 +19,173 @@ import static com.focasoft.focaworld.client.Client.HEIGHT;
 import static com.focasoft.focaworld.client.Client.TILE_SIZE;
 import static com.focasoft.focaworld.client.Client.WIDTH;
 
-public class World
-{
+public class World {
   private final AtomicInteger IDS = new AtomicInteger();
   private final Object lock = new Object();
-  
+
   private final LinkedList<Entity> ENTITIES = new LinkedList<>();
-  
+
   private String name;
   private byte[] tiles;
-  
+
   private int width;
   private int height;
 
   private long seed;
 
   private boolean loaded;
-  
-  public World()
-  {
+
+  public World() {
     // TODO: Pensar numa logica mais interessante
   }
-  
-  public void update()
-  {
+
+  public void update() {
     getEntities().forEach(Entity::tick);
   }
-  
-  public void render(Graphics g, Camera camera)
-  {
+
+  public void render(Graphics g, Camera camera) {
     int xs = camera.getX() >> 4;
     int ys = camera.getY() >> 4;
     int xf = (camera.getX() + WIDTH) >> 4;
     int yf = (camera.getY() + HEIGHT) >> 4;
-    
-    for(int x = xs; x <= xf; x++)
-    {
-      for(int y = ys; y <= yf; y++)
-      {
+
+    for (int x = xs; x <= xf; x++) {
+      for (int y = ys; y <= yf; y++) {
         getTile(x, y).render(g, x * TILE_SIZE - camera.getX(), y * TILE_SIZE - camera.getY());
       }
     }
-    
+
     getEntities().forEach(e -> e.render(g, camera));
   }
 
-  public Tile getTile(int x, int y)
-  {
-    synchronized(this.lock)
-    {
-      if(x < 0 || y < 0 || x >= width || y >= height)
+  public Tile getTile(int x, int y) {
+    synchronized (this.lock) {
+      if (x < 0 || y < 0 || x >= width || y >= height) {
         return Tile.ROCK;
-  
+      }
+
       return Tile.TILES[tiles[x + y * width]];
     }
   }
-  
-  public void setTile(int x, int y, Tile tile)
-  {
-    synchronized(this.lock)
-    {
-      if(x < 0 || y < 0 || x >= width || y >= height)
-        return;
-  
+
+  public void setTile(int x, int y, Tile tile) {
+    synchronized (this.lock) {
+      if (x < 0 || y < 0 || x >= width || y >= height) return;
+
       tiles[x + y * width] = tile.getID();
     }
   }
 
-  public byte[] getTiles()
-  {
-    synchronized(this.lock) {
+  public byte[] getTiles() {
+    synchronized (this.lock) {
       return Arrays.copyOf(tiles, tiles.length);
     }
   }
 
-  public void removeEntity(Entity entity)
-  {
-    synchronized(lock)
-    {
+  public void removeEntity(Entity entity) {
+    synchronized (lock) {
       ENTITIES.remove(entity);
     }
   }
 
-  public void removeEntity(String name)
-  {
+  public void removeEntity(String name) {
     LinkedList<Entity> entities = getEntities();
 
-    for(Entity ent : entities)
-    {
-      if(ent.getName().equals(name))
-      {
+    for (Entity ent : entities) {
+      if (ent.getName().equals(name)) {
         removeEntity(ent);
         return;
       }
     }
   }
 
-  public void removeEntity(short id)
-  {
+  public void removeEntity(short id) {
     LinkedList<Entity> entities = getEntities();
 
-    for(Entity ent : entities)
-    {
-      if(ent.getId() == id)
-      {
+    for (Entity ent : entities) {
+      if (ent.getId() == id) {
         removeEntity(ent);
         return;
       }
     }
   }
 
-  public void addEntity(Entity entity)
-  {
-    synchronized(this.lock)
-    {
+  public void addEntity(Entity entity) {
+    synchronized (this.lock) {
       ENTITIES.add(entity);
     }
   }
 
-  public void addEntities(List<Entity> entities)
-  {
-    synchronized(this.lock)
-    {
+  public void addEntities(List<Entity> entities) {
+    synchronized (this.lock) {
       this.ENTITIES.addAll(entities);
     }
   }
 
-  public LinkedList<Entity> getEntities()
-  {
-    synchronized(this.lock)
-    {
+  public LinkedList<Entity> getEntities() {
+    synchronized (this.lock) {
       return new LinkedList<>(this.ENTITIES);
     }
   }
 
-  public boolean containsEntity(String name)
-  {
-    for(Entity e : getEntities())
-    {
-      if(e.getName().equals(name))
-        return true;
+  public boolean containsEntity(String name) {
+    for (Entity e : getEntities()) {
+      if (e.getName().equals(name)) return true;
     }
 
     return false;
   }
 
-  public Entity getEntity(String name)
-  {
-    for(Entity ent: getEntities())
-    {
-      if(ent.getName().equals(name)) return ent;
+  public Entity getEntity(String name) {
+    for (Entity ent : getEntities()) {
+      if (ent.getName().equals(name)) return ent;
     }
 
     return null;
   }
 
-  public Entity getEntity(short id)
-  {
-    for(Entity ent : getEntities())
-    {
-      if(ent.getId() == id)
+  public Entity getEntity(short id) {
+    for (Entity ent : getEntities()) {
+      if (ent.getId() == id) {
         return ent;
+      }
     }
 
     return null;
   }
 
-  public EntityPlayer getPlayer(short id)
-  {
-    for(Entity en : getEntities())
-    {
-      if((en instanceof EntityPlayer) && en.getId() == id)
+  public EntityPlayer getPlayer(short id) {
+    for (Entity en : getEntities()) {
+      if ((en instanceof EntityPlayer) && en.getId() == id) {
         return (EntityPlayer) en;
+      }
     }
 
     return null;
   }
 
-  public EntityPlayer getPlayer(String name)
-  {
-    for(Entity en : getEntities())
-    {
-      if((en instanceof EntityPlayer) && en.getName().equals(name))
+  public EntityPlayer getPlayer(String name) {
+    for (Entity en : getEntities()) {
+      if ((en instanceof EntityPlayer) && en.getName().equals(name)) {
         return (EntityPlayer) en;
+      }
     }
 
     return null;
   }
 
-  public void load(PacketWorld packet)
-  {
+  public void load(PacketWorld packet) {
     JSONObject world = packet.getJsonWorld();
     JSONObject tiles = new WorldGenerator(world.getLong("seed")).generateTiles(world.getInt("width"), world.getInt("height"));
 
     load(packet.getJsonWorld().put("tiles", tiles));
   }
 
-  public void load(String name, int width, int height, long seed)
-  {
+  public void load(String name, int width, int height, long seed) {
     load(new WorldGenerator(seed).generate(name, width, height));
   }
 
-  public void load(JSONObject json)
-  {
+  public void load(JSONObject json) {
     try {
       name = json.getString("name");
       width = json.getInt("width");
@@ -230,21 +194,18 @@ public class World
 
       this.tiles = new byte[width * height];
 
-      if(!json.isNull("tiles"))
-      {
+      if (!json.isNull("tiles")) {
         JSONObject tiles = json.getJSONObject("tiles");
 
-        for(String key : tiles.keySet()) {
+        for (String key : tiles.keySet()) {
           this.tiles[Integer.parseInt(key)] = (byte) tiles.getInt(key);
         }
       }
 
-      if(!json.isNull("entities"))
-      {
+      if (!json.isNull("entities")) {
         JSONArray entities = json.getJSONArray("entities");
 
-        for(int i = 0; i < entities.length(); i++)
-        {
+        for (int i = 0; i < entities.length(); i++) {
           JSONObject entity = entities.getJSONObject(i);
 
           String name = entity.getString("name");
@@ -252,7 +213,7 @@ public class World
           int x = entity.getInt("x");
           int y = entity.getInt("y");
 
-          if(containsEntity(name)) {
+          if (containsEntity(name)) {
             Entity existingEntity = getEntity(name);
             existingEntity.setId(id);
             existingEntity.setX(x);
@@ -264,9 +225,7 @@ public class World
           addEntity(entityInstance);
         }
       }
-    }
-    catch(Exception e)
-    {
+    } catch (Exception e) {
       System.out.println("Falha ao carregar o mundo.");
       e.printStackTrace();
       return;
@@ -275,8 +234,7 @@ public class World
     loaded = true;
   }
 
-  public PacketWorld toPacket()
-  {
+  public PacketWorld toPacket() {
     JSONObject json = new JSONObject();
     JSONArray entities = new JSONArray();
 
@@ -301,45 +259,37 @@ public class World
     return new PacketWorld(json);
   }
 
-  private Entity createInstance(String clazzName, String name, short id, int x, int y) throws Exception
-  {
+  private Entity createInstance(String clazzName, String name, short id, int x, int y) throws Exception {
     Class<?> clazz = Class.forName(clazzName);
     Constructor<?> cons = clazz.getDeclaredConstructor(World.class, String.class, short.class, int.class, int.class);
     return (Entity) cons.newInstance(this, name, id, x, y);
   }
 
-  public synchronized int nextEntityID()
-  {
+  public synchronized int nextEntityID() {
     return IDS.getAndIncrement();
   }
 
-  public boolean isLoaded()
-  {
+  public boolean isLoaded() {
     return loaded;
   }
-  
-  public String getName()
-  {
+
+  public String getName() {
     return name;
   }
-  
-  public void setName(String name)
-  {
+
+  public void setName(String name) {
     this.name = name;
   }
-  
-  public int getWidth()
-  {
+
+  public int getWidth() {
     return width;
   }
-  
-  public int getHeight()
-  {
+
+  public int getHeight() {
     return height;
   }
 
-  public long getSeed()
-  {
+  public long getSeed() {
     return seed;
   }
 }

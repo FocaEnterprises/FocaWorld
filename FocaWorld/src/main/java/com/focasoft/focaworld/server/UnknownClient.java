@@ -10,13 +10,11 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.Arrays;
 
-public class UnknownClient implements Runnable
-{
+public class UnknownClient implements Runnable {
   private final Socket SOCKET;
   private final ServerNetworkManager MANAGER;
-  
-  public UnknownClient(Socket socket, ServerNetworkManager manager)
-  {
+
+  public UnknownClient(Socket socket, ServerNetworkManager manager) {
     System.out.println("Novo UnknownClient: " + socket.getInetAddress());
 
     this.SOCKET = socket;
@@ -25,28 +23,23 @@ public class UnknownClient implements Runnable
   }
 
   @Override
-  public void run()
-  {
+  public void run() {
     DataInputStream in;
     boolean exit = false;
     long last = System.currentTimeMillis();
 
-    try
-    {
+    try {
       in = new DataInputStream(SOCKET.getInputStream());
-    }
-    catch(IOException e)
-    {
+    } catch (IOException e) {
       e.printStackTrace();
       close("Input failure!");
       return;
     }
 
-    while(!exit)
-    {
+    while (!exit) {
       ThreadUtils.sleep(50);
 
-      if(System.currentTimeMillis() - last >= 10000) {
+      if (System.currentTimeMillis() - last >= 10000) {
         System.out.println("Nada ainda");
         close("No input!");
         return;
@@ -56,31 +49,26 @@ public class UnknownClient implements Runnable
 
       try {
         len = in.readInt();
-      } catch(IOException e) {
+      } catch (IOException e) {
         continue;
       }
 
-      if(len < 1)
-        continue;
+      if (len < 1) continue;
 
       byte[] data = new byte[len];
       Packet packet;
       exit = true;
 
-      try
-      {
+      try {
         in.readFully(data, 0, len);
         System.out.println("Entrada UnknowClient: " + Arrays.toString(data));
         packet = PacketParser.parsePacket(data);
-      }
-      catch(Exception e)
-      {
+      } catch (Exception e) {
         close("Invalid input!");
         continue;
       }
 
-      if(!(packet instanceof PacketHandshake))
-      {
+      if (!(packet instanceof PacketHandshake)) {
         close("Invalid credentials!");
         continue;
       }
@@ -89,16 +77,12 @@ public class UnknownClient implements Runnable
     }
   }
 
-  public void close(String reason)
-  {
-    try
-    {
+  public void close(String reason) {
+    try {
       SOCKET.getOutputStream().write(reason.getBytes());
       SOCKET.getOutputStream().flush();
       SOCKET.close();
-    }
-    catch(IOException e)
-    {
+    } catch (IOException e) {
       e.printStackTrace();
     }
   }

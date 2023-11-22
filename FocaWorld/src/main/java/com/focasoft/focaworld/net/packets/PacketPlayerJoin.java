@@ -5,16 +5,14 @@ import com.focasoft.focaworld.net.Packet;
 import com.focasoft.focaworld.net.PacketType;
 import com.focasoft.focaworld.utils.ByteUtils;
 
-public class PacketPlayerJoin extends Packet
-{
+public class PacketPlayerJoin extends Packet {
   private final String NAME;
 
   private final int X;
   private final int Y;
   private final short ID;
 
-  public PacketPlayerJoin(String name, short id, int x, int y)
-  {
+  public PacketPlayerJoin(String name, short id, int x, int y) {
     super(PacketType.PLAYER_JOIN);
 
     this.NAME = name;
@@ -23,34 +21,28 @@ public class PacketPlayerJoin extends Packet
     this.ID = id;
   }
 
-  public PacketPlayerJoin(EntityPlayer player)
-  {
+  public PacketPlayerJoin(EntityPlayer player) {
     this(player.getName(), player.getId(), player.getX(), player.getY());
   }
 
-  public String getName()
-  {
+  public String getName() {
     return NAME;
   }
 
-  public int getY()
-  {
+  public int getY() {
     return Y;
   }
 
-  public int getX()
-  {
+  public int getX() {
     return X;
   }
 
-  public short getID()
-  {
+  public short getID() {
     return ID;
   }
 
   @Override
-  public byte[] serialize()
-  {
+  public byte[] serialize() {
     byte[] data = new byte[11 + NAME.length()];
 
     data[0] = TYPE.getID();
@@ -63,13 +55,12 @@ public class PacketPlayerJoin extends Packet
     return data;
   }
 
-  public static PacketPlayerJoin parse(byte[] data)
-  {
+  public static PacketPlayerJoin parse(byte[] data) {
     return new PacketPlayerJoin(
-            ByteUtils.readString(data, 11, data.length - 11),
-            ByteUtils.readShort(data, 1),
-            ByteUtils.readInt(data, 3),
-            ByteUtils.readInt(data, 7)
+      ByteUtils.readString(data, 11, data.length - 11),
+      ByteUtils.readShort(data, 1),
+      ByteUtils.readInt(data, 3),
+      ByteUtils.readInt(data, 7)
     );
   }
 }

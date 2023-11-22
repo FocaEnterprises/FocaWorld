@@ -5,20 +5,17 @@ import com.focasoft.focaworld.net.PacketType;
 import com.focasoft.focaworld.utils.ByteUtils;
 import org.json.JSONObject;
 
-public class PacketWorld extends Packet
-{
+public class PacketWorld extends Packet {
   private final JSONObject JSON;
 
-  public PacketWorld(JSONObject json)
-  {
+  public PacketWorld(JSONObject json) {
     super(PacketType.WORLD);
 
     this.JSON = json;
   }
 
   @Override
-  public byte[] serialize()
-  {
+  public byte[] serialize() {
     String jsonString = JSON.toString();
     byte[] data = new byte[jsonString.length() + 1];
     data[0] = TYPE.getID();
@@ -28,13 +25,11 @@ public class PacketWorld extends Packet
     return data;
   }
 
-  public JSONObject getJsonWorld()
-  {
+  public JSONObject getJsonWorld() {
     return JSON;
   }
 
-  public static PacketWorld parse(byte[] data)
-  {
+  public static PacketWorld parse(byte[] data) {
     String str = ByteUtils.readString(data, 1, data.length - 1);
     JSONObject json = new JSONObject(str);
 

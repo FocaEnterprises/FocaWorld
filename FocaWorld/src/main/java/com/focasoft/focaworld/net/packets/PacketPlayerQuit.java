@@ -4,25 +4,21 @@ import com.focasoft.focaworld.net.Packet;
 import com.focasoft.focaworld.net.PacketType;
 import com.focasoft.focaworld.utils.ByteUtils;
 
-public class PacketPlayerQuit extends Packet
-{
+public class PacketPlayerQuit extends Packet {
   private final short ID;
 
-  public PacketPlayerQuit(short id)
-  {
+  public PacketPlayerQuit(short id) {
     super(PacketType.PLAYER_QUIT);
 
     this.ID = id;
   }
 
-  public short getID()
-  {
+  public short getID() {
     return ID;
   }
 
   @Override
-  public byte[] serialize()
-  {
+  public byte[] serialize() {
     byte[] data = new byte[3];
 
     data[0] = TYPE.getID();
@@ -31,9 +27,8 @@ public class PacketPlayerQuit extends Packet
     return data;
   }
 
-  public static PacketPlayerQuit parse(byte[] data)
-  {
-    PacketPlayerQuit packet =  new PacketPlayerQuit(ByteUtils.readShort(data, 1));
+  public static PacketPlayerQuit parse(byte[] data) {
+    PacketPlayerQuit packet = new PacketPlayerQuit(ByteUtils.readShort(data, 1));
     return packet;
   }
 }

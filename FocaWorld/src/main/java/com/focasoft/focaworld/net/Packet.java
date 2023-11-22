@@ -1,11 +1,9 @@
 package com.focasoft.focaworld.net;
 
-public abstract class Packet
-{
+public abstract class Packet {
   protected final PacketType TYPE;
-  
-  public Packet(PacketType type)
-  {
+
+  public Packet(PacketType type) {
     TYPE = type;
   }
 

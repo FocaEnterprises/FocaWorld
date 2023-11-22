@@ -15,8 +15,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-public class PlayerControllerServer implements PlayerController, Runnable
-{
+public class PlayerControllerServer implements PlayerController, Runnable {
   private final ServerNetworkManager MANAGER;
   private final EntityPlayer PLAYER;
   private final AsyncWorker WORKER;
@@ -29,8 +28,7 @@ public class PlayerControllerServer implements PlayerController, Runnable
 
   private boolean listening;
 
-  public PlayerControllerServer(Server server, EntityPlayer player, Socket socket, AsyncWorker worker)
-  {
+  public PlayerControllerServer(Server server, EntityPlayer player, Socket socket, AsyncWorker worker) {
     this.SERVER = server;
     this.PLAYER = player;
     this.SOCKET = socket;
@@ -43,7 +41,7 @@ public class PlayerControllerServer implements PlayerController, Runnable
     try {
       this.input = new DataInputStream(SOCKET.getInputStream());
       this.output = new DataOutputStream(SOCKET.getOutputStream());
-    } catch(IOException e) {
+    } catch (IOException e) {
       e.printStackTrace();
     }
 
@@ -51,34 +49,29 @@ public class PlayerControllerServer implements PlayerController, Runnable
     THREAD.start();
   }
 
-  public void sendMessage(byte[] msg)
-  {
-    if(SOCKET.isClosed())
-      return;
+  public void sendMessage(byte[] msg) {
+    if (SOCKET.isClosed()) return;
 
     WORKER.addTask(() -> {
       try {
         output.writeInt(msg.length);
         output.write(msg);
-      }
-      catch(IOException e){
+      } catch (IOException e) {
         e.printStackTrace();
       }
     });
   }
 
-  public void sendPacket(Packet packet)
-  {
+  public void sendPacket(Packet packet) {
     sendMessage(packet.serialize());
   }
 
-  private void processInput(byte[] data)
-  {
+  private void processInput(byte[] data) {
     Packet packet;
 
     try {
       packet = PacketParser.parsePacket(data);
-    } catch(BadPacketException e) {
+    } catch (BadPacketException e) {
       e.printStackTrace();
       return;
     }
@@ -87,12 +80,9 @@ public class PlayerControllerServer implements PlayerController, Runnable
   }
 
   @Override
-  public void run()
-  {
-    while(listening)
-    {
-      if(SOCKET.isClosed())
-      {
+  public void run() {
+    while (listening) {
+      if (SOCKET.isClosed()) {
         System.out.println(getName() + ": Socket closed!");
         MANAGER.handleLogout(this);
         listening = false;
@@ -103,18 +93,17 @@ public class PlayerControllerServer implements PlayerController, Runnable
 
       try {
         len = input.readInt();
-      } catch(IOException e){
+      } catch (IOException e) {
         continue;
       }
 
-      if(len < 1)
-        continue;
+      if (len < 1) continue;
 
       byte[] data = new byte[len];
 
       try {
         input.readFully(data, 0, len);
-      } catch(IOException e){
+      } catch (IOException e) {
         e.printStackTrace();
         continue;
       }
@@ -124,116 +113,97 @@ public class PlayerControllerServer implements PlayerController, Runnable
     }
   }
 
-  public void interrupt()
-  {
+  public void interrupt() {
     THREAD.interrupt();
   }
 
   @Override
-  public World getWorld()
-  {
+  public World getWorld() {
     return PLAYER.getWorld();
   }
 
   @Override
-  public EntityPlayer getPlayer()
-  {
+  public EntityPlayer getPlayer() {
     return PLAYER;
   }
 
   @Override
-  public String getName()
-  {
+  public String getName() {
     return PLAYER.getName();
   }
 
   @Override
-  public void setName(String name)
-  {
+  public void setName(String name) {
     PLAYER.setName(name);
   }
 
   @Override
-  public int getSpeed()
-  {
+  public int getSpeed() {
     return PLAYER.getSpeed();
   }
 
   @Override
-  public void setSpeed(int speed)
-  {
+  public void setSpeed(int speed) {
     PLAYER.setSpeed(speed);
   }
 
   @Override
-  public int getLife()
-  {
+  public int getLife() {
     return PLAYER.getLife();
   }
 
   @Override
-  public void setLife(int life)
-  {
+  public void setLife(int life) {
     PLAYER.setLife(life);
   }
 
   @Override
-  public int getMaxLife()
-  {
+  public int getMaxLife() {
     return PLAYER.getMaxLife();
   }
 
   @Override
-  public void setMaxLife(int maxLife)
-  {
+  public void setMaxLife(int maxLife) {
     PLAYER.setMaxLife(maxLife);
   }
 
   @Override
-  public int getX()
-  {
+  public int getX() {
     return PLAYER.getX();
   }
 
   @Override
-  public void setX(int x)
-  {
+  public void setX(int x) {
     PLAYER.setX(x);
   }
 
   @Override
-  public int getY()
-  {
+  public int getY() {
     return PLAYER.getY();
   }
 
   @Override
-  public void setY(int y)
-  {
+  public void setY(int y) {
     PLAYER.setY(y);
   }
 
   @Override
-  public short getId()
-  {
+  public short getId() {
     return PLAYER.getId();
   }
 
   @Override
-  public void setId(short id)
-  {
+  public void setId(short id) {
     PLAYER.setId(id);
   }
 
   @Override
-  public void moveX(int move)
-  {
+  public void moveX(int move) {
     PLAYER.moveX(move);
   }
 
   @Override
-  public void moveY(int move)
-  {
+  public void moveY(int move) {
     PLAYER.moveY(move);
   }
 }

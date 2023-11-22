@@ -7,8 +7,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.io.IOException;
 
-public class Launcher extends Canvas implements Runnable
-{
+public class Launcher extends Canvas implements Runnable {
   public static final int WIDTH = 640;
   public static final int HEIGHT = 480;
 
@@ -20,8 +19,7 @@ public class Launcher extends Canvas implements Runnable
 
   private volatile boolean running;
 
-  private Launcher()
-  {
+  private Launcher() {
     setPreferredSize(new Dimension(WIDTH, HEIGHT));
     FRAME = new JFrame("Foca World - Launcher");
     FRAME.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -39,21 +37,19 @@ public class Launcher extends Canvas implements Runnable
   }
 
   @Override
-  public void run()
-  {
-    while(running)
-    {
+  public void run() {
+    while (running) {
       update();
       draw();
 
       try {
         Thread.sleep(25L);
-      } catch(InterruptedException ignore) { }
+      } catch (InterruptedException ignore) {
+      }
     }
   }
 
-  protected void launch(String args)
-  {
+  protected void launch(String args) {
     running = false;
     thread.interrupt();
 
@@ -62,7 +58,7 @@ public class Launcher extends Canvas implements Runnable
 
     try {
       process = Runtime.getRuntime().exec(cmd.trim());
-    } catch(IOException e) {
+    } catch (IOException e) {
       e.printStackTrace();
       return;
     }
@@ -71,21 +67,18 @@ public class Launcher extends Canvas implements Runnable
     FRAME.setVisible(false);
   }
 
-  public void restore()
-  {
+  public void restore() {
     FRAME.setVisible(true);
     running = true;
     thread = new Thread(this, "Launcher");
     thread.start();
   }
 
-  private void update()
-  {
+  private void update() {
     GUI.update();
   }
 
-  private void draw()
-  {
+  private void draw() {
     GRAPHICS.setColor(new Color(71, 71, 71));
     GRAPHICS.fillRect(0, 0, WIDTH, HEIGHT);
     GUI.render(GRAPHICS);
@@ -93,8 +86,7 @@ public class Launcher extends Canvas implements Runnable
     getBufferStrategy().show();
   }
 
-  public static void main(String[] args)
-  {
+  public static void main(String[] args) {
     new Launcher();
   }
 }

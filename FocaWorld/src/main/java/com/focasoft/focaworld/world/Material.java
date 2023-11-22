@@ -4,8 +4,7 @@ import static com.focasoft.focaworld.assets.Sprites.*;
 
 import java.awt.image.BufferedImage;
 
-public enum Material
-{
+public enum Material {
   ROCK((byte) 0, "Rock", true, rock),
   DIRT((byte) 1, "Dirt", true, dirt),
   GRASS((byte) 2, "Grass", true, grass),
@@ -16,30 +15,26 @@ public enum Material
   CACTUS((byte) 7, "Cactus", false, cactus),
   FLOWER((byte) 8, "Flower", false, flower),
   ;
-  
+
   public final BufferedImage SPRITE;
   public final String NAME;
   public final boolean SOLID;
   public final byte ID;
-  
-  Material(byte id, String name, boolean solid, BufferedImage sprite)
-  {
+
+  Material(byte id, String name, boolean solid, BufferedImage sprite) {
     this.ID = id;
     this.NAME = name;
     this.SOLID = solid;
     this.SPRITE = sprite;
   }
-  
-  public static Material getByID(byte id)
-  {
-    for(Material material : values())
-    {
-      if(material.ID == id)
-      {
+
+  public static Material getByID(byte id) {
+    for (Material material : values()) {
+      if (material.ID == id) {
         return material;
       }
     }
-    
+
     return ROCK;
   }
 }

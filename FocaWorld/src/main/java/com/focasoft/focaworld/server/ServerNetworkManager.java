@@ -13,8 +13,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.LinkedList;
 
-public class ServerNetworkManager
-{
+public class ServerNetworkManager {
   private final LinkedList<PlayerControllerServer> HANDLERS = new LinkedList<>();
   private final LinkedList<Packet> PACKETS = new LinkedList<>();
   private final ServerPacketProcessor PROCESSOR;
@@ -22,53 +21,43 @@ public class ServerNetworkManager
   private final Server SERVER;
   private final World WORLD;
 
-  public ServerNetworkManager(Server server, AsyncWorker worker)
-  {
+  public ServerNetworkManager(Server server, AsyncWorker worker) {
     this.SERVER = server;
     this.WORKER = worker;
     this.WORLD = server.getWorld();
     this.PROCESSOR = new ServerPacketProcessor(SERVER, this, WORLD);
   }
-  
-  public void processPackets()
-  {
+
+  public void processPackets() {
     PROCESSOR.processPackets(drainInput());
   }
-  
-  public void checkEntry(Packet packet)
-  {
-    synchronized(PACKETS)
-    {
+
+  public void checkEntry(Packet packet) {
+    synchronized (PACKETS) {
       PACKETS.add(packet);
     }
   }
 
-  public void broadcast(Packet packet, short... ignores)
-  {
-    for(PlayerControllerServer handler : getHandlers())
-    {
-      if(ignore(handler.getId(), ignores))
-        continue;
+  public void broadcast(Packet packet, short... ignores) {
+    for (PlayerControllerServer handler : getHandlers()) {
+      if (ignore(handler.getId(), ignores)) continue;
 
       handler.sendPacket(packet);
     }
   }
 
-  private boolean ignore(short id, short[] ignore)
-  {
-    for(short otherId : ignore)
-      if(id == otherId)
-        return true;
+  private boolean ignore(short id, short[] ignore) {
+    for (short otherId : ignore) {
+      if (id == otherId) return true;
+    }
 
     return false;
   }
 
-  private LinkedList<Packet> drainInput()
-  {
+  private LinkedList<Packet> drainInput() {
     LinkedList<Packet> packs;
 
-    synchronized(PACKETS)
-    {
+    synchronized (PACKETS) {
       packs = new LinkedList<>(PACKETS);
       PACKETS.clear();
     }
@@ -76,61 +65,50 @@ public class ServerNetworkManager
     return packs;
   }
 
-  public void removeHandler(PlayerControllerServer handler)
-  {
-    synchronized(HANDLERS)
-    {
+  public void removeHandler(PlayerControllerServer handler) {
+    synchronized (HANDLERS) {
       HANDLERS.remove(handler);
     }
   }
 
-  public void addHandler(PlayerControllerServer handler)
-  {
-    synchronized(HANDLERS)
-    {
+  public void addHandler(PlayerControllerServer handler) {
+    synchronized (HANDLERS) {
       HANDLERS.add(handler);
     }
   }
 
-  public LinkedList<PlayerControllerServer> getHandlers()
-  {
-    synchronized(HANDLERS)
-    {
+  public LinkedList<PlayerControllerServer> getHandlers() {
+    synchronized (HANDLERS) {
       return new LinkedList<>(HANDLERS);
     }
   }
 
-  private void handleLogout(PlayerControllerServer player, PacketPlayerQuit packet)
-  {
+  private void handleLogout(PlayerControllerServer player, PacketPlayerQuit packet) {
     SERVER.unregisterPlayer(player.getPlayer());
     player.interrupt();
     removeHandler(player);
   }
 
-  public void handleLogout(PlayerControllerServer player)
-  {
+  public void handleLogout(PlayerControllerServer player) {
     handleLogout(player, new PacketPlayerQuit(player.getId()));
   }
 
-  public void handleLogout(PacketPlayerQuit packet)
-  {
+  public void handleLogout(PacketPlayerQuit packet) {
     getHandlers().forEach(controller -> {
-      if(controller.getId() == packet.getID()){
+      if (controller.getId() == packet.getID()) {
         handleLogout(controller, packet);
       }
     });
   }
 
-  public void handleLogin(PacketHandshake packet, Socket socket)
-  {
-    if(SERVER.isPlayerRegistered(packet.getName()))
-    {
+  public void handleLogin(PacketHandshake packet, Socket socket) {
+    if (SERVER.isPlayerRegistered(packet.getName())) {
       try {
         System.out.println("Já registrado");
         socket.getOutputStream().write(("{\"code\":\"DP\"}").getBytes());
         socket.getOutputStream().flush();
         socket.close();
-      } catch(IOException e) {
+      } catch (IOException e) {
         e.printStackTrace();
       }
 

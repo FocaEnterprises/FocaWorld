@@ -6,8 +6,7 @@ import com.focasoft.focaworld.player.PlayerControllerClient;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
-public class GUI
-{
+public class GUI {
   private static GUI instance;
 
   private final ArrayList<Text> TEXTS = new ArrayList<>();
@@ -15,31 +14,25 @@ public class GUI
 
   private PlayerControllerClient player;
 
-  public GUI(Client client)
-  {
+  public GUI(Client client) {
     instance = this;
     this.CLIENT = client;
   }
 
-  public void create()
-  {
+  public void create() {
     player = CLIENT.getPlayerController();
   }
 
-  public void addText(Text text)
-  {
+  public void addText(Text text) {
     TEXTS.add(text);
   }
 
-  public void removeText(Text text)
-  {
+  public void removeText(Text text) {
     TEXTS.remove(text);
   }
 
-  public void render(Graphics g)
-  {
-    while(TEXTS.size() > 0)
-    {
+  public void render(Graphics g) {
+    while (TEXTS.size() > 0) {
       Text text = TEXTS.get(0);
       text.draw(g);
       TEXTS.remove(0);
@@ -47,8 +40,7 @@ public class GUI
   }
 
   // As vezes é preciso quebrar as regras
-  public static GUI getInstance()
-  {
+  public static GUI getInstance() {
     return instance;
   }
 }

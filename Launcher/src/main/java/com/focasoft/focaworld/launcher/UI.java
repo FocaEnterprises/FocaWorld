@@ -1,8 +1,5 @@
 package com.focasoft.focaworld.launcher;
 
-import static com.focasoft.focaworld.launcher.Launcher.WIDTH;
-import static com.focasoft.focaworld.launcher.Launcher.HEIGHT;
-
 import javax.swing.event.MouseInputListener;
 import java.awt.Color;
 import java.awt.Font;
@@ -12,8 +9,9 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-public class UI implements KeyListener, MouseInputListener
-{
+import static com.focasoft.focaworld.launcher.Launcher.WIDTH;
+
+public class UI implements KeyListener, MouseInputListener {
   private final String VALID = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   private final Launcher LAUNCHER;
 
@@ -29,8 +27,7 @@ public class UI implements KeyListener, MouseInputListener
   private int x;
   private int y;
 
-  public UI(Launcher launcher)
-  {
+  public UI(Launcher launcher) {
     this.LAUNCHER = launcher;
     launcher.addKeyListener(this);
     launcher.addMouseMotionListener(this);
@@ -44,12 +41,9 @@ public class UI implements KeyListener, MouseInputListener
     launcher.requestFocus();
   }
 
-  public void update()
-  {
-    for(Button button : buttons)
-    {
-      if(x >= button.x && x < button.x + button.w && y >= button.y && y < button.y + button.h)
-      {
+  public void update() {
+    for (Button button : buttons) {
+      if (x >= button.x && x < button.x + button.w && y >= button.y && y < button.y + button.h) {
         hover = button;
         break;
       }
@@ -57,41 +51,33 @@ public class UI implements KeyListener, MouseInputListener
       hover = null;
     }
 
-    if(click)
-    {
+    if (click) {
       click = false;
 
-      if(hover != null)
-      {
+      if (hover != null) {
         performLaunch();
       }
     }
   }
 
-  private void performLaunch()
-  {
-    if(chars[0] == ' ')
-      return;
+  private void performLaunch() {
+    if (chars[0] == ' ') return;
 
     String args = "--clientMode ";
 
     args += new String(chars);
     args += " ";
 
-    if(hover == multi)
-    {
+    if (hover == multi) {
       args += "--multiplayer";
-    }
-    else if(hover != single)
-    {
+    } else if (hover != single) {
       return;
     }
 
     LAUNCHER.launch(args);
   }
 
-  public void render(Graphics g)
-  {
+  public void render(Graphics g) {
     String txt = "Nickname";
 
     g.setColor(Color.WHITE);
@@ -114,104 +100,89 @@ public class UI implements KeyListener, MouseInputListener
   }
 
   @Override
-  public void keyTyped(KeyEvent e)
-  {
+  public void keyTyped(KeyEvent e) {
     boolean match = false;
     char ch = e.getKeyChar();
 
-    for(int index = 0; index < VALID.length(); index++)
-    {
-      if(ch == VALID.charAt(index))
-      {
+    for (int index = 0; index < VALID.length(); index++) {
+      if (ch == VALID.charAt(index)) {
         match = true;
         break;
       }
     }
 
-    if(!match)
-      return;
+    if (!match) return;
 
-    if(i > chars.length -1)
-    {
-      i = chars.length -1;
+    if (i > chars.length - 1) {
+      i = chars.length - 1;
       return;
     }
 
-    if(chars[i] != ' ')
-      return;
+    if (chars[i] != ' ') return;
 
     chars[i] = ch;
     ++i;
   }
 
   @Override
-  public void keyPressed(KeyEvent e)
-  {
-    if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE)
-    {
-      if(i >= chars.length)
-        i = chars.length -1;
+  public void keyPressed(KeyEvent e) {
+    if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+      if (i >= chars.length) {
+        i = chars.length - 1;
+      }
 
-      if(i == chars.length -1 && chars[i] != ' ')
-      {
+      if (i == chars.length - 1 && chars[i] != ' ') {
         chars[i] = ' ';
         return;
       }
 
       --i;
 
-      if(i < 0)
+      if (i < 0) {
         i = 0;
+      }
 
       chars[i] = ' ';
     }
   }
 
   @Override
-  public void keyReleased(KeyEvent e)
-  {
+  public void keyReleased(KeyEvent e) {
 
   }
 
   @Override
-  public void mouseClicked(MouseEvent e)
-  {
+  public void mouseClicked(MouseEvent e) {
 
   }
 
   @Override
-  public void mousePressed(MouseEvent e)
-  {
+  public void mousePressed(MouseEvent e) {
     click = true;
   }
 
   @Override
-  public void mouseReleased(MouseEvent e)
-  {
+  public void mouseReleased(MouseEvent e) {
     click = false;
   }
 
   @Override
-  public void mouseEntered(MouseEvent e)
-  {
+  public void mouseEntered(MouseEvent e) {
 
   }
 
   @Override
-  public void mouseExited(MouseEvent e)
-  {
+  public void mouseExited(MouseEvent e) {
 
   }
 
   @Override
-  public void mouseDragged(MouseEvent e)
-  {
+  public void mouseDragged(MouseEvent e) {
 
   }
 
   @Override
-  public void mouseMoved(MouseEvent e)
-  {
+  public void mouseMoved(MouseEvent e) {
     x = e.getX();
     y = e.getY();
   }

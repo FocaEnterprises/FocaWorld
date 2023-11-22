@@ -13,8 +13,7 @@ import java.net.Socket;
 import java.util.Arrays;
 import java.util.LinkedList;
 
-public class ClientNetworkManager implements Runnable
-{
+public class ClientNetworkManager implements Runnable {
   private final LinkedList<byte[]> OUT_MESSAGES = new LinkedList<>();
   private final LinkedList<Packet> IN_MESSAGES = new LinkedList<>();
 
@@ -24,17 +23,16 @@ public class ClientNetworkManager implements Runnable
   private final String HOST;
 
   private final int PORT;
-  
+
   private DataInputStream input;
   private DataOutputStream output;
 
   private Socket socket;
   private Thread thread;
-  
+
   private volatile boolean running;
-  
-  public ClientNetworkManager(Client client, String hostname, int port)
-  {
+
+  public ClientNetworkManager(Client client, String hostname, int port) {
     this.HOST = hostname;
     this.PORT = port;
 
@@ -44,9 +42,8 @@ public class ClientNetworkManager implements Runnable
     WORKER = new AsyncWorker();
     WORKER.start();
   }
-  
-  public void connect() throws IOException
-  {
+
+  public void connect() throws IOException {
     socket = new Socket(HOST, PORT);
     input = new DataInputStream(socket.getInputStream());
     output = new DataOutputStream(socket.getOutputStream());
@@ -56,9 +53,8 @@ public class ClientNetworkManager implements Runnable
 
     sendPacket(new PacketHandshake(CLIENT.getName()));
   }
-  
-  public synchronized void disconnect() throws IOException
-  {
+
+  public synchronized void disconnect() throws IOException {
     running = false;
 
     OUT_MESSAGES.clear();
@@ -66,7 +62,7 @@ public class ClientNetworkManager implements Runnable
 
     try {
       thread.join();
-    } catch(InterruptedException e) {
+    } catch (InterruptedException e) {
       e.printStackTrace();
     }
 
@@ -74,78 +70,64 @@ public class ClientNetworkManager implements Runnable
     System.out.println("BELEZA");
     socket.close();
   }
-  
-  private void parseInput(byte[] data)
-  {
+
+  private void parseInput(byte[] data) {
     System.out.println("Recebi: " + Arrays.toString(data));
     Packet packet;
 
     try {
       packet = PacketParser.parsePacket(data);
-    } catch(BadPacketException e) {
+    } catch (BadPacketException e) {
       e.printStackTrace();
       return;
     }
-    
-    synchronized(IN_MESSAGES)
-    {
+
+    synchronized (IN_MESSAGES) {
       IN_MESSAGES.add(packet);
     }
   }
-  
-  public void sendMessage(byte[] msg)
-  {
-    if(!running)
-      return;
 
-    synchronized(OUT_MESSAGES)
-    {
+  public void sendMessage(byte[] msg) {
+    if (!running) return;
+
+    synchronized (OUT_MESSAGES) {
       OUT_MESSAGES.add(msg);
     }
   }
 
-  public void sendPacket(Packet packet)
-  {
-    if(!running)
-      return;
+  public void sendPacket(Packet packet) {
+    if (!running) return;
 
     sendMessage(packet.serialize());
   }
 
-  protected void sendPacketNow(Packet packet) throws IOException
-  {
+  protected void sendPacketNow(Packet packet) throws IOException {
     sendMessageNow(packet.serialize());
   }
 
-  protected void sendMessageNow(byte[] msg) throws IOException
-  {
-    if(!running)
-      return;
+  protected void sendMessageNow(byte[] msg) throws IOException {
+    if (!running) return;
 
     output.writeInt(msg.length);
     output.write(msg);
     output.flush();
   }
 
-  public LinkedList<Packet> drainInput()
-  {
+  public LinkedList<Packet> drainInput() {
     LinkedList<Packet> in;
-    
-    synchronized(IN_MESSAGES)
-    {
+
+    synchronized (IN_MESSAGES) {
       in = new LinkedList<>(IN_MESSAGES);
       IN_MESSAGES.clear();
     }
-    
+
     return in;
   }
-  
-  private LinkedList<byte[]> drainOut()
-  {
+
+  private LinkedList<byte[]> drainOut() {
     LinkedList<byte[]> out;
 
-    synchronized(OUT_MESSAGES)
-    {
+    synchronized (OUT_MESSAGES) {
       out = new LinkedList<>(OUT_MESSAGES);
       OUT_MESSAGES.clear();
     }
@@ -153,15 +135,12 @@ public class ClientNetworkManager implements Runnable
     return out;
   }
 
-  public void processIncomingPackets()
-  {
+  public void processIncomingPackets() {
     PROCESSOR.processPackets(drainInput());
   }
 
-  public void processOutPackets()
-  {
-    if(OUT_MESSAGES.size() == 0)
-      return;
+  public void processOutPackets() {
+    if (OUT_MESSAGES.size() == 0) return;
 
     WORKER.addTask(() -> {
       LinkedList<byte[]> out = ClientNetworkManager.this.drainOut();
@@ -170,26 +149,23 @@ public class ClientNetworkManager implements Runnable
         try {
           ClientNetworkManager.this.sendMessageNow(e);
           System.out.println("Escrevi: " + Arrays.toString(e));
-        }
-        catch(IOException ex) {
+        } catch (IOException ex) {
           ex.printStackTrace();
         }
       });
     });
   }
 
-  private void read() throws IOException
-  {
+  private void read() throws IOException {
     int len;
 
     try { // Exception if input hasn't four bytes
       len = input.readInt();
-    } catch(IOException ex){
+    } catch (IOException ex) {
       return;
     }
 
-    if(len < 1)
-      return;
+    if (len < 1) return;
 
     byte[] data = new byte[len];
 
@@ -198,13 +174,11 @@ public class ClientNetworkManager implements Runnable
   }
 
   @Override
-  public void run()
-  {
-    while(running)
-    {
+  public void run() {
+    while (running) {
       try {
         read();
-      } catch(IOException e) {
+      } catch (IOException e) {
         e.printStackTrace();
       }
     }
