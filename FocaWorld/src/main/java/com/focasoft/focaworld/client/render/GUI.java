@@ -32,7 +32,7 @@ public class GUI {
   }
 
   public void render(Graphics g) {
-    while (TEXTS.size() > 0) {
+    while (!TEXTS.isEmpty()) {
       Text text = TEXTS.get(0);
       text.draw(g);
       TEXTS.remove(0);

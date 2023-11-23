@@ -16,7 +16,7 @@ public class AsyncWorker implements Runnable {
   @Override
   public void run() {
     while (working) {
-      if (QUEUE.size() == 0) {
+      if (QUEUE.isEmpty()) {
         ThreadUtils.sleep(5);
       }
 

@@ -140,7 +140,7 @@ public class ClientNetworkManager implements Runnable {
   }
 
   public void processOutPackets() {
-    if (OUT_MESSAGES.size() == 0) return;
+    if (OUT_MESSAGES.isEmpty()) return;
 
     WORKER.addTask(() -> {
       LinkedList<byte[]> out = ClientNetworkManager.this.drainOut();
