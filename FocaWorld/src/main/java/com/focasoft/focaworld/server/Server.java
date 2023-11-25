@@ -31,8 +31,6 @@ public class Server implements Runnable {
     SOCKET_HANDLER.start();
 
     System.out.println("Servidor iniciado!");
-    System.out.println("Pessoal da host, isso eh seguro. Codigo fonte: ");
-    System.out.println("https://github.com/foca-enterprises/beterraba");
   }
 
   @Override
